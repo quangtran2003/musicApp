@@ -4,8 +4,9 @@
 
 import 'dart:convert';
 
-ChartModel chartModelFromJson(String str) =>
-    ChartModel.fromJson(json.decode(str));
+// ChartModel chartModelFromJsonChart(Map<String, dynamic> str) {
+//   return ChartModel.fromJson(str);
+// }
 
 String chartModelToJson(ChartModel data) => json.encode(data.toJson());
 
@@ -81,12 +82,11 @@ class AlbumsDatum {
   String? coverBig;
   String? coverXl;
   String? md5Image;
-  RecordTypeEnum? recordType;
+
   String? tracklist;
   bool? explicitLyrics;
   int? position;
   ArtistElement? artist;
-  RecordTypeEnum? type;
 
   AlbumsDatum({
     this.id,
@@ -98,12 +98,10 @@ class AlbumsDatum {
     this.coverBig,
     this.coverXl,
     this.md5Image,
-    this.recordType,
     this.tracklist,
     this.explicitLyrics,
     this.position,
     this.artist,
-    this.type,
   });
 
   factory AlbumsDatum.fromJson(Map<String, dynamic> json) => AlbumsDatum(
@@ -116,14 +114,12 @@ class AlbumsDatum {
         coverBig: json["cover_big"],
         coverXl: json["cover_xl"],
         md5Image: json["md5_image"],
-        recordType: recordTypeEnumValues.map[json["record_type"]]!,
         tracklist: json["tracklist"],
         explicitLyrics: json["explicit_lyrics"],
         position: json["position"],
         artist: json["artist"] == null
             ? null
             : ArtistElement.fromJson(json["artist"]),
-        type: recordTypeEnumValues.map[json["type"]]!,
       );
 
   Map<String, dynamic> toJson() => {
@@ -136,12 +132,10 @@ class AlbumsDatum {
         "cover_big": coverBig,
         "cover_xl": coverXl,
         "md5_image": md5Image,
-        "record_type": recordTypeEnumValues.reverse[recordType],
         "tracklist": tracklist,
         "explicit_lyrics": explicitLyrics,
         "position": position,
         "artist": artist?.toJson(),
-        "type": recordTypeEnumValues.reverse[type],
       };
 }
 
@@ -156,7 +150,7 @@ class ArtistElement {
   String? pictureXl;
   bool? radio;
   String? tracklist;
-  ArtistType? type;
+
   int? position;
 
   ArtistElement({
@@ -170,7 +164,6 @@ class ArtistElement {
     this.pictureXl,
     this.radio,
     this.tracklist,
-    this.type,
     this.position,
   });
 
@@ -185,7 +178,6 @@ class ArtistElement {
         pictureXl: json["picture_xl"],
         radio: json["radio"],
         tracklist: json["tracklist"],
-        type: artistTypeValues.map[json["type"]]!,
         position: json["position"],
       );
 
@@ -200,7 +192,6 @@ class ArtistElement {
         "picture_xl": pictureXl,
         "radio": radio,
         "tracklist": tracklist,
-        "type": artistTypeValues.reverse[type],
         "position": position,
       };
 }
@@ -280,7 +271,6 @@ class PlaylistsDatum {
   String? md5Image;
   PictureTypeEnum? pictureType;
   User? user;
-  PictureTypeEnum? type;
 
   PlaylistsDatum({
     this.id,
@@ -299,7 +289,6 @@ class PlaylistsDatum {
     this.md5Image,
     this.pictureType,
     this.user,
-    this.type,
   });
 
   factory PlaylistsDatum.fromJson(Map<String, dynamic> json) => PlaylistsDatum(
@@ -321,7 +310,6 @@ class PlaylistsDatum {
         md5Image: json["md5_image"],
         pictureType: pictureTypeEnumValues.map[json["picture_type"]]!,
         user: json["user"] == null ? null : User.fromJson(json["user"]),
-        type: pictureTypeEnumValues.map[json["type"]]!,
       );
 
   Map<String, dynamic> toJson() => {
@@ -341,7 +329,6 @@ class PlaylistsDatum {
         "md5_image": md5Image,
         "picture_type": pictureTypeEnumValues.reverse[pictureType],
         "user": user?.toJson(),
-        "type": pictureTypeEnumValues.reverse[type],
       };
 }
 
@@ -354,27 +341,23 @@ class User {
   int? id;
   String? name;
   String? tracklist;
-  UserType? type;
 
   User({
     this.id,
     this.name,
     this.tracklist,
-    this.type,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"],
         name: json["name"],
         tracklist: json["tracklist"],
-        type: userTypeValues.map[json["type"]]!,
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
         "tracklist": tracklist,
-        "type": userTypeValues.reverse[type],
       };
 }
 
@@ -420,7 +403,6 @@ class PodcastsDatum {
   String? pictureMedium;
   String? pictureBig;
   String? pictureXl;
-  PurpleType? type;
 
   PodcastsDatum({
     this.id,
@@ -435,7 +417,6 @@ class PodcastsDatum {
     this.pictureMedium,
     this.pictureBig,
     this.pictureXl,
-    this.type,
   });
 
   factory PodcastsDatum.fromJson(Map<String, dynamic> json) => PodcastsDatum(
@@ -451,7 +432,6 @@ class PodcastsDatum {
         pictureMedium: json["picture_medium"],
         pictureBig: json["picture_big"],
         pictureXl: json["picture_xl"],
-        type: purpleTypeValues.map[json["type"]]!,
       );
 
   Map<String, dynamic> toJson() => {
@@ -467,7 +447,6 @@ class PodcastsDatum {
         "picture_medium": pictureMedium,
         "picture_big": pictureBig,
         "picture_xl": pictureXl,
-        "type": purpleTypeValues.reverse[type],
       };
 }
 
@@ -504,7 +483,6 @@ class TracksDatum {
   int? id;
   String? title;
   String? titleShort;
-  TitleVersion? titleVersion;
   String? link;
   int? duration;
   int? rank;
@@ -516,13 +494,11 @@ class TracksDatum {
   int? position;
   ArtistElement? artist;
   Album? album;
-  FluffyType? type;
 
   TracksDatum({
     this.id,
     this.title,
     this.titleShort,
-    this.titleVersion,
     this.link,
     this.duration,
     this.rank,
@@ -534,14 +510,12 @@ class TracksDatum {
     this.position,
     this.artist,
     this.album,
-    this.type,
   });
 
   factory TracksDatum.fromJson(Map<String, dynamic> json) => TracksDatum(
         id: json["id"],
         title: json["title"],
         titleShort: json["title_short"],
-        titleVersion: titleVersionValues.map[json["title_version"]]!,
         link: json["link"],
         duration: json["duration"],
         rank: json["rank"],
@@ -555,14 +529,12 @@ class TracksDatum {
             ? null
             : ArtistElement.fromJson(json["artist"]),
         album: json["album"] == null ? null : Album.fromJson(json["album"]),
-        type: fluffyTypeValues.map[json["type"]]!,
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "title": title,
         "title_short": titleShort,
-        "title_version": titleVersionValues.reverse[titleVersion],
         "link": link,
         "duration": duration,
         "rank": rank,
@@ -574,7 +546,6 @@ class TracksDatum {
         "position": position,
         "artist": artist?.toJson(),
         "album": album?.toJson(),
-        "type": fluffyTypeValues.reverse[type],
       };
 }
 
@@ -588,7 +559,6 @@ class Album {
   String? coverXl;
   String? md5Image;
   String? tracklist;
-  RecordTypeEnum? type;
 
   Album({
     this.id,
@@ -600,7 +570,6 @@ class Album {
     this.coverXl,
     this.md5Image,
     this.tracklist,
-    this.type,
   });
 
   factory Album.fromJson(Map<String, dynamic> json) => Album(
@@ -613,7 +582,6 @@ class Album {
         coverXl: json["cover_xl"],
         md5Image: json["md5_image"],
         tracklist: json["tracklist"],
-        type: recordTypeEnumValues.map[json["type"]]!,
       );
 
   Map<String, dynamic> toJson() => {
@@ -626,17 +594,13 @@ class Album {
         "cover_xl": coverXl,
         "md5_image": md5Image,
         "tracklist": tracklist,
-        "type": recordTypeEnumValues.reverse[type],
       };
 }
 
-enum TitleVersion { EMPTY, RADIO_EDIT_FEAT_PHARRELL_WILLIAMS_AND_NILE_RODGERS }
+enum TitleVersion { EMPTY, TWIN_VER }
 
-final titleVersionValues = EnumValues({
-  "": TitleVersion.EMPTY,
-  "(Radio Edit - feat. Pharrell Williams and Nile Rodgers)":
-      TitleVersion.RADIO_EDIT_FEAT_PHARRELL_WILLIAMS_AND_NILE_RODGERS
-});
+final titleVersionValues =
+    EnumValues({"": TitleVersion.EMPTY, "(Twin Ver.)": TitleVersion.TWIN_VER});
 
 enum FluffyType { TRACK }
 

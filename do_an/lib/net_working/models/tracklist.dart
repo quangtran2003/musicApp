@@ -1,30 +1,28 @@
 // To parse this JSON data, do
 //
-//     final searchModel = searchModelFromJson(jsonString);
+//     final tracklistAlbumModel = tracklistAlbumModelFromJson(jsonString);
 
 import 'dart:convert';
 
-// SearchModel searchModelFromJson(String str) =>
-//     SearchModel.fromJson(json.decode(str));
+String tracklistAlbumModelToJson(TracklistAlbumModel data) =>
+    json.encode(data.toJson());
 
-String searchModelToJson(SearchModel data) => json.encode(data.toJson());
-
-class SearchModel {
-  List<DataSearch>? data;
+class TracklistAlbumModel {
+  List<Datum>? data;
   int? total;
   String? next;
 
-  SearchModel({
+  TracklistAlbumModel({
     this.data,
     this.total,
     this.next,
   });
 
-  factory SearchModel.fromJson(Map<String, dynamic> json) => SearchModel(
+  factory TracklistAlbumModel.fromJson(Map<String, dynamic> json) =>
+      TracklistAlbumModel(
         data: json["data"] == null
             ? []
-            : List<DataSearch>.from(
-                json["data"]!.map((x) => DataSearch.fromJson(x))),
+            : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
         total: json["total"],
         next: json["next"],
       );
@@ -38,7 +36,7 @@ class SearchModel {
       };
 }
 
-class DataSearch {
+class Datum {
   int? id;
   bool? readable;
   String? title;
@@ -51,11 +49,12 @@ class DataSearch {
   int? explicitContentLyrics;
   int? explicitContentCover;
   String? preview;
+  List<Contributor>? contributors;
   String? md5Image;
-  ArtistSearch? artist;
-  AlbumSearch? album;
+  Artist? artist;
+  Album? album;
 
-  DataSearch({
+  Datum({
     this.id,
     this.readable,
     this.title,
@@ -68,12 +67,13 @@ class DataSearch {
     this.explicitContentLyrics,
     this.explicitContentCover,
     this.preview,
+    this.contributors,
     this.md5Image,
     this.artist,
     this.album,
   });
 
-  factory DataSearch.fromJson(Map<String, dynamic> json) => DataSearch(
+  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
         id: json["id"],
         readable: json["readable"],
         title: json["title"],
@@ -86,12 +86,13 @@ class DataSearch {
         explicitContentLyrics: json["explicit_content_lyrics"],
         explicitContentCover: json["explicit_content_cover"],
         preview: json["preview"],
+        contributors: json["contributors"] == null
+            ? []
+            : List<Contributor>.from(
+                json["contributors"]!.map((x) => Contributor.fromJson(x))),
         md5Image: json["md5_image"],
-        artist: json["artist"] == null
-            ? null
-            : ArtistSearch.fromJson(json["artist"]),
-        album:
-            json["album"] == null ? null : AlbumSearch.fromJson(json["album"]),
+        artist: json["artist"] == null ? null : Artist.fromJson(json["artist"]),
+        album: json["album"] == null ? null : Album.fromJson(json["album"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -107,13 +108,16 @@ class DataSearch {
         "explicit_content_lyrics": explicitContentLyrics,
         "explicit_content_cover": explicitContentCover,
         "preview": preview,
+        "contributors": contributors == null
+            ? []
+            : List<dynamic>.from(contributors!.map((x) => x.toJson())),
         "md5_image": md5Image,
         "artist": artist?.toJson(),
         "album": album?.toJson(),
       };
 }
 
-class AlbumSearch {
+class Album {
   int? id;
   String? title;
   String? cover;
@@ -124,7 +128,7 @@ class AlbumSearch {
   String? md5Image;
   String? tracklist;
 
-  AlbumSearch({
+  Album({
     this.id,
     this.title,
     this.cover,
@@ -136,7 +140,7 @@ class AlbumSearch {
     this.tracklist,
   });
 
-  factory AlbumSearch.fromJson(Map<String, dynamic> json) => AlbumSearch(
+  factory Album.fromJson(Map<String, dynamic> json) => Album(
         id: json["id"],
         title: json["title"],
         cover: json["cover"],
@@ -165,57 +169,101 @@ enum AlbumType { ALBUM }
 
 final albumTypeValues = EnumValues({"album": AlbumType.ALBUM});
 
-class ArtistSearch {
+class Artist {
   int? id;
-  String? name;
+  Name? name;
+  String? tracklist;
+  ArtistType? type;
+
+  Artist({
+    this.id,
+    this.name,
+    this.tracklist,
+    this.type,
+  });
+
+  factory Artist.fromJson(Map<String, dynamic> json) => Artist(
+        id: json["id"],
+        name: nameValues.map[json["name"]]!,
+        tracklist: json["tracklist"],
+        type: artistTypeValues.map[json["type"]]!,
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": nameValues.reverse[name],
+        "tracklist": tracklist,
+        "type": artistTypeValues.reverse[type],
+      };
+}
+
+enum Name { MICHAEL_JACKSON }
+
+final nameValues = EnumValues({"Michael Jackson": Name.MICHAEL_JACKSON});
+
+enum ArtistType { ARTIST }
+
+final artistTypeValues = EnumValues({"artist": ArtistType.ARTIST});
+
+class Contributor {
+  int? id;
   String? link;
+  String? share;
   String? picture;
   String? pictureSmall;
   String? pictureMedium;
   String? pictureBig;
   String? pictureXl;
+  bool? radio;
   String? tracklist;
+  Role? role;
 
-  ArtistSearch({
+  Contributor({
     this.id,
-    this.name,
     this.link,
+    this.share,
     this.picture,
     this.pictureSmall,
     this.pictureMedium,
     this.pictureBig,
     this.pictureXl,
+    this.radio,
     this.tracklist,
+    this.role,
   });
 
-  factory ArtistSearch.fromJson(Map<String, dynamic> json) => ArtistSearch(
+  factory Contributor.fromJson(Map<String, dynamic> json) => Contributor(
         id: json["id"],
-        name: json["name"],
         link: json["link"],
+        share: json["share"],
         picture: json["picture"],
         pictureSmall: json["picture_small"],
         pictureMedium: json["picture_medium"],
         pictureBig: json["picture_big"],
         pictureXl: json["picture_xl"],
+        radio: json["radio"],
         tracklist: json["tracklist"],
+        role: roleValues.map[json["role"]]!,
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "name": name,
         "link": link,
+        "share": share,
         "picture": picture,
         "picture_small": pictureSmall,
         "picture_medium": pictureMedium,
         "picture_big": pictureBig,
         "picture_xl": pictureXl,
+        "radio": radio,
         "tracklist": tracklist,
+        "role": roleValues.reverse[role],
       };
 }
 
-enum ArtistType { ARTIST }
+enum Role { MAIN }
 
-final artistTypeValues = EnumValues({"artist": ArtistType.ARTIST});
+final roleValues = EnumValues({"Main": Role.MAIN});
 
 enum DatumType { TRACK }
 

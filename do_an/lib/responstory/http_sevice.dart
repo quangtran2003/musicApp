@@ -28,7 +28,9 @@ class HttpService {
         default:
           return _dio.put(url);
       }
-    } catch (e) {}
+    } catch (e) {
+      print("lỗi: $e");
+    }
     return null;
   }
 }

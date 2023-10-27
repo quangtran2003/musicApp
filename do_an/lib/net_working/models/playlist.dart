@@ -124,14 +124,12 @@ class Creator {
   int? id;
   String? name;
   String? tracklist;
-  CreatorType? type;
   String? link;
 
   Creator({
     this.id,
     this.name,
     this.tracklist,
-    this.type,
     this.link,
   });
 
@@ -139,7 +137,6 @@ class Creator {
         id: json["id"],
         name: json["name"],
         tracklist: json["tracklist"],
-        type: creatorTypeValues.map[json["type"]]!,
         link: json["link"],
       );
 
@@ -147,7 +144,6 @@ class Creator {
         "id": id,
         "name": name,
         "tracklist": tracklist,
-        "type": creatorTypeValues.reverse[type],
         "link": link,
       };
 }
@@ -186,7 +182,6 @@ class Datum {
   bool? readable;
   String? title;
   String? titleShort;
-  TitleVersion? titleVersion;
   String? link;
   int? duration;
   int? rank;
@@ -198,14 +193,12 @@ class Datum {
   int? timeAdd;
   Creator? artist;
   Album? album;
-  DatumType? type;
 
   Datum({
     this.id,
     this.readable,
     this.title,
     this.titleShort,
-    this.titleVersion,
     this.link,
     this.duration,
     this.rank,
@@ -217,7 +210,6 @@ class Datum {
     this.timeAdd,
     this.artist,
     this.album,
-    this.type,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
@@ -225,7 +217,6 @@ class Datum {
         readable: json["readable"],
         title: json["title"],
         titleShort: json["title_short"],
-        titleVersion: titleVersionValues.map[json["title_version"]]!,
         link: json["link"],
         duration: json["duration"],
         rank: json["rank"],
@@ -238,7 +229,6 @@ class Datum {
         artist:
             json["artist"] == null ? null : Creator.fromJson(json["artist"]),
         album: json["album"] == null ? null : Album.fromJson(json["album"]),
-        type: datumTypeValues.map[json["type"]]!,
       );
 
   Map<String, dynamic> toJson() => {
@@ -246,7 +236,6 @@ class Datum {
         "readable": readable,
         "title": title,
         "title_short": titleShort,
-        "title_version": titleVersionValues.reverse[titleVersion],
         "link": link,
         "duration": duration,
         "rank": rank,
@@ -258,7 +247,6 @@ class Datum {
         "time_add": timeAdd,
         "artist": artist?.toJson(),
         "album": album?.toJson(),
-        "type": datumTypeValues.reverse[type],
       };
 }
 
@@ -272,7 +260,6 @@ class Album {
   String? coverXl;
   String? md5Image;
   String? tracklist;
-  AlbumType? type;
 
   Album({
     this.id,
@@ -284,7 +271,6 @@ class Album {
     this.coverXl,
     this.md5Image,
     this.tracklist,
-    this.type,
   });
 
   factory Album.fromJson(Map<String, dynamic> json) => Album(
@@ -297,7 +283,6 @@ class Album {
         coverXl: json["cover_xl"],
         md5Image: json["md5_image"],
         tracklist: json["tracklist"],
-        type: albumTypeValues.map[json["type"]]!,
       );
 
   Map<String, dynamic> toJson() => {
@@ -310,7 +295,6 @@ class Album {
         "cover_xl": coverXl,
         "md5_image": md5Image,
         "tracklist": tracklist,
-        "type": albumTypeValues.reverse[type],
       };
 }
 

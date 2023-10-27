@@ -4,8 +4,7 @@
 
 import 'dart:convert';
 
-// TracklistArtistModel tracklistArtistModelFromJson(String str) =>
-//     TracklistArtistModel.fromJson(json.decode(str));
+//TracklistArtistModel tracklistArtistModelFromJson(String str) => TracklistArtistModel.fromJson(json.decode(str));
 
 String tracklistArtistModelToJson(TracklistArtistModel data) =>
     json.encode(data.toJson());
@@ -52,7 +51,7 @@ class Datum {
   String? md5Image;
   Artist? artist;
   Album? album;
-  DatumType? type;
+  String? type;
 
   Datum({
     this.id,
@@ -94,7 +93,7 @@ class Datum {
         md5Image: json["md5_image"],
         artist: json["artist"] == null ? null : Artist.fromJson(json["artist"]),
         album: json["album"] == null ? null : Album.fromJson(json["album"]),
-        type: datumTypeValues.map[json["type"]]!,
+        type: json["type"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -116,7 +115,7 @@ class Datum {
         "md5_image": md5Image,
         "artist": artist?.toJson(),
         "album": album?.toJson(),
-        "type": datumTypeValues.reverse[type],
+        "type": type,
       };
 }
 
@@ -130,7 +129,7 @@ class Album {
   String? coverXl;
   String? md5Image;
   String? tracklist;
-  AlbumType? type;
+  String? type;
 
   Album({
     this.id,
@@ -155,7 +154,7 @@ class Album {
         coverXl: json["cover_xl"],
         md5Image: json["md5_image"],
         tracklist: json["tracklist"],
-        type: albumTypeValues.map[json["type"]]!,
+        type: json["type"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -168,19 +167,15 @@ class Album {
         "cover_xl": coverXl,
         "md5_image": md5Image,
         "tracklist": tracklist,
-        "type": albumTypeValues.reverse[type],
+        "type": type,
       };
 }
 
-enum AlbumType { ALBUM }
-
-final albumTypeValues = EnumValues({"album": AlbumType.ALBUM});
-
 class Artist {
   int? id;
-  Name? name;
+  String? name;
   String? tracklist;
-  ArtistType? type;
+  String? type;
 
   Artist({
     this.id,
@@ -191,35 +186,22 @@ class Artist {
 
   factory Artist.fromJson(Map<String, dynamic> json) => Artist(
         id: json["id"],
-        name: nameValues.map[json["name"]]!,
+        name: json["name"],
         tracklist: json["tracklist"],
-        type: artistTypeValues.map[json["type"]]!,
+        type: json["type"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "name": nameValues.reverse[name],
+        "name": name,
         "tracklist": tracklist,
-        "type": artistTypeValues.reverse[type],
+        "type": type,
       };
 }
 
-enum Name { BOMATELA, ONIONN, SNOOP_DOGG, SON_TUNG_M_TP }
-
-final nameValues = EnumValues({
-  "BOMATELA": Name.BOMATELA,
-  "Onionn": Name.ONIONN,
-  "Snoop Dogg": Name.SNOOP_DOGG,
-  "Son Tung M-TP": Name.SON_TUNG_M_TP
-});
-
-enum ArtistType { ARTIST }
-
-final artistTypeValues = EnumValues({"artist": ArtistType.ARTIST});
-
 class Contributor {
   int? id;
-  Name? name;
+  String? name;
   String? link;
   String? share;
   String? picture;
@@ -229,8 +211,8 @@ class Contributor {
   String? pictureXl;
   bool? radio;
   String? tracklist;
-  ArtistType? type;
-  Role? role;
+  String? type;
+  String? role;
 
   Contributor({
     this.id,
@@ -250,7 +232,7 @@ class Contributor {
 
   factory Contributor.fromJson(Map<String, dynamic> json) => Contributor(
         id: json["id"],
-        name: nameValues.map[json["name"]]!,
+        name: json["name"],
         link: json["link"],
         share: json["share"],
         picture: json["picture"],
@@ -260,13 +242,13 @@ class Contributor {
         pictureXl: json["picture_xl"],
         radio: json["radio"],
         tracklist: json["tracklist"],
-        type: artistTypeValues.map[json["type"]]!,
-        role: roleValues.map[json["role"]]!,
+        type: json["type"],
+        role: json["role"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "name": nameValues.reverse[name],
+        "name": name,
         "link": link,
         "share": share,
         "picture": picture,
@@ -276,27 +258,7 @@ class Contributor {
         "picture_xl": pictureXl,
         "radio": radio,
         "tracklist": tracklist,
-        "type": artistTypeValues.reverse[type],
-        "role": roleValues.reverse[role],
+        "type": type,
+        "role": role,
       };
-}
-
-enum Role { FEATURED, MAIN }
-
-final roleValues = EnumValues({"Featured": Role.FEATURED, "Main": Role.MAIN});
-
-enum DatumType { TRACK }
-
-final datumTypeValues = EnumValues({"track": DatumType.TRACK});
-
-class EnumValues<T> {
-  Map<String, T> map;
-  late Map<T, String> reverseMap;
-
-  EnumValues(this.map);
-
-  Map<T, String> get reverse {
-    reverseMap = map.map((k, v) => MapEntry(v, k));
-    return reverseMap;
-  }
 }

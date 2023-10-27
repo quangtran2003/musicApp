@@ -1,0 +1,25 @@
+import 'package:flutter/material.dart';
+
+class MyIcon extends StatelessWidget {
+  final Color? color;
+  final double? size;
+  final IconData icon;
+
+  const MyIcon({
+    Key? key,
+    this.color,
+    this.size,
+    required this.icon,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Icon(
+        icon,
+        size: size,
+        color: color,
+      ),
+    );
+  }
+}
