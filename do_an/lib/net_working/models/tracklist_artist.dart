@@ -4,18 +4,18 @@
 
 import 'dart:convert';
 
-//TracklistArtistModel tracklistArtistModelFromJson(String str) => TracklistArtistModel.fromJson(json.decode(str));
-
 String tracklistArtistModelToJson(TracklistArtistModel data) =>
     json.encode(data.toJson());
 
 class TracklistArtistModel {
   List<Datum>? data;
   int? total;
+  String? next;
 
   TracklistArtistModel({
     this.data,
     this.total,
+    this.next,
   });
 
   factory TracklistArtistModel.fromJson(Map<String, dynamic> json) =>
@@ -24,6 +24,7 @@ class TracklistArtistModel {
             ? []
             : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
         total: json["total"],
+        next: json["next"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -31,6 +32,7 @@ class TracklistArtistModel {
             ? []
             : List<dynamic>.from(data!.map((x) => x.toJson())),
         "total": total,
+        "next": next,
       };
 }
 

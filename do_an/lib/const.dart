@@ -10,7 +10,14 @@ const ENTER_SEARCH_SCREEN = '/EnterSearchScreen';
 const ALBUM_SCREEN = '/Album';
 const PLAYLIST_SCREEN = '/Playlist';
 const ARTIST_SCREEN = '/Artist';
-const CHART_SCREEN = '/Chart';
+const CHART_SCREEN = '/ChartScreen';
+const MAIN_SCREEN = '/MainScreen';
 const INFOR_SCREEN = '/Infor';
+const USER_SCREEN = '/UserScreen';
 
-const Color constColor = Color.fromARGB(255, 236, 225, 225);
+enum EnumScreen { Album, Playlist, Artist, PlayMusic, Default }
+
+enum TabBarType { HOME, CHART, ME }
+
+const Color constColor = Colors.white;
+//Color.fromARGB(255, 236, 225, 225);

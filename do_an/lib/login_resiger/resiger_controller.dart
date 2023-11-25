@@ -1,43 +1,95 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 
 class ResigerController extends GetxController {
+  late final FirebaseApp app;
+  late final FirebaseAuth auth;
   final userNameError = RxnString();
   final passWordError = RxnString();
-  final comfrimPassWordError = RxnString();
   final confrimPassWord = RxnString();
-  final checkSuccess1 = false.obs;
-  final checkSuccess2 = false.obs;
-  final checkConfrimPassWord = RxnString();
-  void validateUserName(value) {
-    const pattern = r'^[a-zA-Z0-9]{0,15}$';
-    final regex = RegExp(pattern);
+  final checkSuccessUserName = false.obs;
+  final checkConfrimSuccessPass = false.obs;
+  final checkSuccessPassW = false.obs;
+  final checkResiger = false.obs;
+  final confrimPassWordError = RxnString();
+  final dataUser = Rxn<User>();
 
-    if (regex.hasMatch(value)) {
+  void createAcc() {
+    auth.createUserWithEmailAndPassword(
+        email: 'toannt1234@gmail.com', password: '12345678@');
+  }
+
+// void validateUserName(value) {
+//   const pattern = r'^[a-zA-Z0-9]{0,15}$';
+//   const emailPattern = r'@gmail\.com$'; // Đuôi email cần kiểm tra
+
+//   final regex = RegExp(pattern);
+//   final emailRegex = RegExp(emailPattern);
+
+//   if (regex.hasMatch(value)) {
+//     userNameError.value = null;
+//     checkSuccessUserName.value = true;
+
+//     // Kiểm tra xem giá trị có chứa đuôi @gmail.com hay không
+//     if (emailRegex.hasMatch(value)) {
+//       print('Email is valid');
+//     } else {
+//       print('Email is not valid');
+//     }
+//   } else {
+//     checkSuccessUserName.value = false;
+//     userNameError.value = 'Include only letters or numbers!';
+//   }
+// }
+
+  void validateUserName(value) {
+    const emailPattern = r'@gmail\.com$'; // Đuôi email cần kiểm tra
+    final emailRegex = RegExp(emailPattern);
+
+    // const pattern = r'^[a-zA-Z0-9]{0,15}$';
+    // final regex = RegExp(pattern);
+
+    if (emailRegex.hasMatch(value)) {
       userNameError.value = null;
-      checkSuccess1.value = true;
+      checkSuccessUserName.value = true;
     } else {
-      checkSuccess1.value = false;
-      userNameError.value = 'Include only letters or numbers!';
+      checkSuccessUserName.value = false;
+      userNameError.value = 'Username must contain @gmail.com!';
     }
   }
 
-  void validatePassWord(value) {
-    if (value.toString().length >= 6) {
+  void validatePassWord(String value) {
+    if (value.isEmpty) {
       passWordError.value = null;
-      checkSuccess2.value = true;
+      checkSuccessPassW.value = false;
+    } else if (value.length >= 6) {
+      passWordError.value = null;
+      checkSuccessPassW.value = true;
     } else {
       passWordError.value = 'Minimum length 6 characters!';
-      checkSuccess2.value = false;
+      checkSuccessPassW.value = false;
     }
     confrimPassWord.value = value.toString();
   }
 
-  void validateConfrimPassWord(String value) {
-    print(checkConfrimPassWord.value);
-    if (value == confrimPassWord.value) {
-      checkConfrimPassWord.value = null;
+  void validateConfrimPassWord(value) {
+    if (value.toString() == confrimPassWord.value) {
+      confrimPassWordError.value = null;
+      checkConfrimSuccessPass.value = true;
     } else {
-      checkConfrimPassWord.value = 'Password was wrong!';
+      confrimPassWordError.value = 'Password was wrong!';
+      checkConfrimSuccessPass.value = false;
+    }
+  }
+
+  void resiger() {
+    if (checkConfrimSuccessPass.value &&
+        checkSuccessPassW.value &&
+        checkSuccessUserName.value) {
+      checkResiger.value = true;
+    } else {
+      checkResiger.value = false;
     }
   }
 }
