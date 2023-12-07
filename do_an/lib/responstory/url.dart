@@ -26,7 +26,7 @@ class Url {
   }
 
   String get getTrackListArtist {
-    return 'https://api.deezer.com/artist/$artistId/top?limit=50';
+    return 'https://api.deezer.com/artist/$artistId/top?limit=30';
   }
 }
 

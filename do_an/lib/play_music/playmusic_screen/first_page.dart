@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:do_an/play_music/play_music_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,7 +23,6 @@ class FirstPage extends GetView<PlayMusicController> {
 
   @override
   Widget build(BuildContext context) {
-    // Get.changeTheme(theme)
     return Column(
       children: [
         Obx(() => controller.trackData.value != null
@@ -106,26 +106,44 @@ class FirstPage extends GetView<PlayMusicController> {
           padding: EdgeInsets.symmetric(horizontal: width * 0.1),
           child: Column(
             children: [
-              Obx(
-                () => Slider(
-                  inactiveColor: const Color.fromARGB(255, 185, 113, 197),
-                  activeColor: const Color.fromARGB(255, 44, 12, 50),
-                  min: 0.0,
-                  max: controller.durationInt.value.toDouble(),
-                  value: controller.positionInt.value.toDouble(),
-                  onChanged: (value) {
-                    controller.seek(value);
-                  },
-                ),
+              StreamBuilder<DurationState>(
+                stream: controller.isSongBottom.value == true
+                    ? const Stream.empty()
+                    : controller.durationState,
+                builder: (context, snapshot) {
+                  DurationState? durationState = snapshot.data;
+                  final progress = durationState?.progress ?? Duration.zero;
+                  final buffered = durationState?.buffered ?? Duration.zero;
+                  final total = durationState?.total ?? Duration.zero;
+                  return ProgressBar(
+                    progress: progress,
+                    buffered: buffered,
+                    total: total,
+                    onSeek: controller.audioPlayer.seek,
+                    onDragUpdate: (details) {
+                      debugPrint(
+                          '${details.timeStamp}, ${details.localPosition}');
+                    },
+                  );
+                },
               ),
+              // () => Slider(
+              //   inactiveColor: const Color.fromARGB(255, 185, 113, 197),
+              //   activeColor: const Color.fromARGB(255, 44, 12, 50),
+              //   min: 0.0,
+              //   max: controller.durationInt.value.toDouble(),
+              //   value: controller.positionInt.value.toDouble(),
+              //   onChanged: (value) {
+              //     controller.seek(value);
+              //   },
+              // ),
+              // ),
               Obx(
                 () => Row(
                   children: [
                     Text(controller.positionString.value),
                     Expanded(flex: 1, child: Container()),
-                    controller.durationString.value != null
-                        ? Text('${controller.durationString.value}')
-                        : Container(),
+                    Text(controller.durationString.value ?? '')
                   ],
                 ),
               )
@@ -282,7 +300,6 @@ class FirstPage extends GetView<PlayMusicController> {
     // Lưu đường link bằng cách sử dụng SharedPreferences
     saveLink(link);
 
-    // Hiển thị một SnackBar để thông báo rằng đường link đã được lưu
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("Đường link tạm thời đã được lưu: $link"),

@@ -12,7 +12,9 @@ class SongBottom extends GetView<PlayMusicController> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {'isSongBottom': true});
+        if (controller.trackData.value != null) {
+          Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {'isSongBottom': true});
+        }
       },
       child: Obx(
         () => Container(

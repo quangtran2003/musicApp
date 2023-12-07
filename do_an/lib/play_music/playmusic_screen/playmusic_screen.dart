@@ -12,6 +12,7 @@ import '../../const.dart';
 
 class PlayMusicScreen extends GetWidget<PlayMusicController> {
   const PlayMusicScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     PageController pageController = PageController(initialPage: 0);
@@ -143,7 +144,6 @@ class PlayMusicScreen extends GetWidget<PlayMusicController> {
                     SecondPage(
                         listIdSong: listIdSong,
                         listTrack: listTrack,
-                        //  listViewController: listViewcontroller,
                         onSongSelected: () {
                           pageController.animateToPage(0,
                               duration: const Duration(milliseconds: 300),

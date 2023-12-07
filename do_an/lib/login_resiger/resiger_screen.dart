@@ -1,5 +1,6 @@
 import 'package:do_an/const.dart';
 import 'package:do_an/login_resiger/resiger_controller.dart';
+import 'package:do_an/refactoring/text.dart';
 import 'package:do_an/refactoring/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,6 +17,7 @@ class Resiger extends GetView<ResigerController> {
         child: Container(
           height: x,
           width: y,
+          color: Color.fromARGB(255, 245, 229, 246),
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Column(
             children: [
@@ -24,14 +26,15 @@ class Resiger extends GetView<ResigerController> {
                   child: Container(
                     alignment: Alignment.center,
                     margin: const EdgeInsets.only(top: 40, bottom: 20),
-                    height: x / 5,
-                    width: x * 1 / 5,
+                    height: x * 2 / 7,
+                    width: x * 2 / 7,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         image: const DecorationImage(
                             image: AssetImage(
                               'assets/home_login.png',
                             ),
+                            opacity: 0.9,
                             fit: BoxFit.cover)),
                   ),
                 ),
@@ -48,16 +51,13 @@ class Resiger extends GetView<ResigerController> {
               ),
               Obx(
                 () => MyTextField(
-                  textHint: 'User name',
-                  errorText: controller.userNameError.value,
+                  textHint: 'Enter your email',
+                  errorText: controller.emailError.value,
                   onChange: (value) {
-                    controller.validateUserName(value);
+                    controller.validateEmail(value);
                     controller.resiger();
                   },
                 ),
-              ),
-              const MyTextField(
-                textHint: 'Enter your email',
               ),
               Obx(
                 () => MyTextField(
@@ -84,14 +84,20 @@ class Resiger extends GetView<ResigerController> {
               Obx(
                 () => GestureDetector(
                   onTap: () {
+                    controller.createAcc(controller.email.value ?? '',
+                        controller.passWord.value ?? '');
                     if (controller.checkResiger.value) {
-                      Get.toNamed(HOME_SCREEN);
-                      controller.createAcc();
+                      // controller.createAcc(controller.email.value ?? '',
+                      //     controller.passWord.value ?? '');
+                      Get.toNamed(MAIN_SCREEN);
                     }
                   },
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 30, bottom: 50),
-                    height: 55,
+                  child:
+                      // Obx(
+                      //   () =>
+                      Container(
+                    margin: EdgeInsets.only(top: 30, bottom: x > 500 ? 50 : 20),
+                    height: 50,
                     width: double.infinity,
                     decoration: BoxDecoration(
                         color: controller.checkResiger.value
@@ -101,15 +107,15 @@ class Resiger extends GetView<ResigerController> {
                             width: 1,
                             color: const Color.fromARGB(255, 104, 104, 104)),
                         borderRadius: BorderRadius.circular(20)),
-                    child: const Center(
-                      child: Text(
-                        'Resiger',
-                        style: TextStyle(
-                            color: Color.fromARGB(255, 104, 104, 104),
-                            fontSize: 20),
-                      ),
-                    ),
+                    child: Center(
+                        child: MyText(
+                      text: "Resiger",
+                      color:
+                          controller.checkResiger.value ? Colors.white : null,
+                      fontSize: 20,
+                    )),
                   ),
+                  // ),
                 ),
               ),
             ],

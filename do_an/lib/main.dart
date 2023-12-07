@@ -5,6 +5,7 @@ import 'package:do_an/artist/artist_binding.dart';
 import 'package:do_an/artist/artist_screen.dart';
 import 'package:do_an/chart/chart_screen.dart';
 import 'package:do_an/const.dart';
+import 'package:do_an/firebase_options.dart';
 import 'package:do_an/home_screen/home_binding.dart';
 import 'package:do_an/home_screen/home_screen.dart';
 import 'package:do_an/login_resiger/login_bindings.dart';
@@ -21,22 +22,30 @@ import 'package:do_an/search/search_binding.dart';
 import 'package:do_an/search/searrch_screen.dart';
 import 'package:do_an/user/user_binding.dart';
 import 'package:do_an/user/user_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 
 import 'album/album_screen.dart';
 import 'chart/chart_binding.dart';
 import 'play_music/playmusic_screen/playmusic_screen.dart';
 
+late final FirebaseApp app;
+late final FirebaseAuth auth;
 Future<void> main() async {
-  // late final FirebaseApp app;
-  // late final FirebaseAuth auth;
-  // WidgetsFlutterBinding.ensureInitialized();
-  // app = await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
-  // auth = FirebaseAuth.instanceFor(app: app);
+  WidgetsFlutterBinding.ensureInitialized();
+  app = await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  auth = FirebaseAuth.instanceFor(app: app);
   HttpOverrides.global = MyHttpOverrides();
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
+    androidNotificationChannelName: 'Audio playback',
+    androidNotificationOngoing: true,
+  );
   runApp(const MyApp());
 }
 
@@ -55,7 +64,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       initialRoute: MAIN_SCREEN,
-      initialBinding: MainBinding(),
       getPages: [
         GetPage(
             name: HOME_SCREEN,

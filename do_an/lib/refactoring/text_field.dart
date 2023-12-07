@@ -49,7 +49,7 @@ class _MyTextFieldState extends State<MyTextField> {
                 focusColor: Colors.purple,
                 // fillColor: widget.textColor,
                 fillColor: const Color.fromARGB(255, 195, 75, 216),
-                filled: false,
+                //filled: true,
                 suffixIcon: widget.hasPass != null
                     ? checkPass
                         ? IconButton(
@@ -74,7 +74,7 @@ class _MyTextFieldState extends State<MyTextField> {
                 hintStyle: TextStyle(
                     color: widget.textColor ?? Colors.purple, fontSize: 18),
                 contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 17),
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 border: OutlineInputBorder(
                     borderSide:
                         BorderSide(color: widget.textColor ?? Colors.purple),

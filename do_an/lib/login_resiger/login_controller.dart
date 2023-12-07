@@ -1,58 +1,87 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 
 class LoginController extends GetxController {
-  late final FirebaseApp app;
-  late final FirebaseAuth auth;
+  final userName = RxnString();
+  final passWord = RxnString();
+
   final checkAccount = Rxn<CHECK_ACCOUNT>();
   final userNameError = RxnString();
   final passWordError = RxnString();
+  final textFieldUserName = RxnString();
+  final textFieldPassW = RxnString();
   final checkSuccessUserName = false.obs;
   final checkSuccessPass = false.obs;
   final checkLogin = false.obs;
   final showErrorSignIn = RxnString();
 
-  void signInAcc() {
-    auth
+  void signInAcc(String email, String pass) {
+    FirebaseAuth.instance
         .signInWithEmailAndPassword(
-      email: 'toannt1234@gmail.com',
-      password: '12345678@',
+      email: email,
+      password: pass,
     )
         .then((UserCredential userCredential) {
       checkAccount.value = CHECK_ACCOUNT.Success;
       print('Đăng nhập thành công: ${userCredential.user?.email}');
     }).catchError((error) {
-      if (error.code == 'user-not-found') {
+      if (error.code == 'invalid-email') {
         checkAccount.value = CHECK_ACCOUNT.NotFound;
-        showErrorSignIn.value = 'Tài khoản không tồn tại!';
+        showErrorSignIn.value = 'Account does not exist !';
         print('Tài khoản không tồn tại');
       } else {
         checkAccount.value = CHECK_ACCOUNT.AthorError;
-        showErrorSignIn.value = 'Đăng nhập thất bại!';
-        print('Đăng nhập thất bại: ${error.message}');
+        showErrorSignIn.value = 'Login failed!';
+        print('Đăng nhập thất bại: ${error.code}');
       }
     });
   }
 
-  // void signInAcc() {
-  //   auth.signInWithEmailAndPassword(
-  //       email: 'toannt1234@gmail.com', password: '12345678@');
+  // GlobalKey<FormState> fromKey = GlobalKey<FormState>();
+  // TextEditingController email = TextEditingController();
+  // TextEditingController password = TextEditingController();
+
+  // final scopes = [
+  //   'email',
+  //   'https://www.googleapis.com/auth/contacts.readonly',
+  // ];
+  // final _googleSignIn = GoogleSignIn(
+  //   scopes: [
+  //     'email',
+  //     'https://www.googleapis.com/auth/contacts.readonly',
+  //   ],
+  // );
+
+  // Future<UserCredential> signInWithGoogle() async {
+  //   final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+  //   final GoogleSignInAuthentication? googleAuth =
+  //       await googleUser?.authentication;
+
+  //   final credential = GoogleAuthProvider.credential(
+  //     accessToken: googleAuth?.accessToken,
+  //     idToken: googleAuth?.idToken,
+  //   );
+
+  //   return await FirebaseAuth.instance.signInWithCredential(credential);
   // }
 
   void validateUserName(value) {
-    const emailPattern = r'@gmail\.com$';
-    final emailRegex = RegExp(emailPattern);
+    userName.value = value;
+    RegExp emailRegex = RegExp(
+      r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
+    );
     if (emailRegex.hasMatch(value)) {
       userNameError.value = null;
       checkSuccessUserName.value = true;
     } else {
       checkSuccessUserName.value = false;
-      userNameError.value = 'Username must contain @gmail.com!';
+      userNameError.value = 'Invalid email!';
     }
   }
 
   void validatePassWord(value) {
+    passWord.value = value;
     if (value.toString().length >= 6) {
       passWordError.value = null;
       checkSuccessPass.value = true;

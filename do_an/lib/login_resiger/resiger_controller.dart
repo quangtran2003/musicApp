@@ -1,61 +1,54 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 
 class ResigerController extends GetxController {
-  late final FirebaseApp app;
-  late final FirebaseAuth auth;
-  final userNameError = RxnString();
   final passWordError = RxnString();
-  final confrimPassWord = RxnString();
-  final checkSuccessUserName = false.obs;
+  final passWord = RxnString();
+  final comfrimPassWValue = RxnString();
   final checkConfrimSuccessPass = false.obs;
   final checkSuccessPassW = false.obs;
   final checkResiger = false.obs;
   final confrimPassWordError = RxnString();
-  final dataUser = Rxn<User>();
+  final checkEmail = false.obs;
+  final email = RxnString();
+  //final passWord = RxnString();
+  final emailError = RxnString();
 
-  void createAcc() {
-    auth.createUserWithEmailAndPassword(
-        email: 'toannt1234@gmail.com', password: '12345678@');
+  //final dataUser = Rxn<User>();
+
+  void createAcc(String email, String pass) async {
+// Ví dụ
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: pass,
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 
-// void validateUserName(value) {
-//   const pattern = r'^[a-zA-Z0-9]{0,15}$';
-//   const emailPattern = r'@gmail\.com$'; // Đuôi email cần kiểm tra
-
-//   final regex = RegExp(pattern);
-//   final emailRegex = RegExp(emailPattern);
-
-//   if (regex.hasMatch(value)) {
-//     userNameError.value = null;
-//     checkSuccessUserName.value = true;
-
-//     // Kiểm tra xem giá trị có chứa đuôi @gmail.com hay không
-//     if (emailRegex.hasMatch(value)) {
-//       print('Email is valid');
-//     } else {
-//       print('Email is not valid');
-//     }
-//   } else {
-//     checkSuccessUserName.value = false;
-//     userNameError.value = 'Include only letters or numbers!';
-//   }
-// }
-
-  void validateUserName(value) {
-    const emailPattern = r'@gmail\.com$'; // Đuôi email cần kiểm tra
-    final emailRegex = RegExp(emailPattern);
-
-    // const pattern = r'^[a-zA-Z0-9]{0,15}$';
-    // final regex = RegExp(pattern);
-
-    if (emailRegex.hasMatch(value)) {
-      userNameError.value = null;
-      checkSuccessUserName.value = true;
+  void comfrimPass() {
+    if (passWord.value != comfrimPassWValue.value) {
+      confrimPassWordError.value = 'Confirm password is incorrect!';
+      checkConfrimSuccessPass.value = false;
     } else {
-      checkSuccessUserName.value = false;
-      userNameError.value = 'Username must contain @gmail.com!';
+      confrimPassWordError.value = null;
+      checkConfrimSuccessPass.value = true;
+    }
+  }
+
+  void validateEmail(value) {
+    email.value = value;
+    RegExp emailRegex = RegExp(
+      r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$',
+    );
+    if (emailRegex.hasMatch(value)) {
+      emailError.value = null;
+      checkEmail.value = true;
+    } else {
+      checkEmail.value = false;
+      emailError.value = 'Invalid email!';
     }
   }
 
@@ -70,23 +63,19 @@ class ResigerController extends GetxController {
       passWordError.value = 'Minimum length 6 characters!';
       checkSuccessPassW.value = false;
     }
-    confrimPassWord.value = value.toString();
+    passWord.value = value;
+    comfrimPass();
   }
 
-  void validateConfrimPassWord(value) {
-    if (value.toString() == confrimPassWord.value) {
-      confrimPassWordError.value = null;
-      checkConfrimSuccessPass.value = true;
-    } else {
-      confrimPassWordError.value = 'Password was wrong!';
-      checkConfrimSuccessPass.value = false;
-    }
+  void validateConfrimPassWord(String value) {
+    comfrimPassWValue.value = value;
+    comfrimPass();
   }
 
   void resiger() {
     if (checkConfrimSuccessPass.value &&
         checkSuccessPassW.value &&
-        checkSuccessUserName.value) {
+        checkEmail.value) {
       checkResiger.value = true;
     } else {
       checkResiger.value = false;

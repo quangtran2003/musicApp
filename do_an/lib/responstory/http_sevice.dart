@@ -6,19 +6,20 @@ import 'package:do_an/responstory/url.dart';
 class HttpService {
   final Dio _dio = Dio();
   Future<Response?> request(String url,
-      {APIMethod method = APIMethod.Get}) async {
+      {APIMethod method = APIMethod.Get, Options? option}) async {
     try {
       switch (method) {
         case APIMethod.Get:
           {
             return _dio.get(url,
-                options: Options(
-                  headers: {
-                    'X-RapidAPI-Key':
-                        '152022dccamsh730dc3f3b8248a6p18bb1djsnc35439081222',
-                    'X-RapidAPI-Host': 'deezerdevs-deezer.p.rapidapi.com',
-                  },
-                ));
+                options: option ??
+                    Options(
+                      headers: {
+                        'X-RapidAPI-Key':
+                            '152022dccamsh730dc3f3b8248a6p18bb1djsnc35439081222',
+                        'X-RapidAPI-Host': 'deezerdevs-deezer.p.rapidapi.com',
+                      },
+                    ));
           }
         case APIMethod.Post:
           return _dio.post(url);

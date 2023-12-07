@@ -8,6 +8,7 @@ import 'package:do_an/net_working/models/search.dart';
 import 'package:do_an/net_working/models/track.dart';
 import 'package:do_an/responstory/http_sevice.dart';
 import 'package:do_an/responstory/url.dart';
+
 import '../net_working/models/chart.dart';
 import '../net_working/models/tracklist_artist.dart';
 
@@ -53,17 +54,30 @@ class Responstory {
     } catch (e) {}
     return null;
   }
+
   Future<TracklistArtistModel?> getTracklistArtist(String id) async {
     try {
       final Url url = Url(artistId: id);
       final Response? response = await _service.request(url.getTrackListArtist);
       final responseData = response?.data;
       return responseData != null
-          ? TracklistArtistModel.fromJson(responseData)
+          ? TracklistArtistModel.fromJson(response?.data)
           : null;
     } catch (e) {}
     return null;
   }
+  // Future<TracklistArtistModel?> getTracklistArtist(String id) async {
+  //   try {
+  //     final Url url = Url(artistId: id);
+  //     print(url.getTrackListArtist);
+  //     final Response? response = await _service.request(url.getTrackListArtist);
+  //     final responseData = response?.data;
+  //     return responseData != null
+  //         ? TracklistArtistModel.fromJson(responseData)
+  //         : null;
+  //   } catch (e) {}
+  //   return null;
+  // }
 
   Future<ChartModel?> getChart() async {
     try {
@@ -87,4 +101,3 @@ class SearchResponstory {
     return null;
   }
 }
-

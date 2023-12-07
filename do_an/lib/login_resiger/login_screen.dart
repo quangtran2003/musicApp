@@ -9,12 +9,14 @@ class Login extends GetView<LoginController> {
   const Login({super.key});
   @override
   Widget build(BuildContext context) {
+    //  controller.createAcc();
+
     final x = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
           height: x,
-          color: constColor,
+          color: const Color.fromARGB(255, 245, 229, 246),
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Column(
             children: [
@@ -30,6 +32,7 @@ class Login extends GetView<LoginController> {
                             image: AssetImage(
                               'assets/home_login.png',
                             ),
+                            opacity: 0.9,
                             fit: BoxFit.cover)),
                   ),
                 ),
@@ -45,7 +48,7 @@ class Login extends GetView<LoginController> {
               Obx(
                 () => MyTextField(
                   errorText: controller.userNameError.value,
-                  textHint: 'User Name',
+                  textHint: 'Enter your email',
                   textColor: Colors.purple,
                   onChange: (value) {
                     controller.validateUserName(value);
@@ -68,7 +71,13 @@ class Login extends GetView<LoginController> {
               GestureDetector(
                 onTap: () {
                   if (controller.checkLogin.value) {
-                    Get.toNamed(HOME_SCREEN);
+                    //showDialog(context: context, builder: builder)
+                    controller.signInAcc(controller.userName.value ?? '',
+                        controller.passWord.value ?? '');
+                    if (controller.checkAccount.value ==
+                        CHECK_ACCOUNT.Success) {
+                      Get.toNamed(MAIN_SCREEN);
+                    }
                   }
                 },
                 child: Obx(
@@ -94,15 +103,10 @@ class Login extends GetView<LoginController> {
                       )),
                 ),
               ),
+              _showErrorLogin(),
               GestureDetector(
                 onTap: () {
-                  if (controller.checkLogin.value) {
-                    controller.signInAcc();
-                    if (controller.checkAccount.value ==
-                        CHECK_ACCOUNT.Success) {
-                      Get.toNamed(RESEGER_SCREEN);
-                    }
-                  }
+                  Get.toNamed(RESEGER_SCREEN);
                 },
                 child: const Center(
                   child: Text.rich(TextSpan(
@@ -121,35 +125,29 @@ class Login extends GetView<LoginController> {
                       ])),
                 ),
               ),
-              Obx(() {
-                if (controller.checkAccount.value == CHECK_ACCOUNT.NotFound) {
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: MyText(
-                      text: 'Tài khoản đã tồn tại!',
-                      color: Colors.red,
-                    ),
-                  );
-                }
-                ;
-                if (controller.checkAccount.value == CHECK_ACCOUNT.AthorError) {
-                  return Container(
-                    alignment: Alignment.centerLeft,
-                    child: MyText(
-                      text: 'Đăng nhập thất bại!',
-                      color: Colors.red,
-                    ),
-                  );
-                }
-                return Container();
-              }),
-              const SizedBox(
-                height: 80,
+              SizedBox(
+                height: x > 500 ? 80 : 40,
               )
             ],
           ),
         ),
       ),
     );
+  }
+
+  Obx _showErrorLogin() {
+    return Obx(() {
+      if (controller.showErrorSignIn.value != null) {
+        return Container(
+          alignment: Alignment.centerLeft,
+          child: MyText(
+            text: controller.showErrorSignIn.value ?? '',
+            color: Colors.red,
+          ),
+        );
+      } else {
+        return Container();
+      }
+    });
   }
 }
