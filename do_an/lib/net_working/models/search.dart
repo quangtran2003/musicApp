@@ -2,6 +2,8 @@
 //
 //     final searchModel = searchModelFromJson(jsonString);
 
+// ignore_for_file: constant_identifier_names
+
 import 'dart:convert';
 
 // SearchModel searchModelFromJson(String str) =>
@@ -52,8 +54,8 @@ class DataSearch {
   int? explicitContentCover;
   String? preview;
   String? md5Image;
-  ArtistSearch? artist;
-  AlbumSearch? album;
+  Artist? artist;
+  Album? album;
 
   DataSearch({
     this.id,
@@ -87,11 +89,8 @@ class DataSearch {
         explicitContentCover: json["explicit_content_cover"],
         preview: json["preview"],
         md5Image: json["md5_image"],
-        artist: json["artist"] == null
-            ? null
-            : ArtistSearch.fromJson(json["artist"]),
-        album:
-            json["album"] == null ? null : AlbumSearch.fromJson(json["album"]),
+        artist: json["artist"] == null ? null : Artist.fromJson(json["artist"]),
+        album: json["album"] == null ? null : Album.fromJson(json["album"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -113,7 +112,7 @@ class DataSearch {
       };
 }
 
-class AlbumSearch {
+class Album {
   int? id;
   String? title;
   String? cover;
@@ -124,7 +123,7 @@ class AlbumSearch {
   String? md5Image;
   String? tracklist;
 
-  AlbumSearch({
+  Album({
     this.id,
     this.title,
     this.cover,
@@ -136,7 +135,7 @@ class AlbumSearch {
     this.tracklist,
   });
 
-  factory AlbumSearch.fromJson(Map<String, dynamic> json) => AlbumSearch(
+  factory Album.fromJson(Map<String, dynamic> json) => Album(
         id: json["id"],
         title: json["title"],
         cover: json["cover"],
@@ -165,7 +164,7 @@ enum AlbumType { ALBUM }
 
 final albumTypeValues = EnumValues({"album": AlbumType.ALBUM});
 
-class ArtistSearch {
+class Artist {
   int? id;
   String? name;
   String? link;
@@ -176,7 +175,7 @@ class ArtistSearch {
   String? pictureXl;
   String? tracklist;
 
-  ArtistSearch({
+  Artist({
     this.id,
     this.name,
     this.link,
@@ -188,7 +187,7 @@ class ArtistSearch {
     this.tracklist,
   });
 
-  factory ArtistSearch.fromJson(Map<String, dynamic> json) => ArtistSearch(
+  factory Artist.fromJson(Map<String, dynamic> json) => Artist(
         id: json["id"],
         name: json["name"],
         link: json["link"],

@@ -6,21 +6,22 @@ import 'package:do_an/net_working/models/artist.dart';
 import 'package:do_an/net_working/models/playlist.dart';
 import 'package:do_an/net_working/models/search.dart';
 import 'package:do_an/net_working/models/track.dart';
-import 'package:do_an/net_working/models/tracklist_album.dart';
 import 'package:do_an/responstory/http_sevice.dart';
 import 'package:do_an/responstory/url.dart';
-import '../net_working/chart.dart';
+import '../net_working/models/chart.dart';
 import '../net_working/models/tracklist_artist.dart';
-import '../net_working/models/tracklist_playlist.dart';
 
 class Responstory {
   final HttpService _service = HttpService();
+
   Future<TrackModel?> getTrack(String id) async {
     try {
       final Response? response = await _service.request(Url.getTrack + id);
       final responseData = response?.data;
       return responseData != null ? TrackModel.fromJson(response?.data) : null;
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
     return null;
   }
 
@@ -52,20 +53,6 @@ class Responstory {
     } catch (e) {}
     return null;
   }
-
-  Future<TracklistPlaylistModel?> getTracklistPlaylist(String id) async {
-    try {
-      final Url url = Url(playlistId: id); // Tạo URL trong phương thức khởi tạo
-      final Response? response =
-          await _service.request(url.getTrackListPlaylist);
-      final responseData = response?.data;
-      return responseData != null
-          ? TracklistPlaylistModel.fromJson(responseData)
-          : null;
-    } catch (e) {}
-    return null;
-  }
-
   Future<TracklistArtistModel?> getTracklistArtist(String id) async {
     try {
       final Url url = Url(artistId: id);
@@ -73,20 +60,6 @@ class Responstory {
       final responseData = response?.data;
       return responseData != null
           ? TracklistArtistModel.fromJson(responseData)
-          : null;
-    } catch (e) {
-      print(e);
-    }
-    return null;
-  }
-
-  Future<TracklistAlbumModel?> getTracklistAlbum(String id) async {
-    try {
-      final Url url = Url(artistId: id); // Tạo URL trong phương thức khởi tạo
-      final Response? response = await _service.request(url.getTrackListAlbum);
-      final responseData = response?.data;
-      return responseData != null
-          ? TracklistAlbumModel.fromJson(responseData)
           : null;
     } catch (e) {}
     return null;
@@ -96,11 +69,8 @@ class Responstory {
     try {
       final Response? response = await _service.request(Url.getChart);
       final responseData = response?.data;
-      print(responseData);
       return responseData != null ? ChartModel.fromJson(responseData) : null;
-    } catch (e) {
-      print("Lỗi: $e");
-    }
+    } catch (e) {}
     return null;
   }
 }
@@ -113,95 +83,8 @@ class SearchResponstory {
           await _service.request(url: Url.getSearch, query: query);
       final responseData = response?.data;
       return responseData != null ? SearchModel.fromJson(responseData) : null;
-    } catch (e) {
-      print('object');
-    }
+    } catch (e) {}
     return null;
   }
 }
 
-
-
-// class AlbumResponstory {
-//   final HttpService _service = HttpService();
-//   Future<AlbumModel?> getAlbum(String id) async {
-//     try {
-//       final Response? response = await _service.request(Url.getAlbum + id);
-//       final responseData = response?.data;
-//       return responseData != null ? AlbumModel.fromJson(response?.data) : null;
-//     } catch (e) {}
-//     return null;
-//   }
-// }
-
-// class ArtistResponstory {
-//   final HttpService _service = HttpService();
-//   Future<ArtistModel?> getArtist(String id) async {
-//     try {
-//       final Response? response = await _service.request(Url.getArtist + id);
-//       final responseData = response?.data;
-//       return responseData != null ? ArtistModel.fromJson(response?.data) : null;
-//     } catch (e) {}
-//     return null;
-//   }
-// }
-
-
-
-// class TrackListPlaylistResponstory {
-//   final HttpService _service = HttpService();
-//   Future<TracklistPlaylistModel?> getTracklistPlaylist(String id) async {
-//     try {
-//       final Url url = Url(playlistId: id); // Tạo URL trong phương thức khởi tạo
-//       final Response? response =
-//           await _service.request(url.getTrackListPlaylist);
-//       final responseData = response?.data;
-//       return responseData != null
-//           ? TracklistPlaylistModel.fromJson(responseData)
-//           : null;
-//     } catch (e) {}
-//     return null;
-//   }
-// }
-
-// class TrackListArtistResponstory {
-//   final HttpService _service = HttpService();
-//   Future<TracklistArtistModel?> getTracklistArtist(String id) async {
-//     try {
-//       final Url url = Url(artistId: id); // Tạo URL trong phương thức khởi tạo
-//       final Response? response = await _service.request(url.getTrackListArtist);
-//       final responseData = response?.data;
-//       return responseData != null
-//           ? TracklistArtistModel.fromJson(responseData)
-//           : null;
-//     } catch (e) {}
-//     return null;
-//   }
-// }
-
-// class TrackListAlbumResponstory {
-//   final HttpService _service = HttpService();
-//   Future<TracklistAlbumModel?> getTracklistAlbum(String id) async {
-//     try {
-//       final Url url = Url(artistId: id); // Tạo URL trong phương thức khởi tạo
-//       final Response? response = await _service.request(url.getTrackListAlbum);
-//       final responseData = response?.data;
-//       return responseData != null
-//           ? TracklistAlbumModel.fromJson(responseData)
-//           : null;
-//     } catch (e) {}
-//     return null;
-//   }
-// }
-// class ChartResponstory {
-//   final HttpService _service = HttpService();
-//   Future<ChartModel?> getChart() async {
-//     try {
-//       final Response? response = await _service.request(Url.getChart);
-//       final responseData = response?.data;
-//       return responseData != null ? ChartModel.fromJson(responseData) : null;
-//     } catch (e) {
-//     }
-//     return null;
-//   }
-// }

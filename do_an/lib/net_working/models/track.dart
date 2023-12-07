@@ -23,13 +23,13 @@ class TrackModel {
   int? explicitContentLyrics;
   int? explicitContentCover;
   String? preview;
-  int? bpm;
+  num? bpm;
   double? gain;
   List<String>? availableCountries;
-  List<Artist>? contributors;
+  List<Artistt>? contributors;
   String? md5Image;
-  Artist? artist;
-  Album? album;
+  Artistt? artist;
+  Albumm? album;
   String? type;
 
   TrackModel({
@@ -87,11 +87,12 @@ class TrackModel {
             : List<String>.from(json["available_countries"]!.map((x) => x)),
         contributors: json["contributors"] == null
             ? []
-            : List<Artist>.from(
-                json["contributors"]!.map((x) => Artist.fromJson(x))),
+            : List<Artistt>.from(
+                json["contributors"]!.map((x) => Artistt.fromJson(x))),
         md5Image: json["md5_image"],
-        artist: json["artist"] == null ? null : Artist.fromJson(json["artist"]),
-        album: json["album"] == null ? null : Album.fromJson(json["album"]),
+        artist:
+            json["artist"] == null ? null : Artistt.fromJson(json["artist"]),
+        album: json["album"] == null ? null : Albumm.fromJson(json["album"]),
         type: json["type"],
       );
 
@@ -129,7 +130,7 @@ class TrackModel {
       };
 }
 
-class Album {
+class Albumm {
   int? id;
   String? title;
   String? link;
@@ -143,7 +144,7 @@ class Album {
   String? tracklist;
   String? type;
 
-  Album({
+  Albumm({
     this.id,
     this.title,
     this.link,
@@ -158,7 +159,7 @@ class Album {
     this.type,
   });
 
-  factory Album.fromJson(Map<String, dynamic> json) => Album(
+  factory Albumm.fromJson(Map<String, dynamic> json) => Albumm(
         id: json["id"],
         title: json["title"],
         link: json["link"],
@@ -192,7 +193,7 @@ class Album {
       };
 }
 
-class Artist {
+class Artistt {
   int? id;
   String? name;
   String? link;
@@ -207,7 +208,7 @@ class Artist {
   String? type;
   String? role;
 
-  Artist({
+  Artistt({
     this.id,
     this.name,
     this.link,
@@ -223,7 +224,7 @@ class Artist {
     this.role,
   });
 
-  factory Artist.fromJson(Map<String, dynamic> json) => Artist(
+  factory Artistt.fromJson(Map<String, dynamic> json) => Artistt(
         id: json["id"],
         name: json["name"],
         link: json["link"],

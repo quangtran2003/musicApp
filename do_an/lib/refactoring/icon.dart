@@ -7,19 +7,17 @@ class MyIcon extends StatelessWidget {
 
   const MyIcon({
     Key? key,
-    this.color,
+    this.color = Colors.black87,
     this.size,
     required this.icon,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Icon(
-        icon,
-        size: size,
-        color: color,
-      ),
+    return Icon(
+      icon,
+      size: size,
+      color: color,
     );
   }
 }

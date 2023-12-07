@@ -1,18 +1,27 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:do_an/const.dart';
 import 'package:do_an/net_working/models/search.dart';
+import 'package:do_an/refactoring/container_album.dart';
 import 'package:do_an/refactoring/icon.dart';
+import 'package:do_an/refactoring/song.dart';
+import 'package:do_an/refactoring/text.dart';
 import 'package:do_an/search/search_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skeletons/skeletons.dart';
 
+import '../play_music/play_music_controller.dart';
+
 // ignore: must_be_immutable
 class EnterSearchScreen extends GetView<ControllerSearch> {
+  final _controllerPlayM = Get.put(PlayMusicController());
   final PageController _pageController = PageController(initialPage: 0);
   EnterSearchScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    controller.initIndex();
     return Scaffold(
       body: Container(
         color: constColor,
@@ -25,7 +34,8 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
               automaticallyImplyLeading: false,
               leading: GestureDetector(
                 onTap: () {
-                  Get.toNamed(HOME_SCREEN);
+                  controller.restartData();
+                  Get.back();
                 },
                 child: const MyIcon(
                   icon: Icons.arrow_back_ios,
@@ -37,9 +47,9 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildListTitle('Bài hát', 0),
+                    _buildListTitle('Song', 0),
                     _buildListTitle('Album', 1),
-                    _buildListTitle('Nghệ sĩ', 2),
+                    _buildListTitle('Artist', 2),
                   ],
                 ),
               ),
@@ -55,14 +65,14 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
                       final value = controller.searchData.value;
                       switch (index) {
                         case 0:
-                          return _buildSingSearch();
+                          return _buildSongSearch();
                         case 1:
                           if (value?.data?.length == 0 ||
                               value?.data?.length == null) {
                             return const SizedBox(
                               // height: 400,
                               child: Center(
-                                child: Text('Không có kết quả'),
+                                child: Text('No result'),
                               ),
                             );
                           } else {
@@ -70,7 +80,6 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
                           }
 
                         case 2:
-                          //return Obx(() {
                           {
                             final value = controller.searchData.value;
 
@@ -79,7 +88,7 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
                               return const SizedBox(
                                 // height: 400,
                                 child: Center(
-                                  child: Text('Không có kết quả'),
+                                  child: Text('No result'),
                                 ),
                               );
                             } else {
@@ -89,6 +98,7 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
                         //);
                         default:
                       }
+                      return null;
                     }))
           ],
         ),
@@ -96,99 +106,85 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
     );
   }
 
-  SizedBox _buildArtistSearch(SearchModel? value) {
-    return SizedBox(
-        // height: 400,
-        child: ListView.builder(
-            itemCount: controller.uniqueArtists.length,
-            itemBuilder: (context, index) {
-              print(controller.uniqueArtists[index]?.pictureSmall);
-              return Row(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 10),
-                    height: 70,
-                    width: 70,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            image: NetworkImage(
-                                '${controller.uniqueArtists[index]?.pictureSmall}'),
-                            fit: BoxFit.cover)),
+  Widget _buildArtistSearch(SearchModel? value) {
+    return Obx(
+      () => Container(
+          padding: const EdgeInsets.only(right: 20),
+          // height: 400,
+          child: ListView.builder(
+              itemCount: controller.uniqueArtists.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    Get.toNamed(ARTIST_SCREEN,
+                        arguments: controller.uniqueArtists[index]?.id);
+                  },
+                  child: Row(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 10),
+                        height: 70,
+                        width: 70,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                image: NetworkImage(
+                                    '${controller.uniqueArtists[index]?.pictureSmall}'),
+                                fit: BoxFit.cover)),
+                      ),
+                      Expanded(
+                          child:
+                              Text('${controller.uniqueArtists[index]?.name}')),
+                      const MyIcon(
+                        icon: Icons.navigate_next_outlined,
+                        color: Colors.black,
+                        size: 25,
+                      )
+                    ],
                   ),
-                  Expanded(
-                      child: Text('${controller.uniqueArtists[index]?.name}')),
-                  const MyIcon(
-                    icon: Icons.navigate_next_outlined,
-                    color: Colors.black,
-                    size: 25,
-                  )
-                ],
-              );
-            }));
+                );
+              })),
+    );
   }
 
-  GridView _buildAlbumSearch(SearchModel? value) {
-    return GridView.builder(
-        itemCount: controller.uniqueAlbums.length,
-        gridDelegate:
-            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-        itemBuilder: (context, index) {
-          if (value == null) {
-            return SkeletonItem(
-                child: Expanded(
-                    child: Container(
-                        margin: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          color: Colors.red,
-                        ))));
-          }
-          return Container(
-            margin: EdgeInsets.all(10),
-            // ignore: sort_child_properties_last
-            child: Column(children: [
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20)),
-                      //color: Colors.red,
-                      image: DecorationImage(
-                          image: NetworkImage(
-                              '${controller.uniqueAlbums[index]?.coverMedium}'
-                              // '${value.data?[index].album?.coverMedium}'
-                              //"https://duhocminhkhang.com/wp-content/uploads/2020/01/T%E1%BB%95ng-h%E1%BB%A3p-h%C3%ACnh-%E1%BA%A3nh-g%C3%A1i-xinh-%C4%91eo-m%E1%BA%AFt-k%C3%ADnh-c%E1%BB%B1c-cute-10-1.jpg"
-                              ),
-                          fit: BoxFit.cover)),
+  Widget _buildAlbumSearch(SearchModel? value) {
+    return Obx(
+      () => Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20),
+        child: GridView.builder(
+            itemCount: controller.uniqueAlbums.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2),
+            itemBuilder: (context, index) {
+              if (value == null) {
+                return SkeletonItem(
+                    child: Expanded(
+                        child: Container(
+                            margin: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                            ))));
+              }
+              return GestureDetector(
+                onTap: () {
+                  Get.toNamed(ALBUM_SCREEN,
+                      arguments: controller.uniqueAlbums[index]?.id);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: MyContainerAlbum(
+                      right: 0,
+                      urlImage:
+                          controller.uniqueAlbums[index]?.coverMedium ?? '',
+                      mytext: MyText(
+                          text: controller.uniqueAlbums[index]?.title ?? '')),
                 ),
-              ),
-              Container(
-                // ignore: sort_child_properties_last
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                height: 60,
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30))),
-                child: Flexible(
-                  child: Center(
-                    child: Text(controller.uniqueAlbums[index]?.title ?? '',
-                        style: const TextStyle(
-                          fontSize: 18,
-                        )),
-                  ),
-                ),
-              )
-            ]),
-            // decoration:
-            //     BoxDecoration(borderRadius: BorderRadius.circular(30)),
-          );
-          ;
-        });
+              );
+              //
+            }),
+      ),
+    );
   }
 
   GestureDetector _buildListTitle(String text, int index) {
@@ -225,7 +221,7 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
             )));
   }
 
-  Obx _buildSingSearch() {
+  Obx _buildSongSearch() {
     return Obx(() {
       final value = controller.searchData.value;
       if (controller.checkData.value == null) {
@@ -241,7 +237,7 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
         return const SizedBox(
           // height: 400,
           child: Center(
-            child: Text('Không có kết quả'),
+            child: Text('No result'),
           ),
         );
       } else {
@@ -251,26 +247,22 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
                 itemCount: value?.data?.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
-                    onTap: () {
-                      Get.toNamed(PLAY_MUSIC_SCREEN,
-                          arguments: value?.data?[index]);
-                    },
-                    child: ListTile(
-                      leading: Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(10),
-                            image: const DecorationImage(
-                                image:
-                                    AssetImage('assets/sing_background.jpg'))),
-                      ),
-                      subtitle: Text(value?.data?[index].artist?.name ?? ''),
-                      title: Flexible(
-                          child: Text(value?.data?[index].title ?? '')),
-                    ),
-                  );
+                      onTap: () {
+                        _controllerPlayM.stopMusic();
+
+                        Get.toNamed(PLAY_MUSIC_SCREEN,
+                            //arguments: value?.data?[index].id);
+                            arguments: {
+                              'songId': value?.data?[index].id,
+                              'listTrack': controller.tracks.value,
+                              'listIdSong': controller.listIdSong
+                            });
+                      },
+                      child: MySong(
+                        url: value?.data?[index].album?.coverSmall,
+                        subTitle: value?.data?[index].artist?.name,
+                        title: value?.data?[index].title,
+                      ));
                 }));
       }
     });

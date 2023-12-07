@@ -2,21 +2,37 @@ import 'package:do_an/net_working/models/search.dart';
 import 'package:do_an/responstory/all_responstory.dart';
 import 'package:get/get.dart';
 
+import '../net_working/models/track.dart';
+
 class ControllerSearch extends GetxController {
   final _searchRespon = SearchResponstory();
-  final searchData = Rxn<SearchModel>();
+  final _respon = Responstory();
+  var searchData = Rxn<SearchModel>();
   var checkData = RxnBool();
+  final resultSearch = Rxn<String>();
   var indexTitle = 0.obs;
+  final List<String> history = [];
   Set<int> uniqueAlbumIds = {};
-  List<AlbumSearch?> uniqueAlbums = [];
+  RxList uniqueAlbums = [].obs;
   List<int> uniqueArtistIds = [];
-  List<ArtistSearch?> uniqueArtists = [];
-  void clickTiTle(int index) {
-    final value = index;
-    indexTitle.value = value;
+  RxList uniqueArtists = [].obs;
+  List<int?> listIdSong = [];
+  final RxList<TrackModel> tracks = RxList.empty();
+
+  void restartData() {
+    checkData.value = null;
+  }
+
+  void gethistory(String? value) {
+    if (value == null) {
+      return;
+    }
+    history.insert(0, value);
+    if (history.length >= 6) history.removeRange(5, history.length);
   }
 
   Future getSearch(String id) async {
+    resultSearch.value = id;
     if (id == '') {
       checkData.value = false;
     } else {
@@ -24,6 +40,21 @@ class ControllerSearch extends GetxController {
     }
     final value = await _searchRespon.getSearch(id);
     searchData.value = value;
+
+    tracks.clear();
+    final size = searchData.value?.data?.length;
+    if (size != null) {
+      for (int i = 0; i < (size > 15 ? 15 : size); i++) {
+        listIdSong.add(searchData.value?.data![i].id);
+      }
+    }
+    List<TrackModel?> results = await Future.wait(
+      List.generate(listIdSong.length,
+          (index) => _respon.getTrack(listIdSong[index].toString())),
+    );
+    List<TrackModel> filteredResults =
+        results.where((item) => item != null).cast<TrackModel>().toList();
+    tracks.value = filteredResults;
   }
 
   void getListAlbum(SearchModel? value) {
@@ -50,5 +81,14 @@ class ControllerSearch extends GetxController {
         }
       }
     }
+  }
+
+  void clickTiTle(int index) {
+    final value = index;
+    indexTitle.value = value;
+  }
+
+  void initIndex() {
+    indexTitle.value = 0;
   }
 }

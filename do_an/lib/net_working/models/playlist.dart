@@ -2,6 +2,8 @@
 //
 //     final playlistModel = playlistModelFromJson(jsonString);
 
+// ignore_for_file: constant_identifier_names
+
 import 'dart:convert';
 
 // PlaylistModel playlistModelFromJson(String str) =>
