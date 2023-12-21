@@ -1,5 +1,5 @@
 import 'package:do_an/const.dart';
-import 'package:do_an/play_music/play_music_controller.dart';
+import 'package:do_an/module/play_music/play_music_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

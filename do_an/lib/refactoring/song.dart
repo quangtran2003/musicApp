@@ -3,18 +3,23 @@
 import 'package:flutter/material.dart';
 
 class MySong extends StatelessWidget {
-  final IconData? icon;
+  final Widget? widget;
+  final IconData? iconLeading;
   final String? subTitle;
   final String? title;
   final String? url;
-  const MySong({Key? key, this.subTitle, this.title, this.url, this.icon})
+   const MySong(
+      {Key? key, this.subTitle, this.title,this.widget=const Icon(
+          Icons.navigate_next_outlined,
+          size: 30,
+        ), this.url, this.iconLeading})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: ListTile(
-        leading: icon == null
+        leading: iconLeading == null
             ? Container(
                 height: 55,
                 width: 55,
@@ -26,11 +31,8 @@ class MySong extends StatelessWidget {
                             'https://www.idevice.ro/wp-content/uploads/2015/06/Apple-Music-wallpaper-iPad-150x150.png'),
                         fit: BoxFit.cover)),
               )
-            : Icon(icon),
-        trailing: const Icon(
-          Icons.navigate_next_outlined,
-          size: 30,
-        ),
+            : Icon(iconLeading),
+        trailing: widget,
         subtitle: Text(subTitle ?? ''),
         title: Text(
           title ?? '',

@@ -8,6 +8,7 @@ class MyText extends StatelessWidget {
   FontStyle? fontStyle;
   Color? color;
   int? maxLine;
+  TextAlign? textAlign;
   MyText(
       {Key? key,
       required this.text,
@@ -15,6 +16,7 @@ class MyText extends StatelessWidget {
       this.color,
       this.fontStyle,
       this.maxLine,
+      this.textAlign = TextAlign.center,
       this.fontWeight})
       : super(key: key);
 
@@ -23,7 +25,8 @@ class MyText extends StatelessWidget {
     return Text(
       text,
       maxLines: maxLine,
-      textAlign: TextAlign.center,
+      overflow: TextOverflow.ellipsis,
+      textAlign: textAlign,
       style: TextStyle(
           fontSize: fontSize,
           fontWeight: fontWeight,

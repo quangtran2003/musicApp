@@ -47,7 +47,6 @@ class _MyTextFieldState extends State<MyTextField> {
                     : null,
                 hintText: widget.textHint,
                 focusColor: Colors.purple,
-                // fillColor: widget.textColor,
                 fillColor: const Color.fromARGB(255, 195, 75, 216),
                 filled: false,
                 suffixIcon: widget.hasPass != null

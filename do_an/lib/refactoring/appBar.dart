@@ -1,6 +1,6 @@
+import 'package:do_an/module/search/search_controller.dart';
 import 'package:do_an/refactoring/icon.dart';
 import 'package:do_an/refactoring/text.dart';
-import 'package:do_an/search/search_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

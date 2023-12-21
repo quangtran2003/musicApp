@@ -8,6 +8,7 @@ import 'package:do_an/net_working/models/search.dart';
 import 'package:do_an/net_working/models/track.dart';
 import 'package:do_an/responstory/http_sevice.dart';
 import 'package:do_an/responstory/url.dart';
+
 import '../net_working/models/chart.dart';
 import '../net_working/models/tracklist_artist.dart';
 
@@ -19,9 +20,7 @@ class Responstory {
       final Response? response = await _service.request(Url.getTrack + id);
       final responseData = response?.data;
       return responseData != null ? TrackModel.fromJson(response?.data) : null;
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
     return null;
   }
 
@@ -53,6 +52,7 @@ class Responstory {
     } catch (e) {}
     return null;
   }
+
   Future<TracklistArtistModel?> getTracklistArtist(String id) async {
     try {
       final Url url = Url(artistId: id);
@@ -87,4 +87,3 @@ class SearchResponstory {
     return null;
   }
 }
-
