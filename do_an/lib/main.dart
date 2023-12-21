@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
             binding: HomeBinding()),
         GetPage(
             name: PLAY_MUSIC_SCREEN,
-            page: () => const PlayMusicScreen(),
+            page: () => PlayMusicScreen(),
             binding: PlayMusicBinding()),
         GetPage(
             name: LOGIN_SCREEN,

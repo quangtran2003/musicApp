@@ -1,4 +1,5 @@
 import 'package:do_an/module/play_music/play_music_controller.dart';
+import 'package:do_an/module/user/user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -10,9 +11,11 @@ import '../../../refactoring/icon.dart';
 import '../../../refactoring/text.dart';
 
 class FirstPage extends GetView<PlayMusicController> {
+  final _controllerUser = Get.put(UserController());
+
   final double height;
   final double width;
-  const FirstPage({
+  FirstPage({
     super.key,
     required this.height,
     required this.width,
@@ -86,6 +89,8 @@ class FirstPage extends GetView<PlayMusicController> {
               GestureDetector(
                 onTap: () {
                   controller.checkFavorite();
+                  controller.saveFavourite();
+                  _controllerUser.loadfavourite();
                 },
                 child: Obx(
                   () => MyIcon(

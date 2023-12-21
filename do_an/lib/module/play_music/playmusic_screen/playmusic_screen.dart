@@ -1,7 +1,8 @@
 import 'dart:async';
 
-import 'package:do_an/net_working/models/track.dart';
 import 'package:do_an/module/play_music/play_music_controller.dart';
+import 'package:do_an/module/user/user_controller.dart';
+import 'package:do_an/net_working/models/track.dart';
 import 'package:do_an/refactoring/icon.dart';
 import 'package:do_an/refactoring/text.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,8 @@ import '2nd_page.dart';
 import 'first_page.dart';
 
 class PlayMusicScreen extends GetWidget<PlayMusicController> {
-  const PlayMusicScreen({super.key});
+  final _controllerUser = Get.put(UserController());
+  PlayMusicScreen({super.key});
   @override
   Widget build(BuildContext context) {
     PageController pageController = PageController(initialPage: 0);
@@ -144,6 +146,7 @@ class PlayMusicScreen extends GetWidget<PlayMusicController> {
                   onTap: () {
                     controller.checkPlaylist();
                     controller.savePlaylist();
+                    _controllerUser.loadPlaylist();
                   },
                   child: _buildButtonIconNavigartorBar(Icons.playlist_add,
                       "Add to playlist", controller.isPlaylist.value),
@@ -156,6 +159,7 @@ class PlayMusicScreen extends GetWidget<PlayMusicController> {
                   onTap: () {
                     controller.checkFavorite();
                     controller.saveFavourite();
+                    _controllerUser.loadfavourite();
                   },
                   child: _buildButtonIconNavigartorBar(Icons.favorite_border,
                       "Add to favourite", controller.isFavorite.value),

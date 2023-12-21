@@ -28,8 +28,8 @@ class UserController extends GetxController {
 
   Future<void> loadPlaylist() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? favour = prefs.getStringList('playlist');
-    playlist(favour ?? []);
+    List<String>? playl = prefs.getStringList('playlist');
+    playlist(playl ?? []);
     getSongPlaylist();
   }
 
@@ -89,5 +89,6 @@ class UserController extends GetxController {
     playl.removeAt(index);
     prefs.setStringList('playlist', playl);
     playlist(playl);
+    playlistTracks.removeAt(index);
   }
 }

@@ -2,6 +2,7 @@
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:clipboard/clipboard.dart';
+import 'package:do_an/module/user/user_controller.dart';
 import 'package:do_an/net_working/models/track.dart';
 import 'package:do_an/refactoring/text.dart';
 import 'package:do_an/responstory/all_responstory.dart';
@@ -10,6 +11,8 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PlayMusicController extends GetxController {
+  final _controllerUser = Get.put(UserController());
+
   PlayerState playerState = PlayerState.stopped;
   AudioPlayer audioPlayer = AudioPlayer();
   RxList<TrackModel> trackList = RxList.empty();
@@ -59,6 +62,7 @@ class PlayMusicController extends GetxController {
     savePlayHistory();
     loadPlaylist();
     loadfavourite();
+    _controllerUser.loadHistoryPlay();
   }
 
   Future<void> getTrack(int id) async {
@@ -69,6 +73,7 @@ class PlayMusicController extends GetxController {
     savePlayHistory();
     loadPlaylist();
     loadfavourite();
+    _controllerUser.loadHistoryPlay();
   }
 
   Future<void> stopMusic() async {
@@ -288,7 +293,7 @@ class PlayMusicController extends GetxController {
     }
 
     prefs.setStringList('favourite', listFavourite);
-
+    _controllerUser.loadfavourite();
     favourite(listFavourite);
   }
 

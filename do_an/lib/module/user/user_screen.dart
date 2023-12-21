@@ -170,12 +170,14 @@ class UserScreen extends GetView<UserController> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Container(
-              alignment: Alignment.bottomLeft,
-              margin: const EdgeInsets.only(left: 20, bottom: 15),
-              child: MyText(
-                text: listId?.length.toString() ?? '0',
-                fontSize: 16,
+            Obx(
+              () => Container(
+                alignment: Alignment.bottomLeft,
+                margin: const EdgeInsets.only(left: 20, bottom: 15),
+                child: MyText(
+                  text: tracks.length.toString(),
+                  fontSize: 16,
+                ),
               ),
             ),
           ],
@@ -217,7 +219,18 @@ class UserScreen extends GetView<UserController> {
                   backgroundColor: Colors.purple,
                   minimumSize: const Size(double.infinity, 40),
                   foregroundColor: Colors.white),
-              child: MyText(text: 'Play music now!'),
+              child: GestureDetector(
+                  onTap: () {
+                    _controllerPlayM.stopMusic();
+                    List<int> intList =
+                        listId?.map((str) => int.parse(str)).toList() ?? [];
+                    Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
+                      'songId': tracks[0].id,
+                      'listTrack': tracks,
+                      'listIdSong': intList
+                    });
+                  },
+                  child: MyText(text: 'Play music now!')),
             ),
           ),
           Expanded(
@@ -252,11 +265,9 @@ class UserScreen extends GetView<UserController> {
                             },
                             child: const Icon(Icons.delete),
                           ),
-                          url:
-                              controller.historyTracks[index].album?.coverSmall,
-                          title: controller.historyTracks[index].title,
-                          subTitle:
-                              controller.historyTracks[index].artist?.name,
+                          url: tracks[index].album?.coverSmall,
+                          title: tracks[index].title,
+                          subTitle: tracks[index].artist?.name,
                         ),
                       );
                     }
