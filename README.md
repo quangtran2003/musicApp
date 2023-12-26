@@ -6,9 +6,9 @@
 
 <!-- Second Row -->
 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-      <img src="https://github.com/quangtran2003/musicApp/assets/138042622/a7a267c4-76b4-403d-9cab-cde1d94e81c9" width="300" height="650">
-    <img src="https://github.com/quangtran2003/musicApp/assets/138042622/2ec825e8-947a-4071-a38b-80e52aaba331" width="300" height="650">
-    <img src="https://github.com/quangtran2003/musicApp/assets/138042622/1b50f787-bb27-4a19-8ef7-eeef347e5898" width="300" height="650">
+<img src="https://github.com/quangtran2003/musicApp/assets/138042622/09895475-4ff4-45ba-a1b3-4e66045b9191" width="300" height="650">
+<img src="https://github.com/quangtran2003/musicApp/assets/138042622/7331461b-fab2-4f0a-aa28-211ef55d233d" width="300" height="650">
+<img src="https://github.com/quangtran2003/musicApp/assets/138042622/a58d1f6e-2228-40f2-8ff1-ed003a18374e" width="300" height="650">
 </div>
 
 <!-- Third Row -->
@@ -17,7 +17,7 @@
       <img src="https://github.com/quangtran2003/musicApp/assets/138042622/6caed818-17d5-4d52-8cb8-e1b4e9d1130d" width="300" height="650">
     <img src="https://github.com/quangtran2003/musicApp/assets/138042622/e8b98f74-0a0d-4b0c-b707-1050315efa5b" width="300" height="650">
     <img src="https://github.com/quangtran2003/musicApp/assets/138042622/6bc7fe8e-8820-4981-b548-52b622f6826c" width="300" height="650">
-      <img src="https://github.com/quangtran2003/musicApp/assets/138042622/d168dcee-b703-4a7c-a2a8-5e55fff09254" width="300" height="650">
+     <img src="https://github.com/quangtran2003/musicApp/assets/138042622/d168dcee-b703-4a7c-a2a8-5e55fff09254" width="300" height="650">
 
 </div>
 
@@ -26,6 +26,9 @@
     <img src="https://github.com/quangtran2003/musicApp/assets/138042622/24f21241-4aca-4241-8601-13231919e46d" width="300" height="650">
     <img src="https://github.com/quangtran2003/musicApp/assets/138042622/ace9d754-a09c-414c-92f4-9ef23cf25806" width="300" height="650">
     <img src="https://github.com/quangtran2003/musicApp/assets/138042622/ce58a7ad-6f02-467e-ad38-85dac16fa437" width="300" height="650">
+    <img src="https://github.com/quangtran2003/musicApp/assets/138042622/dbb82675-d367-4196-b013-dd8beaf3dc81" width="300" height="650">
+    
+
 </div>
 
 <!-- Fifth Row -->
