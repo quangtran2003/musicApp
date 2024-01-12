@@ -107,9 +107,11 @@ class UserScreen extends GetView<UserController> {
         MyAppBarHomePage(
           title: Container(
               margin: const EdgeInsets.only(top: 20),
-              child: MyText(
+              child:  MyText(
                 text: 'Me',
-                fontSize: 35,
+                color: Colors.black,
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
               )),
         ),
         Container(
