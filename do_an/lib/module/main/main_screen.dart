@@ -5,9 +5,9 @@ import 'package:do_an/module/chart/chart_screen.dart';
 import 'package:do_an/module/home_screen/home_screen.dart';
 import 'package:do_an/module/home_screen/homecontroller.dart';
 import 'package:do_an/module/main/main_controller.dart';
-import 'package:do_an/refactoring/songBottom.dart';
 import 'package:do_an/module/user/user_controller.dart';
 import 'package:do_an/module/user/user_screen.dart';
+import 'package:do_an/refactoring/songBottom.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -41,35 +41,36 @@ class MainScreen extends GetView<MainController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: PageView(
-          controller: _pageController,
-          onPageChanged: (value) {
-            controller.checkIndexScreen(value);
-          },
-          children: pages,
-        ),
-        bottomNavigationBar: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SongBottom(),
-            Obx(
-              () => Container(
-                color: Colors.white,
-                child: BottomNavigationBar(
-                  selectedItemColor: Colors.purple,
-                  showSelectedLabels: true,
-                  backgroundColor: Colors.white,
-                  elevation: 0,
-                  items: navItems,
-                  currentIndex: controller.selectIndex.value,
-                  onTap: (int index) {
-                    controller.checkIndexScreen(index);
-                    _pageController.jumpToPage(controller.selectIndex.value);
-                  },
-                ),
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (value) {
+          controller.checkIndexScreen(value);
+        },
+        children: pages,
+      ),
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SongBottom(),
+          Obx(
+            () => Container(
+              color: Colors.white,
+              child: BottomNavigationBar(
+                selectedItemColor: Colors.purple,
+                showSelectedLabels: true,
+                backgroundColor: Colors.white,
+                elevation: 0,
+                items: navItems,
+                currentIndex: controller.selectIndex.value,
+                onTap: (int index) {
+                  controller.checkIndexScreen(index);
+                  _pageController.jumpToPage(controller.selectIndex.value);
+                },
               ),
             ),
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -56,7 +56,7 @@ class PlayMusicController extends GetxController {
 
   Future<void> updateData(TrackModel data) async {
     trackData.value = data;
-    audioPlayer.stop();
+    await audioPlayer.stop();
     isPlaying.value = true;
     await audioPlayer.play(UrlSource(trackData.value?.preview ?? ''));
     savePlayHistory();

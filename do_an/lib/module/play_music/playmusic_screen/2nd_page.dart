@@ -9,14 +9,12 @@ import '../../../refactoring/song.dart';
 
 class SecondPage extends GetView<PlayMusicController> {
   Function onSongSelected;
-  //PageController listViewController;
   List<TrackModel> listTrack;
   List<int?> listIdSong;
 
   SecondPage({
     super.key,
     required this.onSongSelected,
-    // required this.listViewController,
     required this.listTrack,
     required this.listIdSong,
   });
