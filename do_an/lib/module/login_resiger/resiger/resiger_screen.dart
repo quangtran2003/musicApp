@@ -94,9 +94,9 @@ class Resiger extends GetView<ResigerController> {
           child: Center(
               child: MyText(
             text: "Resiger",
-            color: controller.checkResiger.value ? Colors.white : null,
+            color: controller.checkResiger.value ? Colors.white : Colors.grey,
             fontSize: 20,
-          )),
+          ),),
         ),
         // ),
       ),

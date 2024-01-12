@@ -112,7 +112,7 @@ class UserScreen extends GetView<UserController> {
                 color: Colors.black,
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
-              )),
+              ),),
         ),
         Container(
           height: 0.8,
