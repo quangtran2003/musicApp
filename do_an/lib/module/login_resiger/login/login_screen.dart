@@ -135,7 +135,7 @@ class Login extends GetView<LoginController> {
       child: Obx(
         () => Container(
             margin: const EdgeInsets.only(top: 30, bottom: 15),
-            height: 60,
+            height: 55,
             width: double.infinity,
             decoration: BoxDecoration(
                 color: controller.checkLogin.value ? Colors.purple : null,

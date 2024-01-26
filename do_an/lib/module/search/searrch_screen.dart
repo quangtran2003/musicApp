@@ -7,6 +7,7 @@ import 'package:do_an/refactoring/icon.dart';
 import 'package:do_an/refactoring/song.dart';
 import 'package:do_an/refactoring/text.dart';
 import 'package:do_an/refactoring/text_field.dart';
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -26,7 +27,7 @@ class SearchScreen extends GetView<ControllerSearch> {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 100,
-        backgroundColor: const Color.fromARGB(255, 236, 225, 225),
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: GestureDetector(
           onTap: () {
@@ -47,8 +48,11 @@ class SearchScreen extends GetView<ControllerSearch> {
                   textColor: Colors.black,
                   textHint: 'Enter your song',
                   onChange: (value) async {
-                    await Future.delayed(const Duration(milliseconds: 300));
-                    controller.getSearch(value);
+                    EasyDebounce.debounce(
+                        'my-debouncer', const Duration(milliseconds: 300),
+                        () async {
+                      await controller.getSearch(value);
+                    });
                   },
                   onEditingComplete: () {
                     controller
@@ -59,30 +63,34 @@ class SearchScreen extends GetView<ControllerSearch> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        child: Container(
-          height: x,
-          color: const Color.fromARGB(255, 236, 225, 225),
-          child: Column(
-            children: [
-              Obx(() {
-                final value = controller.searchData.value;
-                if (controller.checkData.value == null ||
-                    value?.data?.length == 0) {
-                  return _buildHistory();
-                }
-                if (value == null) {
-                  return const SizedBox(
+      body: SizedBox(
+        height: x,
+        child: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          child: Container(
+            height: x,
+            color: Colors.white,
+            child: Column(
+              children: [
+                Obx(() {
+                  final value = controller.searchData.value;
+                  if (controller.checkData.value == null ||
+                      value?.data?.length == 0) {
+                    return _buildHistory();
+                  }
+                  if (value == null) {
+                    return const SizedBox(
                       height: 500,
                       child: Center(
                         child: CircularProgressIndicator(),
-                      ));
-                }
+                      ),
+                    );
+                  }
 
-                return _buildResultSearch(x, value);
-              }),
-            ],
+                  return _buildResultSearch(x, value);
+                }),
+              ],
+            ),
           ),
         ),
       ),

@@ -84,7 +84,7 @@ class Resiger extends GetView<ResigerController> {
         },
         child: Container(
           margin: EdgeInsets.only(top: 30, bottom: x > 500 ? 50 : 20),
-          height: 60,
+          height: 55,
           width: double.infinity,
           decoration: BoxDecoration(
               color: controller.checkResiger.value ? Colors.purple : null,
@@ -92,11 +92,12 @@ class Resiger extends GetView<ResigerController> {
                   width: 1, color: const Color.fromARGB(255, 104, 104, 104)),
               borderRadius: BorderRadius.circular(20)),
           child: Center(
-              child: MyText(
-            text: "Resiger",
-            color: controller.checkResiger.value ? Colors.white : Colors.grey,
-            fontSize: 20,
-          ),),
+            child: MyText(
+              text: "Resiger",
+              color: controller.checkResiger.value ? Colors.white : Colors.grey,
+              fontSize: 20,
+            ),
+          ),
         ),
         // ),
       ),

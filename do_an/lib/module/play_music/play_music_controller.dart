@@ -230,13 +230,13 @@ class PlayMusicController extends GetxController {
 
   void getLinkSong(BuildContext context, String link, double x) async {
     saveLink(link);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-          backgroundColor: Colors.transparent,
-          duration: const Duration(seconds: 3),
-          content: SizedBox(
-            // alignment: Alignment.center,
-            height: x / 2,
+
+    showModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        context: context,
+        builder: (builder) {
+          return SizedBox(
+            height: x / 4,
             child: Center(
               child: Container(
                 height: 70,
@@ -252,9 +252,10 @@ class PlayMusicController extends GetxController {
                 ),
               ),
             ),
-          )),
-    );
-
+          );
+        });
+    await Future.delayed(const Duration(seconds: 2));
+    Get.back();
     // Sao chép đường link vào clipboard
     await FlutterClipboard.copy(link);
   }
