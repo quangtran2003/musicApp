@@ -106,13 +106,16 @@ class UserScreen extends GetView<UserController> {
       children: [
         MyAppBarHomePage(
           title: Container(
-              margin: const EdgeInsets.only(top: 20),
-              child:  MyText(
-                text: 'Me',
+            margin: const EdgeInsets.only(top: 20),
+            child: GestureDetector(
+              onTap: () => Get.toNamed(LOGIN_SCREEN),
+              child: MyText(
+                text: 'Log out',
                 color: Colors.black,
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-              ),),
+                fontSize: 20,
+              ),
+            ),
+          ),
         ),
         Container(
           height: 0.8,
