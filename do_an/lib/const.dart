@@ -20,4 +20,6 @@ enum EnumScreen { Album, Playlist, Artist, PlayMusic, Default }
 enum TabBarType { HOME, CHART, ME }
 
 const Color constColor = Colors.white;
+Color pinkColor = Colors.pink.shade50;
+Color bottomDarkModeColor = Color(0xff383C3D);
 //Color.fromARGB(255, 236, 225, 225);

@@ -2,9 +2,9 @@
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:clipboard/clipboard.dart';
+import 'package:do_an/components/text.dart';
 import 'package:do_an/module/user/user_controller.dart';
 import 'package:do_an/net_working/models/track.dart';
-import 'package:do_an/refactoring/text.dart';
 import 'package:do_an/responstory/all_responstory.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -35,6 +35,7 @@ class PlayMusicController extends GetxController {
   var favourite = Rxn<List<String?>>();
   var playlist = Rxn<List<String?>>();
   var historyPlay = Rxn<List<String?>>();
+  var isPlayAnimation = false.obs;
 
   void getListTrack(List<TrackModel> value) {
     final List<TrackModel> tracks = [];
@@ -42,10 +43,11 @@ class PlayMusicController extends GetxController {
     trackList.value = tracks;
   }
 
-  Future initData(int? songId, List<TrackModel> listTrack,
-      List<int?> listIdSong, bool? isSongBottom) async {
+  Future initData(
+      int? songId, List<TrackModel> listTrack, List<int?> listIdSong, bool? isSongBottom) async {
     if (isSongBottom == null) {
       getTrack(songId ?? 0);
+      checkStatusMusic();
       getListTrack(listTrack);
       onDurationChanged();
       onPositionChanged();
@@ -62,7 +64,17 @@ class PlayMusicController extends GetxController {
     savePlayHistory();
     loadPlaylist();
     loadfavourite();
+    checkStatusMusic();
     _controllerUser.loadHistoryPlay();
+  }
+
+  void checkStatusMusic() {
+    audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
+      if (state == PlayerState.playing) {
+        isPlayAnimation.value = true;
+      }else
+      isPlayAnimation.value = false;
+    });
   }
 
   Future<void> getTrack(int id) async {
@@ -146,7 +158,6 @@ class PlayMusicController extends GetxController {
       if (state == PlayerState.completed) {
         stopMusic();
         isPlaying.value = false;
-        // print("Song has end");
       }
     });
   }
@@ -235,23 +246,21 @@ class PlayMusicController extends GetxController {
         backgroundColor: Colors.transparent,
         context: context,
         builder: (builder) {
-          return SizedBox(
-            height: x / 4,
-            child: Center(
-              child: Container(
+          return Wrap(
+            children: [
+              Container(
                 height: 70,
-                width: 300,
+                margin: EdgeInsets.only(bottom: 20),
                 decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     borderRadius: BorderRadius.circular(16)),
                 child: Center(
                   child: MyText(
                     text: "The song link has been copied!",
-                    color: Colors.black,
                   ),
                 ),
               ),
-            ),
+            ],
           );
         });
     await Future.delayed(const Duration(seconds: 2));

@@ -1,18 +1,17 @@
 import 'dart:async';
 
+import 'package:do_an/components/icon.dart';
+import 'package:do_an/components/text.dart';
 import 'package:do_an/module/play_music/play_music_controller.dart';
 import 'package:do_an/module/user/user_controller.dart';
 import 'package:do_an/net_working/models/track.dart';
-import 'package:do_an/refactoring/icon.dart';
-import 'package:do_an/refactoring/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skeletons/skeletons.dart';
 
-import '../../../../const.dart';
-import '2nd_page.dart';
 import 'first_page.dart';
+import 'second_page.dart';
 
 class PlayMusicScreen extends GetWidget<PlayMusicController> {
   final _controllerUser = Get.put(UserController());
@@ -21,7 +20,7 @@ class PlayMusicScreen extends GetWidget<PlayMusicController> {
   Widget build(BuildContext context) {
     PageController pageController = PageController(initialPage: 0);
     final Map<String, dynamic>? data = Get.arguments;
-    final int? songId = data?['songId'] ?? 0;
+    final int? songId = data?['songId'] ?? null;
     final List<TrackModel> listTrack = data?['listTrack'] ?? [];
     final List<int?> listIdSong = data?['listIdSong'] ?? [];
     final bool? isSongBottom = data?['isSongBottom'];
@@ -30,9 +29,7 @@ class PlayMusicScreen extends GetWidget<PlayMusicController> {
     controller.initData(songId, listTrack, listIdSong, isSongBottom);
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-            color: constColor,
-            borderRadius: BorderRadius.all(Radius.circular(20))),
+        decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20))),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -49,11 +46,9 @@ class PlayMusicScreen extends GetWidget<PlayMusicController> {
                     SecondPage(
                         listIdSong: listIdSong,
                         listTrack: listTrack,
-                        //  listViewController: listViewcontroller,
                         onSongSelected: () {
                           pageController.animateToPage(0,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut);
+                              duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
                         })
                   ]),
             )
@@ -66,7 +61,6 @@ class PlayMusicScreen extends GetWidget<PlayMusicController> {
   AppBar _buildAppBar(double x, BuildContext context, double y) {
     return AppBar(
       elevation: 0,
-      backgroundColor: Colors.transparent,
       toolbarHeight: x * 0.1,
       leading: GestureDetector(
         onTap: () {
@@ -76,7 +70,6 @@ class PlayMusicScreen extends GetWidget<PlayMusicController> {
         child: const MyIcon(
           icon: Icons.chevron_left,
           size: 35,
-          color: Colors.black,
         ),
         //),
       ),
@@ -102,26 +95,22 @@ class PlayMusicScreen extends GetWidget<PlayMusicController> {
               child: MyIcon(
                 icon: Icons.more_horiz,
                 size: 35,
-                color: Colors.black,
               ),
             ),
           )
-        : const Padding(
-            padding: EdgeInsets.only(right: 20),
+        : Padding(
+            padding: const EdgeInsets.only(right: 20),
             child: MyIcon(
-              icon: Icons.more_horiz,
-              size: 35,
-              color: constColor,
-            ),
+                icon: Icons.more_horiz, size: 35, color: Theme.of(context).scaffoldBackgroundColor),
           ));
   }
 
   Container _buildBottomSheet(double y, BuildContext context) {
     return Container(
-        margin: const EdgeInsets.all(20),
-        padding: const EdgeInsets.symmetric(vertical: 20),
+        padding: EdgeInsets.symmetric(vertical: 20),
         decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(10)),
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: BorderRadius.circular(10)),
         child: Obx(
           () => SizedBox(
             height: 200,
@@ -134,9 +123,7 @@ class PlayMusicScreen extends GetWidget<PlayMusicController> {
                     _showTimePicker(context);
                   },
                   child: _buildButtonIconNavigartorBar(
-                      Icons.timer,
-                      "Timer to turn off music",
-                      controller.isCountingDown.value),
+                      Icons.timer, "Timer to turn off music", controller.isCountingDown.value),
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
@@ -148,8 +135,8 @@ class PlayMusicScreen extends GetWidget<PlayMusicController> {
                     controller.savePlaylist();
                     _controllerUser.loadPlaylist();
                   },
-                  child: _buildButtonIconNavigartorBar(Icons.playlist_add,
-                      "Add to playlist", controller.isPlaylist.value),
+                  child: _buildButtonIconNavigartorBar(
+                      Icons.playlist_add, "Add to playlist", controller.isPlaylist.value),
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
@@ -161,8 +148,8 @@ class PlayMusicScreen extends GetWidget<PlayMusicController> {
                     controller.saveFavourite();
                     _controllerUser.loadfavourite();
                   },
-                  child: _buildButtonIconNavigartorBar(Icons.favorite_border,
-                      "Add to favourite", controller.isFavorite.value),
+                  child: _buildButtonIconNavigartorBar(
+                      Icons.favorite_border, "Add to favourite", controller.isFavorite.value),
                 ),
               ],
             ),
@@ -178,9 +165,7 @@ class PlayMusicScreen extends GetWidget<PlayMusicController> {
           if (controller.indexPage.value == 0) {
             return controller.trackData.value != null
                 ? Center(
-                    child: MyText(
-                        color: Colors.black,
-                        text: controller.trackData.value?.title ?? ''),
+                    child: MyText(text: controller.trackData.value?.title ?? ''),
                   )
                 : const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 60),
@@ -196,7 +181,6 @@ class PlayMusicScreen extends GetWidget<PlayMusicController> {
             child: MyText(
               text: 'Music playlist',
               fontWeight: FontWeight.bold,
-              color: Colors.black,
             ),
           );
         }),
@@ -230,8 +214,7 @@ class PlayMusicScreen extends GetWidget<PlayMusicController> {
     );
   }
 
-  Widget _buildButtonIconNavigartorBar(
-      IconData icons, String text, bool check) {
+  Widget _buildButtonIconNavigartorBar(IconData icons, String text, bool check) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -261,8 +244,7 @@ class PlayMusicScreen extends GetWidget<PlayMusicController> {
             primaryColor: Colors.purple,
             hintColor: Colors.purple,
             colorScheme: const ColorScheme.light(primary: Colors.purple),
-            buttonTheme:
-                const ButtonThemeData(textTheme: ButtonTextTheme.primary),
+            buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.primary),
           ),
           child: child!,
         );
@@ -271,8 +253,7 @@ class PlayMusicScreen extends GetWidget<PlayMusicController> {
     );
 
     if (pickedTime != null) {
-      controller.countdownSeconds.value =
-          pickedTime.hour * 3600 + pickedTime.minute * 60;
+      controller.countdownSeconds.value = pickedTime.hour * 3600 + pickedTime.minute * 60;
       controller.isCountingDown.value = true;
       Timer.periodic(const Duration(seconds: 1), (timer) {
         if (controller.countdownSeconds.value > 0) {

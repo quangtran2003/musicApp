@@ -1,8 +1,10 @@
+import 'package:do_an/components/text.dart';
+import 'package:do_an/components/text_field.dart';
 import 'package:do_an/const.dart';
 import 'package:do_an/module/login_resiger/login/login_controller.dart';
-import 'package:do_an/refactoring/text.dart';
-import 'package:do_an/refactoring/text_field.dart';
+import 'package:do_an/module/main/main_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 
 class Login extends GetView<LoginController> {
@@ -10,13 +12,14 @@ class Login extends GetView<LoginController> {
   @override
   Widget build(BuildContext context) {
     //  controller.createAcc();
+    FlutterNativeSplash.remove();
 
     final x = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
           height: x,
-          color: const Color.fromARGB(255, 245, 229, 246),
+          color: Get.isDarkMode ? Theme.of(context).scaffoldBackgroundColor : const Color.fromARGB(255, 245, 229, 246),
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Column(
             children: [
@@ -52,7 +55,7 @@ class Login extends GetView<LoginController> {
                   textColor: Colors.purple,
                 ),
               ),
-              _buildBottomLogin(),
+              _buildBottomLogin(context),
               Obx(() {
                 if (controller.showErrorSignIn.value != null) {
                   return Container(
@@ -85,8 +88,7 @@ class Login extends GetView<LoginController> {
       child: const Center(
         child: Text.rich(TextSpan(
             text: 'Do not have account ? ',
-            style: TextStyle(
-                fontSize: 17, color: Color.fromARGB(255, 104, 104, 104)),
+            style: TextStyle(fontSize: 17, color: Color.fromARGB(255, 104, 104, 104)),
             children: [
               TextSpan(
                   text: 'Resiger',
@@ -120,15 +122,16 @@ class Login extends GetView<LoginController> {
     );
   }
 
-  GestureDetector _buildBottomLogin() {
+  GestureDetector _buildBottomLogin(
+    BuildContext context,
+  ) {
     return GestureDetector(
       onTap: () {
         if (controller.checkLogin.value) {
-          //showDialog(context: context, builder: builder)
-          controller.signInAcc(
-              controller.userName.value ?? '', controller.passWord.value ?? '');
+          controller.signInAcc(controller.userName.value ?? '', controller.passWord.value ?? '');
           if (controller.checkAccount.value == CHECK_ACCOUNT.Success) {
-            Get.toNamed(MAIN_SCREEN);
+            Get.off(MainScreen());
+            Navigator.pushReplacementNamed(context, MAIN_SCREEN);
           }
         }
       },
@@ -139,14 +142,12 @@ class Login extends GetView<LoginController> {
             width: double.infinity,
             decoration: BoxDecoration(
                 color: controller.checkLogin.value ? Colors.purple : null,
-                border: Border.all(
-                    width: 1, color: const Color.fromARGB(255, 104, 104, 104)),
+                border: Border.all(width: 1, color: const Color.fromARGB(255, 104, 104, 104)),
                 borderRadius: BorderRadius.circular(20)),
             child: Center(
               child: MyText(
                   text: 'Login',
-                  color:
-                      controller.checkLogin.value ? Colors.white : Colors.grey,
+                  color: controller.checkLogin.value ? Colors.white : Colors.grey,
                   fontSize: 20),
             )),
       ),

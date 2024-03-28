@@ -6,13 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skeletons/skeletons.dart';
 
+import '../../components/icon.dart';
+import '../../components/song.dart';
+import '../../components/text.dart';
 import '../../const.dart';
-import '../../refactoring/icon.dart';
-import '../../refactoring/song.dart';
-import '../../refactoring/text.dart';
 
 class PlaylistScreen extends GetView<PlayListController> {
-  final _controllerPlayM = Get.put(PlayMusicController());
+  final _controllerPlayM = Get.find<PlayMusicController>();
   PlaylistScreen({super.key});
 
   @override
@@ -23,16 +23,13 @@ class PlaylistScreen extends GetView<PlayListController> {
     final x = MediaQuery.of(context).size.height;
     final y = MediaQuery.of(context).size.width;
     return Scaffold(
-      body: Container(
-        color: constColor,
-        child: Column(
-          children: [
-            _buildAppBar(),
-            _buildImagePlaylist(x, y),
-            _buildBottomPlayMusic(y),
-            _buildListSong()
-          ],
-        ),
+      body: Column(
+        children: [
+          _buildAppBar(),
+          _buildImagePlaylist(x, y),
+          _buildBottomPlayMusic(y),
+          _buildListSong()
+        ],
       ),
     );
   }
@@ -48,9 +45,7 @@ class PlaylistScreen extends GetView<PlayListController> {
                   itemBuilder: (context, index) {
                     return SkeletonListTile(
                       leadingStyle: SkeletonAvatarStyle(
-                          borderRadius: BorderRadius.circular(10),
-                          width: 55,
-                          height: 55),
+                          borderRadius: BorderRadius.circular(10), width: 55, height: 55),
                       titleStyle: const SkeletonLineStyle(width: 300),
                       subtitleStyle: const SkeletonLineStyle(width: 50),
                     );
@@ -66,21 +61,16 @@ class PlaylistScreen extends GetView<PlayListController> {
                   return GestureDetector(
                     onTap: () {
                       _controllerPlayM.stopMusic();
-
                       Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
-                        'songId': controller
-                            .playlistData.value?.tracks?.data?[index].id,
+                        'songId': controller.playlistData.value?.tracks?.data?[index].id,
                         'listTrack': controller.tracks.value,
                         'listIdSong': controller.listIdSong
                       });
                     },
                     child: MySong(
-                        title: controller
-                            .playlistData.value?.tracks?.data?[index].title,
-                        subTitle: controller.playlistData.value?.tracks
-                            ?.data?[index].artist?.name,
-                        url: controller.playlistData.value?.tracks?.data?[index]
-                            .album?.coverSmall),
+                        title: controller.playlistData.value?.tracks?.data?[index].title,
+                        subTitle: controller.playlistData.value?.tracks?.data?[index].artist?.name,
+                        url: controller.playlistData.value?.tracks?.data?[index].album?.coverSmall),
                   );
                 })),
           ),
@@ -105,11 +95,9 @@ class PlaylistScreen extends GetView<PlayListController> {
         width: y,
         margin: const EdgeInsets.fromLTRB(38, 0, 38, 20),
         alignment: Alignment.center,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20), color: Colors.purple),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.purple),
         child: MyText(
           text: 'Play music now',
-          color: Colors.white,
         ),
       ),
     );
@@ -124,8 +112,7 @@ class PlaylistScreen extends GetView<PlayListController> {
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(20)),
               image: DecorationImage(
-                  image: NetworkImage(
-                      controller.playlistData.value?.pictureMedium ?? ''),
+                  image: NetworkImage(controller.playlistData.value?.pictureMedium ?? ''),
                   fit: BoxFit.cover),
               shape: BoxShape.rectangle,
             ),
@@ -141,7 +128,6 @@ class PlaylistScreen extends GetView<PlayListController> {
 
   AppBar _buildAppBar() {
     return AppBar(
-        backgroundColor: constColor,
         elevation: 0,
         leading: GestureDetector(
           onTap: () {
@@ -149,7 +135,6 @@ class PlaylistScreen extends GetView<PlayListController> {
           },
           child: const MyIcon(
             icon: Icons.arrow_back_ios,
-            color: Colors.black,
             size: 25,
           ),
         ),
@@ -160,7 +145,6 @@ class PlaylistScreen extends GetView<PlayListController> {
                 child: MyText(
                   text: controller.playlistData.value?.title ?? '',
                   fontSize: 25,
-                  color: Colors.black,
                 ),
               )
             : const Padding(

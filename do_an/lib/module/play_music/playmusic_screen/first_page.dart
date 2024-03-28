@@ -6,9 +6,9 @@ import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skeletons/skeletons.dart';
 
+import '../../../components/icon.dart';
+import '../../../components/text.dart';
 import '../../../const.dart';
-import '../../../refactoring/icon.dart';
-import '../../../refactoring/text.dart';
 
 class FirstPage extends GetView<PlayMusicController> {
   final _controllerUser = Get.put(UserController());
@@ -34,8 +34,7 @@ class FirstPage extends GetView<PlayMusicController> {
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(20)),
                   image: DecorationImage(
-                      image: NetworkImage(
-                          controller.trackData.value?.album?.coverMedium ?? ''),
+                      image: NetworkImage(controller.trackData.value?.album?.coverMedium ?? ''),
                       fit: BoxFit.cover),
                   shape: BoxShape.rectangle,
                 ),
@@ -51,7 +50,7 @@ class FirstPage extends GetView<PlayMusicController> {
             child: Lottie.asset(
               'assets/menody.json',
               height: 50,
-              animate: controller.isPlaying.value,
+              animate: controller.isPlayAnimation.value,
             ),
           ),
         ),
@@ -62,8 +61,8 @@ class FirstPage extends GetView<PlayMusicController> {
             children: [
               GestureDetector(
                 onTap: () {
-                  controller.getLinkSong(context,
-                      controller.trackData.value?.preview ?? '', height);
+                  controller.getLinkSong(
+                      context, controller.trackData.value?.preview ?? '', height);
                 },
                 child: const MyIcon(
                   icon: Icons.share,
@@ -73,12 +72,10 @@ class FirstPage extends GetView<PlayMusicController> {
                 if (controller.trackData.value != null) {
                   return GestureDetector(
                     onTap: () {
-                      Get.toNamed(ARTIST_SCREEN,
-                          arguments: controller.trackData.value?.artist?.id);
+                      Get.toNamed(ARTIST_SCREEN, arguments: controller.trackData.value?.artist?.id);
                     },
-                    child: MyText(
-                        fontSize: 17,
-                        text: controller.trackData.value?.artist?.name ?? ''),
+                    child:
+                        MyText(fontSize: 17, text: controller.trackData.value?.artist?.name ?? ''),
                   );
                 } else {
                   return const SkeletonLine(
@@ -94,11 +91,8 @@ class FirstPage extends GetView<PlayMusicController> {
                 },
                 child: Obx(
                   () => MyIcon(
-                      icon: controller.isFavorite.value
-                          ? Icons.favorite
-                          : Icons.favorite_border,
-                      color:
-                          controller.isFavorite.value ? Colors.purple : null),
+                      icon: controller.isFavorite.value ? Icons.favorite : Icons.favorite_border,
+                      color: controller.isFavorite.value ? Colors.purple : null),
                 ),
               )
             ],
@@ -117,8 +111,7 @@ class FirstPage extends GetView<PlayMusicController> {
                   max: controller.durationInt.value.toDouble(),
                   value: controller.positionInt.value.toDouble(),
                   onChanged: (value) {
-                    controller.audioPlayer
-                        .seek(Duration(seconds: value.toInt()));
+                    controller.audioPlayer.seek(Duration(seconds: value.toInt()));
                   },
                 ),
               ),
@@ -150,8 +143,7 @@ class FirstPage extends GetView<PlayMusicController> {
                 child: Obx(
                   () => MyIcon(
                     icon: Icons.shuffle,
-                    color:
-                        controller.loopListTrack.value ? Colors.purple : null,
+                    color: controller.loopListTrack.value ? Colors.purple : null,
                   ),
                 ),
               ),
@@ -176,9 +168,7 @@ class FirstPage extends GetView<PlayMusicController> {
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         image: AssetImage(
-                          controller.isPlaying.value
-                              ? "assets/pause.png"
-                              : "assets/play.jpg",
+                          controller.isPlaying.value ? "assets/pause.png" : "assets/play.jpg",
                         ),
                         fit: BoxFit.cover,
                       ),
@@ -201,7 +191,7 @@ class FirstPage extends GetView<PlayMusicController> {
                         color: Colors.purple,
                       )
                     : const MyIcon(
-                        icon: Icons.repeat,
+                        icon: Icons.repeat_one,
                       )),
               ),
             ],

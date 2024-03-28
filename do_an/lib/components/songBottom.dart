@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:do_an/const.dart';
 import 'package:do_an/module/play_music/play_music_controller.dart';
 import 'package:flutter/material.dart';
@@ -12,11 +14,12 @@ class SongBottom extends GetView<PlayMusicController> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {'isSongBottom': true});
+        if(controller.trackData.value?.title !=null) {
+          Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {'isSongBottom': true});
+        }
       },
       child: Obx(
         () => Container(
-          color: constColor,
           height: 70,
           child: ListTile(
             leading: Container(
@@ -25,11 +28,13 @@ class SongBottom extends GetView<PlayMusicController> {
               decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(8),
-                  image: DecorationImage(
+                  image: controller
+                              .trackData.value?.album?.coverSmall !=null? DecorationImage(
                       image: NetworkImage(controller
-                              .trackData.value?.album?.coverSmall ??
-                          'https://www.idevice.ro/wp-content/uploads/2015/06/Apple-Music-wallpaper-iPad-150x150.png'),
-                      fit: BoxFit.cover)),
+                              .trackData.value?.album?.coverSmall??'' ),
+                      fit: BoxFit.cover):
+                      DecorationImage(image: AssetImage('assets/bgSong.png'), fit: BoxFit.cover)
+                      ),
             ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,

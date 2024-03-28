@@ -1,8 +1,12 @@
-import 'package:do_an/module/search/search_controller.dart';
-import 'package:do_an/refactoring/icon.dart';
-import 'package:do_an/refactoring/text.dart';
+
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import 'package:do_an/components/icon.dart';
+import 'package:do_an/components/text.dart';
+import 'package:do_an/module/search/search_controller.dart';
 
 import '../const.dart';
 
@@ -22,7 +26,6 @@ class MyAppBarHomePage extends StatelessWidget {
     return AppBar(
       toolbarHeight: 60,
       automaticallyImplyLeading: false, // Tắt nút quay lại
-      backgroundColor: constColor,
       elevation: 0,
       leading: leading,
       leadingWidth: leading == null ? null : width,
@@ -38,10 +41,9 @@ class MyAppBarHomePage extends StatelessWidget {
             child: Center(
               child: Row(
                 children: [
-                  const MyIcon(icon: Icons.search, color: Colors.black),
+                  const MyIcon(icon: Icons.search),
                   MyText(
                     text: 'Search...',
-                    color: Colors.black,
                     fontSize: 18,
                   ),
                 ],

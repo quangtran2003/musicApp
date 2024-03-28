@@ -1,5 +1,7 @@
-import 'package:do_an/refactoring/text.dart';
+import 'package:do_an/components/text.dart';
+import 'package:do_an/const.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 // ignore: must_be_immutable
 class MyContainerAlbum extends StatelessWidget {
@@ -44,8 +46,7 @@ class MyContainerAlbum extends StatelessWidget {
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(boderRadius ?? 16),
                     topRight: Radius.circular(boderRadius ?? 16)),
-                image: DecorationImage(
-                    image: NetworkImage(urlImage), fit: BoxFit.cover)),
+                image: DecorationImage(image: NetworkImage(urlImage), fit: BoxFit.cover)),
           ),
         ),
         Expanded(
@@ -58,7 +59,7 @@ class MyContainerAlbum extends StatelessWidget {
             ),
 
             decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 236, 225, 225),
+                color: Get.isDarkMode ? bottomDarkModeColor : pinkColor,
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(boderRadius ?? 16),
                     bottomRight: Radius.circular(boderRadius ?? 16))),

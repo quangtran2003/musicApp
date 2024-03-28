@@ -2,10 +2,10 @@
 
 import 'package:do_an/const.dart';
 import 'package:do_an/module/album/album_controller.dart';
-import 'package:do_an/refactoring/icon.dart';
-import 'package:do_an/refactoring/skeleton_list_song.dart';
-import 'package:do_an/refactoring/song.dart';
-import 'package:do_an/refactoring/text.dart';
+import 'package:do_an/components/icon.dart';
+import 'package:do_an/components/skeleton_list_song.dart';
+import 'package:do_an/components/song.dart';
+import 'package:do_an/components/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skeletons/skeletons.dart';
@@ -13,7 +13,7 @@ import 'package:skeletons/skeletons.dart';
 import '../play_music/play_music_controller.dart';
 
 class AlbumScreen extends GetView<AlbumController> {
-  final _controllerPlayM = Get.put(PlayMusicController());
+  final _controllerPlayM = Get.find<PlayMusicController>();
 
   AlbumScreen({super.key});
 
@@ -25,7 +25,6 @@ class AlbumScreen extends GetView<AlbumController> {
     final y = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Container(
-        color: constColor,
         child: Column(
           children: [
             _buildAppBar(),
@@ -95,7 +94,6 @@ class AlbumScreen extends GetView<AlbumController> {
             borderRadius: BorderRadius.circular(20), color: Colors.purple),
         child: MyText(
           text: 'Play music now',
-          color: Colors.white,
         ),
       ),
     );
@@ -127,7 +125,6 @@ class AlbumScreen extends GetView<AlbumController> {
 
   AppBar _buildAppBar() {
     return AppBar(
-        backgroundColor: constColor,
         elevation: 0,
         leading: GestureDetector(
           onTap: () {
@@ -135,7 +132,6 @@ class AlbumScreen extends GetView<AlbumController> {
           },
           child: const MyIcon(
             icon: Icons.arrow_back_ios,
-            color: Colors.black,
             size: 25,
           ),
         ),
@@ -146,7 +142,6 @@ class AlbumScreen extends GetView<AlbumController> {
                 child: MyText(
                   text: controller.albumData.value?.title ?? '',
                   fontSize: 25,
-                  color: Colors.black,
                 ),
               )
             : const Padding(

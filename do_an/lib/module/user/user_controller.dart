@@ -1,5 +1,6 @@
 import 'package:do_an/net_working/models/track.dart';
 import 'package:do_an/responstory/all_responstory.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,6 +12,29 @@ class UserController extends GetxController {
   final RxList<TrackModel> historyTracks = RxList.empty();
   final RxList<TrackModel> favouriteTracks = RxList.empty();
   final RxList<TrackModel> playlistTracks = RxList.empty();
+  final userName = RxnString();
+  var isDarkMode = false.obs;
+
+  Future<void> getDarkMode() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    isDarkMode.value = prefs.getBool('isDarkMode')??false;
+  }
+
+  Future changeDarkMode() async{
+    isDarkMode.value = !isDarkMode.value;
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isDarkMode', isDarkMode.value);
+  }
+
+  void getNameUser() {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user != null) {
+        for (final providerProfile in user.providerData) {
+          userName.value = providerProfile.email;
+        }
+      }
+    });
+  }
 
   Future<void> loadHistoryPlay() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -35,10 +59,8 @@ class UserController extends GetxController {
 
   Future<void> getSongHistory() async {
     List<TrackModel?> results = await Future.wait(
-      List.generate(
-          historyPlay.value?.length ?? 0,
-          (index) => _listTrackRespon
-              .getTrack(historyPlay.value?[index].toString() ?? '')),
+      List.generate(historyPlay.value?.length ?? 0,
+          (index) => _listTrackRespon.getTrack(historyPlay.value?[index].toString() ?? '')),
     );
     List<TrackModel> filteredResults =
         results.where((item) => item != null).cast<TrackModel>().toList();
@@ -48,10 +70,8 @@ class UserController extends GetxController {
 
   Future<void> getSongFavourite() async {
     List<TrackModel?> results = await Future.wait(
-      List.generate(
-          favourite.value?.length ?? 0,
-          (index) => _listTrackRespon
-              .getTrack(favourite.value?[index].toString() ?? '')),
+      List.generate(favourite.value?.length ?? 0,
+          (index) => _listTrackRespon.getTrack(favourite.value?[index].toString() ?? '')),
     );
     List<TrackModel> filteredResults =
         results.where((item) => item != null).cast<TrackModel>().toList();
@@ -61,10 +81,8 @@ class UserController extends GetxController {
 
   Future<void> getSongPlaylist() async {
     List<TrackModel?> results = await Future.wait(
-      List.generate(
-          playlist.value?.length ?? 0,
-          (index) => _listTrackRespon
-              .getTrack(playlist.value?[index].toString() ?? '')),
+      List.generate(playlist.value?.length ?? 0,
+          (index) => _listTrackRespon.getTrack(playlist.value?[index].toString() ?? '')),
     );
     List<TrackModel> filteredResults =
         results.where((item) => item != null).cast<TrackModel>().toList();

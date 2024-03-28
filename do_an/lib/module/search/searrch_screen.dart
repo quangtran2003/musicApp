@@ -1,12 +1,12 @@
 // ignore_for_file: invalid_use_of_protected_member, prefer_is_empty
 
+import 'package:do_an/components/icon.dart';
+import 'package:do_an/components/song.dart';
+import 'package:do_an/components/text.dart';
+import 'package:do_an/components/text_field.dart';
 import 'package:do_an/const.dart';
 import 'package:do_an/module/search/search_controller.dart';
 import 'package:do_an/net_working/models/search.dart';
-import 'package:do_an/refactoring/icon.dart';
-import 'package:do_an/refactoring/song.dart';
-import 'package:do_an/refactoring/text.dart';
-import 'package:do_an/refactoring/text_field.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,7 +14,7 @@ import 'package:get/get.dart';
 import '../play_music/play_music_controller.dart';
 
 class SearchScreen extends GetView<ControllerSearch> {
-  final _controllerPlayM = Get.put(PlayMusicController());
+  final _controllerPlayM = Get.find<PlayMusicController>();
 
   SearchScreen({super.key});
 
@@ -27,7 +27,6 @@ class SearchScreen extends GetView<ControllerSearch> {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 100,
-        backgroundColor: Colors.white,
         elevation: 0,
         leading: GestureDetector(
           onTap: () {
@@ -35,8 +34,7 @@ class SearchScreen extends GetView<ControllerSearch> {
           },
           child: const Padding(
             padding: EdgeInsets.only(bottom: 10),
-            child:
-                MyIcon(icon: Icons.arrow_back_ios_rounded, color: Colors.black),
+            child: MyIcon(icon: Icons.arrow_back_ios_rounded),
           ),
         ),
         actions: [
@@ -45,18 +43,17 @@ class SearchScreen extends GetView<ControllerSearch> {
             child: SizedBox(
                 width: y * 4.3 / 5,
                 child: MyTextField(
-                  textColor: Colors.black,
+                  autoFocus: true,
                   textHint: 'Enter your song',
+                  textColor: Get.isDarkMode ? Colors.white : Colors.black,
                   onChange: (value) async {
-                    EasyDebounce.debounce(
-                        'my-debouncer', const Duration(milliseconds: 300),
+                    EasyDebounce.debounce('my-debouncer', const Duration(milliseconds: 300),
                         () async {
                       await controller.getSearch(value);
                     });
                   },
                   onEditingComplete: () {
-                    controller
-                        .saveSearchHistory(controller.resultSearch.value ?? '');
+                    controller.saveSearchHistory(controller.resultSearch.value ?? '');
                     Get.toNamed(ENTER_SEARCH_SCREEN);
                   },
                 )),
@@ -69,13 +66,11 @@ class SearchScreen extends GetView<ControllerSearch> {
           physics: const NeverScrollableScrollPhysics(),
           child: Container(
             height: x,
-            color: Colors.white,
             child: Column(
               children: [
                 Obx(() {
                   final value = controller.searchData.value;
-                  if (controller.checkData.value == null ||
-                      value?.data?.length == 0) {
+                  if (controller.checkData.value == null || value?.data?.length == 0) {
                     return _buildHistory();
                   }
                   if (value == null) {
@@ -107,7 +102,7 @@ class SearchScreen extends GetView<ControllerSearch> {
                 onTap: () {
                   controller.saveSearchHistory(value.data?[index].title ?? '');
                   _controllerPlayM.stopMusic();
-
+                  Get.close(0);
                   Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
                     'songId': value.data?[index].id,
                     'listTrack': controller.tracks.value,
@@ -148,8 +143,7 @@ class SearchScreen extends GetView<ControllerSearch> {
                       onTap: () async {
                         controller.uniqueAlbums.clear();
                         controller.uniqueArtists.clear();
-                        controller.getSearch(
-                            controller.dataHistory.value?[index] ?? '');
+                        controller.getSearch(controller.dataHistory.value?[index] ?? '');
 
                         Get.toNamed(ENTER_SEARCH_SCREEN);
                       },
@@ -161,8 +155,7 @@ class SearchScreen extends GetView<ControllerSearch> {
                           ),
                           title: Container(
                             alignment: Alignment.centerLeft,
-                            child: MyText(
-                                text: controller.dataHistory.value![index]),
+                            child: MyText(text: controller.dataHistory.value![index]),
                           )),
                     );
                   }),

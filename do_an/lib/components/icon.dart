@@ -7,7 +7,7 @@ class MyIcon extends StatelessWidget {
 
   const MyIcon({
     Key? key,
-    this.color = Colors.black87,
+    this.color ,
     this.size,
     required this.icon,
   }) : super(key: key);

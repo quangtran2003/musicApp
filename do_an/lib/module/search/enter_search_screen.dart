@@ -1,10 +1,10 @@
 // ignore_for_file: invalid_use_of_protected_member, prefer_is_empty
 
 import 'package:do_an/const.dart';
-import 'package:do_an/refactoring/container_album.dart';
-import 'package:do_an/refactoring/icon.dart';
-import 'package:do_an/refactoring/song.dart';
-import 'package:do_an/refactoring/text.dart';
+import 'package:do_an/components/container_album.dart';
+import 'package:do_an/components/icon.dart';
+import 'package:do_an/components/song.dart';
+import 'package:do_an/components/text.dart';
 import 'package:do_an/module/search/search_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,7 +13,7 @@ import '../play_music/play_music_controller.dart';
 
 // ignore: must_be_immutable
 class EnterSearchScreen extends GetView<ControllerSearch> {
-  final _controllerPlayM = Get.put(PlayMusicController());
+  final _controllerPlayM = Get.find<PlayMusicController>();
   final PageController _pageController = PageController(initialPage: 0);
   EnterSearchScreen({super.key});
 
@@ -22,7 +22,6 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
     controller.initIndex();
     return Scaffold(
       body: Container(
-        color: constColor,
         child: Column(
           children: [_buildAppBar(), _buildBody()],
         ),
@@ -55,8 +54,6 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
   AppBar _buildAppBar() {
     return AppBar(
       toolbarHeight: 60,
-      elevation: 1,
-      backgroundColor: constColor,
       automaticallyImplyLeading: false,
       leading: GestureDetector(
         onTap: () {
@@ -65,7 +62,6 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
         },
         child: const MyIcon(
           icon: Icons.arrow_back_ios,
-          color: Colors.black,
         ),
       ),
       title: Container(
@@ -126,7 +122,6 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
                               Text('${controller.uniqueArtists[index]?.name}')),
                       const MyIcon(
                         icon: Icons.navigate_next_outlined,
-                        color: Colors.black,
                         size: 25,
                       )
                     ],
@@ -194,7 +189,7 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
                       color:
                           // ignore: unrelated_type_equality_checks
                           index == controller.indexTitle.value
-                              ? Colors.black
+                              ? Get.isDarkMode? Colors.white: Colors.black
                               : Colors.grey),
                 ),
                 // ignore: unrelated_type_equality_checks

@@ -24,7 +24,9 @@ import 'package:do_an/module/user/user_binding.dart';
 import 'package:do_an/module/user/user_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'module/album/album_screen.dart';
 import 'module/chart/chart_binding.dart';
@@ -36,6 +38,12 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   HttpOverrides.global = MyHttpOverrides();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final isDarkMode = prefs.getBool('isDarkMode') ?? false;
+    Get.changeTheme(!isDarkMode ? ThemeData.light() : ThemeData.dark());
   runApp(const MyApp());
 }
 
@@ -50,8 +58,11 @@ class MyHttpOverrides extends HttpOverrides {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+ 
   @override
   Widget build(BuildContext context) {
+    FlutterNativeSplash.remove();
+
     return GetMaterialApp(
       initialRoute: LOGIN_SCREEN,
       getPages: [

@@ -1,19 +1,19 @@
 // ignore_for_file: invalid_use_of_protected_member, override_on_non_overriding_member
 
+import 'package:do_an/components/appBar.dart';
+import 'package:do_an/components/container_album.dart';
+import 'package:do_an/components/divider.dart';
+import 'package:do_an/components/song.dart';
+import 'package:do_an/components/text.dart';
 import 'package:do_an/const.dart';
 import 'package:do_an/module/home_screen/homecontroller.dart';
-import 'package:do_an/refactoring/appBar.dart';
-import 'package:do_an/refactoring/container_album.dart';
-import 'package:do_an/refactoring/song.dart';
-import 'package:do_an/refactoring/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../play_music/play_music_controller.dart';
 
 class HomeScreen extends GetView<HomeController> {
-  final _controllerPlayM = Get.put(PlayMusicController());
-
+  final _controllerPlayM = Get.find<PlayMusicController>();
   HomeScreen({super.key});
   @override
   void onInit() {
@@ -27,7 +27,6 @@ class HomeScreen extends GetView<HomeController> {
     final x = MediaQuery.of(context).size.height;
     return Scaffold(
         body: Container(
-      color: constColor,
       child: Column(
         children: [_buildAppBar(), _buildListArtist(x), _buildListSong()],
       ),
@@ -47,32 +46,36 @@ class HomeScreen extends GetView<HomeController> {
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
           ),
-          Expanded(child: Obx(() {
-            return Container(
-              padding: const EdgeInsets.only(left: 25, right: 20),
-              child: ListView.builder(
-                itemCount: controller.tracks.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      _controllerPlayM.stopMusic();
-
-                      Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
-                        'songId': controller.tracks[index].id,
-                        'listTrack': controller.tracks.value,
-                        'listIdSong': controller.listIdSong
-                      });
+          Expanded(
+            child: Obx(
+              () {
+                return Container(
+                  padding: const EdgeInsets.only(left: 25, right: 20),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: controller.tracks.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          _controllerPlayM.stopMusic();
+                          Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
+                            'songId': controller.tracks[index].id,
+                            'listTrack': controller.tracks.value,
+                            'listIdSong': controller.listIdSong
+                          });
+                        },
+                        child: MySong(
+                          url: controller.tracks[index].album?.coverSmall,
+                          title: controller.tracks[index].title,
+                          subTitle: controller.tracks[index].artist?.name,
+                        ),
+                      );
                     },
-                    child: MySong(
-                      url: controller.tracks[index].album?.coverSmall,
-                      title: controller.tracks[index].title,
-                      subTitle: controller.tracks[index].artist?.name,
-                    ),
-                  );
-                },
-              ),
-            );
-          })),
+                  ),
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -104,12 +107,10 @@ class HomeScreen extends GetView<HomeController> {
                   final data = controller.artists[index];
                   return GestureDetector(
                     onTap: () {
-                      Get.toNamed(ARTIST_SCREEN,
-                          arguments: data.data?[0].artist?.id);
+                      Get.toNamed(ARTIST_SCREEN, arguments: data.data?[0].artist?.id);
                     },
                     child: MyContainerAlbum(
-                        urlImage:
-                            data.data?[0].contributors?[0].pictureMedium ?? '',
+                        urlImage: data.data?[0].contributors?[0].pictureMedium ?? '',
                         boderRadius: 20,
                         mytext: MyText(
                           text: data.data?[0].contributors?[0].name ?? '',
@@ -133,16 +134,11 @@ class HomeScreen extends GetView<HomeController> {
               margin: const EdgeInsets.only(top: 20),
               child: MyText(
                 text: 'Listen now',
-                color: Colors.black,
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
               )),
         ),
-        Container(
-          height: 0.8,
-          color: Colors.black54,
-          margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-        ),
+        MyDivider()
       ],
     );
   }

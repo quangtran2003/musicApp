@@ -14,7 +14,6 @@ class AlbumController extends GetxController {
   Future<void> getAlbum(int id) async {
     final value = await _respon.getAlbum(id.toString());
     albumData.value = value;
-//get List track
     tracks.clear();
     final size = albumData.value?.tracks?.data?.length;
     if (size != null) {

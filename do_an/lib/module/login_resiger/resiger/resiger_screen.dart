@@ -1,7 +1,7 @@
+import 'package:do_an/components/text.dart';
+import 'package:do_an/components/text_field.dart';
 import 'package:do_an/const.dart';
 import 'package:do_an/module/login_resiger/resiger/resiger_controller.dart';
-import 'package:do_an/refactoring/text.dart';
-import 'package:do_an/refactoring/text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,7 +17,7 @@ class Resiger extends GetView<ResigerController> {
         child: Container(
           height: x,
           width: y,
-          color: const Color.fromARGB(255, 245, 229, 246),
+          color: Get.isDarkMode ? Theme.of(context).scaffoldBackgroundColor : const Color.fromARGB(255, 245, 229, 246),
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Column(
             children: [
@@ -26,15 +26,13 @@ class Resiger extends GetView<ResigerController> {
                 alignment: Alignment.bottomLeft,
                 child: const Text(
                   'Resiger',
-                  style: TextStyle(
-                      color: Colors.purple,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold),
+                  style: TextStyle(color: Colors.purple, fontSize: 25, fontWeight: FontWeight.bold),
                 ),
               ),
               Obx(
                 () => MyTextField(
                   textHint: 'Enter your email',
+                  textColor: Colors.purple,
                   errorText: controller.emailError.value,
                   onChange: (value) {
                     controller.validateEmail(value);
@@ -45,6 +43,7 @@ class Resiger extends GetView<ResigerController> {
               Obx(
                 () => MyTextField(
                   textHint: 'Pass word',
+                  textColor: Colors.purple,
                   hasPass: true,
                   errorText: controller.passWordError.value,
                   onChange: (value) {
@@ -57,6 +56,7 @@ class Resiger extends GetView<ResigerController> {
                 () => MyTextField(
                   textHint: 'Confrim pass word',
                   hasPass: true,
+                  textColor: Colors.purple,
                   errorText: controller.confrimPassWordError.value,
                   onChange: (value) {
                     controller.validateConfrimPassWord(value);
@@ -64,7 +64,7 @@ class Resiger extends GetView<ResigerController> {
                   },
                 ),
               ),
-              _buildBottomResiger(x),
+              _buildBottomResiger(x, context),
             ],
           ),
         ),
@@ -72,14 +72,16 @@ class Resiger extends GetView<ResigerController> {
     );
   }
 
-  Obx _buildBottomResiger(double x) {
+  Obx _buildBottomResiger(
+    double x,
+    BuildContext context,
+  ) {
     return Obx(
       () => GestureDetector(
         onTap: () {
-          controller.createAcc(
-              controller.email.value ?? '', controller.passWord.value ?? '');
+          controller.createAcc(controller.email.value ?? '', controller.passWord.value ?? '');
           if (controller.checkResiger.value) {
-            Get.toNamed(MAIN_SCREEN);
+            Navigator.pushReplacementNamed(context, MAIN_SCREEN);
           }
         },
         child: Container(
@@ -88,8 +90,7 @@ class Resiger extends GetView<ResigerController> {
           width: double.infinity,
           decoration: BoxDecoration(
               color: controller.checkResiger.value ? Colors.purple : null,
-              border: Border.all(
-                  width: 1, color: const Color.fromARGB(255, 104, 104, 104)),
+              border: Border.all(width: 1, color: const Color.fromARGB(255, 104, 104, 104)),
               borderRadius: BorderRadius.circular(20)),
           child: Center(
             child: MyText(

@@ -1,19 +1,20 @@
 // ignore_for_file: prefer_is_empty
 
+import 'package:do_an/components/divider.dart';
+import 'package:do_an/components/icon.dart';
+import 'package:do_an/components/song.dart';
+import 'package:do_an/components/text.dart';
 import 'package:do_an/const.dart';
 import 'package:do_an/module/play_music/play_music_controller.dart';
+import 'package:do_an/module/search/search_controller.dart';
 import 'package:do_an/module/user/user_controller.dart';
 import 'package:do_an/net_working/models/track.dart';
-import 'package:do_an/refactoring/appBar.dart';
-import 'package:do_an/refactoring/icon.dart';
-import 'package:do_an/refactoring/song.dart';
-import 'package:do_an/refactoring/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class UserScreen extends GetView<UserController> {
-  final _controllerPlayM = Get.put(PlayMusicController());
-
+  final _controllerPlayM = Get.find<PlayMusicController>();
+  final controllerSearch = Get.find<ControllerSearch>();
   UserScreen({super.key});
 
   @override
@@ -21,33 +22,141 @@ class UserScreen extends GetView<UserController> {
     controller.loadHistoryPlay();
     controller.loadPlaylist();
     controller.loadfavourite();
+    controller.getNameUser();
+    controller.getDarkMode();
     final x = MediaQuery.of(context).size.height;
     return Scaffold(
-        body: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      color: constColor,
-      child: Column(children: [
-        _buildAppBar(),
-        _buidGridView(context, x),
-        _buildHistoryPlay()
-      ]),
-    ));
-  }
-
-  Container _buidGridView(BuildContext context, double x) {
-    return Container(
-      height: 200,
-      margin: const EdgeInsets.all(15),
-      child: GridView(
-        gridDelegate:
-            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-        children: [
-          Obx(() => _buildMyContainer('PlayList', context, x,
-              controller.playlistTracks, controller.playlist.value)),
-          Obx(() => _buildMyContainer('Favourite', context, x,
-              controller.favouriteTracks, controller.favourite.value))
+      appBar: AppBar(
+        toolbarHeight: 80,
+        title: MyText(
+          text: 'Me',
+          fontSize: 32,
+          fontWeight: FontWeight.bold,
+        ),
+        actions: [
+          GestureDetector(
+            onTap: () {
+              controllerSearch.restartData();
+              Get.toNamed(SEARCH_SCREEN);
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(right: 20),
+              child: Center(
+                child: Row(
+                  children: [
+                    const MyIcon(icon: Icons.search),
+                    MyText(
+                      text: 'Search...',
+                      fontSize: 18,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
         ],
       ),
+      body: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          children: [
+            Column(
+              children: [MyDivider()],
+            ),
+            _buidGridView(context, x),
+            _buildHistoryPlay(),
+          ],
+        ),
+      ),
+      drawer: Drawer(
+        child: Obx(
+          () => ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                decoration: BoxDecoration(),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: Icon(
+                        Icons.person,
+                        size: 30,
+                      ),
+                    ),
+                    Flexible(
+                        child: Text(
+                      controller.userName.value ?? 'Unknown',
+                    ))
+                  ],
+                ),
+              ),
+              ListTile(
+                title: Text('Dark mode'),
+                onTap: () {
+                  controller.changeDarkMode();
+                  Get.changeTheme(Get.isDarkMode ? ThemeData.light() : ThemeData.dark());
+                },
+                trailing: Stack(
+                  alignment: controller.isDarkMode.value == false
+                      ? Alignment.centerLeft
+                      : Alignment.centerRight,
+                  children: [
+                    Container(
+                      height: 25,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          color: controller.isDarkMode.value == true ? Colors.purple : Colors.grey,
+                          borderRadius: BorderRadius.circular(20)),
+                    ),
+                    Container(
+                      height: 25,
+                      width: 25,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              MyDivider(
+                top: 0,
+                bottom: 0,
+              ),
+              ListTile(
+                title: Text('Log out'),
+                trailing: Icon(
+                  Icons.output,
+                  size: 27,
+                ),
+                onTap: () {
+                  showModalBottomSheet(
+                      backgroundColor: Colors.transparent,
+                      context: context,
+                      builder: (builderContext) {
+                        return _buildNotification('text', 0, true, context);
+                      });
+                  // Get.toNamed(LOGIN_SCREEN); // Đóng drawer
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buidGridView(BuildContext context, double x) {
+    return GridView(
+      shrinkWrap: true,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+      children: [
+        Obx(() => _buildMyContainer(
+            'PlayList', context, x, controller.playlistTracks, controller.playlist.value)),
+        Obx(() => _buildMyContainer(
+            'Favourite', context, x, controller.favouriteTracks, controller.favourite.value))
+      ],
     );
   }
 
@@ -66,7 +175,7 @@ class UserScreen extends GetView<UserController> {
           Expanded(
             child: Obx(() {
               if (controller.historyTracks.length == 0) {
-                return MyText(text: 'No result!');
+                return Center(child: MyText(text: 'No result!'));
               } else {
                 return ListView.builder(
                     itemCount: controller.historyTracks.length,
@@ -74,10 +183,9 @@ class UserScreen extends GetView<UserController> {
                       return GestureDetector(
                         onTap: () {
                           _controllerPlayM.stopMusic();
-                          List<int> intList = controller.historyPlay.value
-                                  ?.map((str) => int.parse(str))
-                                  .toList() ??
-                              [];
+                          List<int> intList =
+                              controller.historyPlay.value?.map((str) => int.parse(str)).toList() ??
+                                  [];
                           Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
                             'songId': controller.historyTracks[index].id,
                             'listTrack': controller.historyTracks,
@@ -85,11 +193,9 @@ class UserScreen extends GetView<UserController> {
                           });
                         },
                         child: MySong(
-                          url:
-                              controller.historyTracks[index].album?.coverSmall,
+                          url: controller.historyTracks[index].album?.coverSmall,
                           title: controller.historyTracks[index].title,
-                          subTitle:
-                              controller.historyTracks[index].artist?.name,
+                          subTitle: controller.historyTracks[index].artist?.name,
                         ),
                       );
                     });
@@ -101,33 +207,8 @@ class UserScreen extends GetView<UserController> {
     );
   }
 
-  Column _buildAppBar() {
-    return Column(
-      children: [
-        MyAppBarHomePage(
-          title: Container(
-            margin: const EdgeInsets.only(top: 20),
-            child: GestureDetector(
-              onTap: () => Get.toNamed(LOGIN_SCREEN),
-              child: MyText(
-                text: 'Log out',
-                color: Colors.black,
-                fontSize: 20,
-              ),
-            ),
-          ),
-        ),
-        Container(
-          height: 0.8,
-          color: Colors.black54,
-          margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMyContainer(String text, BuildContext context, double x,
-      RxList<TrackModel> tracks, List<String>? listId) {
+  Widget _buildMyContainer(String text, BuildContext context, double x, RxList<TrackModel> tracks,
+      List<String>? listId) {
     return GestureDetector(
       onTap: () {
         showModalBottomSheet(
@@ -135,20 +216,20 @@ class UserScreen extends GetView<UserController> {
             backgroundColor: Colors.transparent,
             context: context,
             builder: (builderContext) {
-              return _buildBottomSheet(x, text, tracks, listId);
+              return _buildBottomSheet(x, text, tracks, listId, context);
             });
       },
       child: Container(
         alignment: Alignment.bottomCenter,
         margin: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
+            color: Theme.of(context).scaffoldBackgroundColor,
+            boxShadow: const [
               BoxShadow(
-                color: Colors.grey.shade400,
-                offset: const Offset(3, 1),
+                color: Colors.grey,
+                offset: Offset(0, 2), // Điều chỉnh offset để bóng xuất hiện dưới phần tử
                 blurRadius: 3,
-                spreadRadius: 5,
+                spreadRadius: -1, // Đặt giá trị âm để đổ bóng chỉ phía dưới
               ),
             ],
             borderRadius: const BorderRadius.all(Radius.circular(16))),
@@ -158,9 +239,7 @@ class UserScreen extends GetView<UserController> {
               alignment: Alignment.centerRight,
               margin: const EdgeInsets.all(8.0),
               child: MyIcon(
-                icon: text == 'Favourite'
-                    ? Icons.favorite
-                    : Icons.playlist_play_sharp,
+                icon: text == 'Favourite' ? Icons.favorite : Icons.playlist_play_sharp,
                 color: Colors.purple,
                 size: 40,
               ),
@@ -191,13 +270,14 @@ class UserScreen extends GetView<UserController> {
     );
   }
 
-  SafeArea _buildBottomSheet(
-      double x, String text, RxList<TrackModel> tracks, List<String>? listId) {
+  SafeArea _buildBottomSheet(double x, String text, RxList<TrackModel> tracks, List<String>? listId,
+      BuildContext context) {
     return SafeArea(
         child: Container(
       height: x * 3 / 4,
       decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(16)),
+          borderRadius: BorderRadius.circular(16),
+          color: Theme.of(context).scaffoldBackgroundColor),
       child: Column(
         children: [
           const Center(
@@ -221,14 +301,14 @@ class UserScreen extends GetView<UserController> {
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple,
-                  minimumSize: const Size(double.infinity, 40),
-                  foregroundColor: Colors.white),
+                backgroundColor: Colors.purple,
+                minimumSize: const Size(double.infinity, 40),
+                foregroundColor: Colors.white,
+              ),
               child: GestureDetector(
                   onTap: () {
                     _controllerPlayM.stopMusic();
-                    List<int> intList =
-                        listId?.map((str) => int.parse(str)).toList() ?? [];
+                    List<int> intList = listId?.map((str) => int.parse(str)).toList() ?? [];
                     Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
                       'songId': tracks[0].id,
                       'listTrack': tracks,
@@ -248,9 +328,7 @@ class UserScreen extends GetView<UserController> {
                       return GestureDetector(
                         onTap: () {
                           _controllerPlayM.stopMusic();
-                          List<int> intList =
-                              listId?.map((str) => int.parse(str)).toList() ??
-                                  [];
+                          List<int> intList = listId?.map((str) => int.parse(str)).toList() ?? [];
                           Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
                             'songId': tracks[index].id,
                             'listTrack': tracks,
@@ -265,7 +343,7 @@ class UserScreen extends GetView<UserController> {
                                   backgroundColor: Colors.transparent,
                                   context: context,
                                   builder: (builderContext) {
-                                    return _buildNotification(text, index);
+                                    return _buildNotification(text, index, false, context);
                                   });
                             },
                             child: const Icon(Icons.delete),
@@ -282,80 +360,95 @@ class UserScreen extends GetView<UserController> {
     ));
   }
 
-  SafeArea _buildNotification(String text, int index) {
-    return SafeArea(
-      child: Container(
-        margin: const EdgeInsets.fromLTRB(20, 20, 20, 40),
-        decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(16)),
-        height: 150,
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Text(
-                'Notification',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-            ),
-            const Text('Confirm deletion?'),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Expanded(
-                    child: Container(
-                      height: 35,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Colors.grey,
+  Widget _buildNotification(String? text, int index, bool? isLogOut, BuildContext context) {
+    return Container(
+      color: Colors.transparent,
+      padding: const EdgeInsets.fromLTRB(20, 40, 20, 40),
+      child: Wrap(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: Get.isDarkMode ? Colors.black : Theme.of(context).scaffoldBackgroundColor),
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text(
+                    isLogOut == true ? 'Confirm Log Out?' : 'Notification',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                ),
+                isLogOut == true
+                    ? SizedBox()
+                    : MyText(
+                        text: 'Confirm deletion?',
+                        fontWeight: FontWeight.bold,
                       ),
-                      child: Center(
-                        child: GestureDetector(
-                          onTap: () {
-                            Get.back();
-                          },
-                          child: const Text(
-                            'Cancel',
-                            style: TextStyle(fontSize: 20, color: Colors.white),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: 35,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.grey.shade500,
+                          ),
+                          child: Center(
+                            child: GestureDetector(
+                              onTap: () {
+                                Get.back();
+                              },
+                              child: const Text(
+                                'Cancel',
+                                style: TextStyle(fontSize: 20, color: Colors.white),
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Expanded(
-                    child: Container(
-                      height: 35,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Colors.red,
+                      const SizedBox(
+                        width: 20,
                       ),
-                      child: Center(
-                        child: GestureDetector(
-                          onTap: () {
-                            text == "Favourite"
-                                ? controller.deletefavourite(index)
-                                : controller.deletePlaylist(index);
+                      Expanded(
+                        child: Container(
+                          height: 35,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: const Color.fromARGB(255, 252, 17, 0),
+                          ),
+                          child: Center(
+                            child: GestureDetector(
+                              onTap: () {
+                                if (isLogOut == true) {
+                                  Navigator.pushReplacementNamed(context, LOGIN_SCREEN);
+                                } else {
+                                  text == "Favourite"
+                                      ? controller.deletefavourite(index)
+                                      : controller.deletePlaylist(index);
 
-                            Get.back();
-                          },
-                          child: const Text(
-                            'Contiune',
-                            style: TextStyle(fontSize: 20, color: Colors.white),
+                                  Get.back();
+                                }
+                              },
+                              child: const Text(
+                                'Contiune',
+                                style: TextStyle(fontSize: 20, color: Colors.white),
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
-            )
-          ],
-        ),
+                )
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

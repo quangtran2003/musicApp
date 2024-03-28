@@ -1,19 +1,19 @@
 // ignore_for_file: invalid_use_of_protected_member
 
 import 'package:do_an/module/artist/artist_controller.dart';
-import 'package:do_an/refactoring/skeleton_list_song.dart';
-import 'package:do_an/refactoring/song.dart';
+import 'package:do_an/components/skeleton_list_song.dart';
+import 'package:do_an/components/song.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skeletons/skeletons.dart';
 
 import '../../const.dart';
-import '../../refactoring/icon.dart';
-import '../../refactoring/text.dart';
+import '../../components/icon.dart';
+import '../../components/text.dart';
 import '../play_music/play_music_controller.dart';
 
 class ArtistScreen extends GetView<ArtistController> {
-  final _controllerPlayM = Get.put(PlayMusicController());
+  final _controllerPlayM = Get.find<PlayMusicController>();
   ArtistScreen({super.key});
 
   @override
@@ -26,7 +26,6 @@ class ArtistScreen extends GetView<ArtistController> {
 
     return Scaffold(
       body: Container(
-        color: constColor,
         child: Column(
           children: [
             _buildAppBar(),
@@ -129,7 +128,6 @@ class ArtistScreen extends GetView<ArtistController> {
 
   AppBar _buildAppBar() {
     return AppBar(
-        backgroundColor: constColor,
         elevation: 0,
         leading: GestureDetector(
           onTap: () {
@@ -137,7 +135,6 @@ class ArtistScreen extends GetView<ArtistController> {
           },
           child: const MyIcon(
             icon: Icons.arrow_back_ios,
-            color: Colors.black,
             size: 25,
           ),
         ),
@@ -148,7 +145,6 @@ class ArtistScreen extends GetView<ArtistController> {
                 child: MyText(
                   text: controller.artistData.value?.name ?? '',
                   fontSize: 25,
-                  color: Colors.black,
                 ),
               )
             : Container(

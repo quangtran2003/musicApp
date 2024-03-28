@@ -1,19 +1,20 @@
 // ignore_for_file: invalid_use_of_protected_member
 
+import 'package:do_an/components/appBar.dart';
+import 'package:do_an/components/divider.dart';
+import 'package:do_an/components/song.dart';
+import 'package:do_an/components/text.dart';
 import 'package:do_an/module/chart/chart_controller.dart';
-import 'package:do_an/refactoring/appBar.dart';
-import 'package:do_an/refactoring/song.dart';
-import 'package:do_an/refactoring/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skeletons/skeletons.dart';
 
+import '../../components/container_album.dart';
 import '../../const.dart';
-import '../../refactoring/container_album.dart';
 import '../play_music/play_music_controller.dart';
 
 class ChartScreen extends GetView<ChartController> {
-  final _controllerPlayM = Get.put(PlayMusicController());
+  final _controllerPlayM = Get.find<PlayMusicController>();
 
   ChartScreen({super.key});
 
@@ -25,7 +26,6 @@ class ChartScreen extends GetView<ChartController> {
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.only(left: 15),
-          color: constColor,
           child: Column(
             children: [
               _buildAppBar(y),
@@ -114,8 +114,7 @@ class ChartScreen extends GetView<ChartController> {
                 itemCount: 10,
                 itemBuilder: (context, index) {
                   return Container(
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(16)),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
                   );
                 },
               ),
@@ -132,14 +131,11 @@ class ChartScreen extends GetView<ChartController> {
                     {
                       return GestureDetector(
                         onTap: () {
-                          Get.toNamed(PLAYLIST_SCREEN,
-                              arguments: value.playlists?.data?[index].id);
+                          Get.toNamed(PLAYLIST_SCREEN, arguments: value.playlists?.data?[index].id);
                         },
                         child: MyContainerAlbum(
                             width: 180,
-                            urlImage:
-                                value.playlists?.data?[index].pictureMedium ??
-                                    '',
+                            urlImage: value.playlists?.data?[index].pictureMedium ?? '',
                             boderRadius: 16,
                             mytext: MyText(
                               text: value.playlists?.data?[index].title ?? '',
@@ -179,8 +175,7 @@ class ChartScreen extends GetView<ChartController> {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
-                        Get.toNamed(ARTIST_SCREEN,
-                            arguments: value.artists?.data?[index].id);
+                        Get.toNamed(ARTIST_SCREEN, arguments: value.artists?.data?[index].id);
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -205,8 +200,7 @@ class ChartScreen extends GetView<ChartController> {
                                   maxLine: 1,
                                   fontSize: 16,
                                   text: controller.shortenText(
-                                      value.artists?.data?[index].name ?? '',
-                                      10))),
+                                      value.artists?.data?[index].name ?? '', 10))),
                         ],
                       ),
                     );
@@ -236,21 +230,15 @@ class ChartScreen extends GetView<ChartController> {
     return Column(
       children: [
         MyAppBarHomePage(
-          leading: Container(
-            margin: const EdgeInsets.only(top: 15),
-            decoration: const BoxDecoration(
-                image: DecorationImage(
-              image: AssetImage('assets/chart.png'),
-              fit: BoxFit.cover,
-            )),
-          ),
-          width: y * 2 / 5,
+          title: Container(
+              margin: const EdgeInsets.only(top: 20),
+              child: MyText(
+                text: 'CHART',
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+              )),
         ),
-        Container(
-          height: 0.8,
-          color: Colors.black54,
-          margin: const EdgeInsets.fromLTRB(5, 20, 20, 0),
-        ),
+        MyDivider()
       ],
     );
   }

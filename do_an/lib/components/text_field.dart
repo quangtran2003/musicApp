@@ -8,6 +8,8 @@ class MyTextField extends StatefulWidget {
   final String? errorText;
   final Function(String)? onChange;
   final VoidCallback? onEditingComplete;
+  final bool? autoFocus;
+
   const MyTextField({
     Key? key,
     this.textHint,
@@ -17,6 +19,7 @@ class MyTextField extends StatefulWidget {
     this.textColor,
     this.hasPrefixIcon,
     this.onEditingComplete,
+    this.autoFocus = false,
   }) : super(key: key);
 
   @override
@@ -25,9 +28,19 @@ class MyTextField extends StatefulWidget {
 
 class _MyTextFieldState extends State<MyTextField> {
   bool checkPass = false;
+  final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -37,14 +50,15 @@ class _MyTextFieldState extends State<MyTextField> {
       child: Column(
         children: [
           TextField(
+            autofocus: widget.autoFocus?? false,
+            focusNode: _focusNode,
+            controller: _controller,
             onEditingComplete: widget.onEditingComplete,
             onChanged: widget.onChange,
             style: TextStyle(color: widget.textColor, fontSize: 17),
             obscureText: widget.hasPass != null ? !checkPass : checkPass,
             decoration: InputDecoration(
-                prefixIcon: widget.hasPrefixIcon != null
-                    ? const Icon(Icons.search)
-                    : null,
+                prefixIcon: widget.hasPrefixIcon != null ? const Icon(Icons.search) : null,
                 hintText: widget.textHint,
                 focusColor: Colors.purple,
                 fillColor: const Color.fromARGB(255, 195, 75, 216),
@@ -57,8 +71,7 @@ class _MyTextFieldState extends State<MyTextField> {
                                 checkPass = !checkPass;
                               });
                             },
-                            icon: const Icon(Icons.visibility_outlined,
-                                color: Colors.purple))
+                            icon: const Icon(Icons.visibility_outlined, color: Colors.purple))
                         : IconButton(
                             onPressed: () {
                               setState(() {
@@ -70,13 +83,10 @@ class _MyTextFieldState extends State<MyTextField> {
                               color: Colors.purple,
                             ))
                     : null,
-                hintStyle: TextStyle(
-                    color: widget.textColor ?? Colors.purple, fontSize: 18),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 17),
+                hintStyle: TextStyle(color: widget.textColor ?? Colors.purple, fontSize: 18),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 17),
                 border: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: widget.textColor ?? Colors.purple),
+                    borderSide: BorderSide(color: widget.textColor ?? Colors.purple),
                     borderRadius: BorderRadius.circular(20))),
           ),
           if (widget.errorText != null)

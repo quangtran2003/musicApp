@@ -7,14 +7,16 @@ import 'package:do_an/module/home_screen/homecontroller.dart';
 import 'package:do_an/module/main/main_controller.dart';
 import 'package:do_an/module/user/user_controller.dart';
 import 'package:do_an/module/user/user_screen.dart';
-import 'package:do_an/refactoring/songBottom.dart';
+import 'package:do_an/components/songBottom.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 
 class MainScreen extends GetView<MainController> {
   final _controller = Get.put(HomeController());
   final _controller1 = Get.put(ChartController());
   final _controller2 = Get.put(UserController());
+
 
   MainScreen({super.key});
   final _pageController = PageController(initialPage: 0);
@@ -40,6 +42,7 @@ class MainScreen extends GetView<MainController> {
 
   @override
   Widget build(BuildContext context) {
+    FlutterNativeSplash.remove();
     return Scaffold(
       body: PageView(
         controller: _pageController,
@@ -54,11 +57,9 @@ class MainScreen extends GetView<MainController> {
           const SongBottom(),
           Obx(
             () => Container(
-              color: Colors.white,
               child: BottomNavigationBar(
                 selectedItemColor: Colors.purple,
                 showSelectedLabels: true,
-                backgroundColor: Colors.white,
                 elevation: 0,
                 items: navItems,
                 currentIndex: controller.selectIndex.value,

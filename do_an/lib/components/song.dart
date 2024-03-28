@@ -17,7 +17,7 @@ class MySong extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return title==null? SizedBox():Container(
       child: ListTile(
         leading: iconLeading == null
             ? Container(
