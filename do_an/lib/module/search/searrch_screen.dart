@@ -14,7 +14,7 @@ import 'package:get/get.dart';
 import '../play_music/play_music_controller.dart';
 
 class SearchScreen extends GetView<ControllerSearch> {
-  final _controllerPlayM = Get.find<PlayMusicController>();
+  final _controllerPlayM = Get.put(PlayMusicController());
 
   SearchScreen({super.key});
 

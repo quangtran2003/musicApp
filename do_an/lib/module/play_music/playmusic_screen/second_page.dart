@@ -22,14 +22,16 @@ class SecondPage extends GetView<PlayMusicController> {
 
   @override
   Widget build(BuildContext context) {
-    return controller.trackList.length!=0
+    return controller.trackList.length != 0
         ? ListView.builder(
+            padding: EdgeInsets.symmetric(vertical: 0),
+            shrinkWrap: true,
             itemCount: controller.trackList.length,
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
                   onSongSelected();
-                  controller.updateData(listTrack[index]);
+                  controller.updateData(controller.trackList[index]);
                   controller.indexSong.value = index;
                 },
                 child: Container(
@@ -41,7 +43,7 @@ class SecondPage extends GetView<PlayMusicController> {
                       : null,
                   child: Obx(
                     () => MySong(
-                      url: controller.trackList[index].album?.coverSmall,
+                      urlImage: controller.trackList[index].album?.coverSmall,
                       title: controller.trackList[index].title,
                       subTitle: controller.trackList[index].artist?.name,
                     ),

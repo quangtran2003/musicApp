@@ -13,7 +13,7 @@ import 'package:get/get.dart';
 import '../play_music/play_music_controller.dart';
 
 class HomeScreen extends GetView<HomeController> {
-  final _controllerPlayM = Get.find<PlayMusicController>();
+  final _controllerPlayM = Get.put(PlayMusicController());
   HomeScreen({super.key});
   @override
   void onInit() {
@@ -40,39 +40,40 @@ class HomeScreen extends GetView<HomeController> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             alignment: Alignment.centerLeft,
-            margin: const EdgeInsets.only(top: 20),
-            child: const Text(
-              'New Songs',
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-            ),
+            child: MyText(text: 'New Songs', fontSize: 22, fontWeight: FontWeight.bold),
           ),
           Expanded(
             child: Obx(
               () {
-                return Container(
-                  padding: const EdgeInsets.only(left: 25, right: 20),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: controller.tracks.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          _controllerPlayM.stopMusic();
-                          Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
-                            'songId': controller.tracks[index].id,
-                            'listTrack': controller.tracks.value,
-                            'listIdSong': controller.listIdSong
-                          });
-                        },
-                        child: MySong(
-                          url: controller.tracks[index].album?.coverSmall,
-                          title: controller.tracks[index].title,
-                          subTitle: controller.tracks[index].artist?.name,
+                return controller.tracks.isEmpty
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Container(
+                        padding: const EdgeInsets.only(left: 25, right: 20),
+                        child: ListView.builder(
+                          padding: EdgeInsets.symmetric(vertical: 0),
+                          shrinkWrap: true,
+                          itemCount: controller.tracks.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                _controllerPlayM.stopMusic();
+                                Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
+                                  'songId': controller.tracks[index].id,
+                                  'listTrack': controller.tracks.value,
+                                  'listIdSong': controller.listIdSong
+                                });
+                              },
+                              child: MySong(
+                                urlImage: controller.tracks[index].album?.coverSmall,
+                                title: controller.tracks[index].title,
+                                subTitle: controller.tracks[index].artist?.name,
+                              ),
+                            );
+                          },
                         ),
                       );
-                    },
-                  ),
-                );
               },
             ),
           ),
@@ -87,10 +88,10 @@ class HomeScreen extends GetView<HomeController> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           alignment: Alignment.centerLeft,
-          margin: const EdgeInsets.symmetric(vertical: 20),
+          margin: const EdgeInsets.only(top: 20, bottom: 10),
           child: const Text(
             'Artist',
-            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
         ),
         Padding(

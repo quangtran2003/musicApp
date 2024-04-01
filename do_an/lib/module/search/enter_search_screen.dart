@@ -13,7 +13,7 @@ import '../play_music/play_music_controller.dart';
 
 // ignore: must_be_immutable
 class EnterSearchScreen extends GetView<ControllerSearch> {
-  final _controllerPlayM = Get.find<PlayMusicController>();
+  final _controllerPlayM = Get.put(PlayMusicController());
   final PageController _pageController = PageController(initialPage: 0);
   EnterSearchScreen({super.key});
 
@@ -100,14 +100,12 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
-                    Get.toNamed(ARTIST_SCREEN,
-                        arguments: controller.uniqueArtists[index]?.id);
+                    Get.toNamed(ARTIST_SCREEN, arguments: controller.uniqueArtists[index]?.id);
                   },
                   child: Row(
                     children: [
                       Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 30, vertical: 10),
+                        margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                         height: 70,
                         width: 70,
                         decoration: BoxDecoration(
@@ -117,9 +115,7 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
                                     '${controller.uniqueArtists[index]?.pictureSmall}'),
                                 fit: BoxFit.cover)),
                       ),
-                      Expanded(
-                          child:
-                              Text('${controller.uniqueArtists[index]?.name}')),
+                      Expanded(child: Text('${controller.uniqueArtists[index]?.name}')),
                       const MyIcon(
                         icon: Icons.navigate_next_outlined,
                         size: 25,
@@ -149,22 +145,18 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
         margin: const EdgeInsets.symmetric(horizontal: 20),
         child: GridView.builder(
             itemCount: controller.uniqueAlbums.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
-                  Get.toNamed(ALBUM_SCREEN,
-                      arguments: controller.uniqueAlbums[index]?.id);
+                  Get.toNamed(ALBUM_SCREEN, arguments: controller.uniqueAlbums[index]?.id);
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: MyContainerAlbum(
                       right: 0,
-                      urlImage:
-                          controller.uniqueAlbums[index]?.coverMedium ?? '',
-                      mytext: MyText(
-                          text: controller.uniqueAlbums[index]?.title ?? '')),
+                      urlImage: controller.uniqueAlbums[index]?.coverMedium ?? '',
+                      mytext: MyText(text: controller.uniqueAlbums[index]?.title ?? '')),
                 ),
               );
               //
@@ -189,7 +181,9 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
                       color:
                           // ignore: unrelated_type_equality_checks
                           index == controller.indexTitle.value
-                              ? Get.isDarkMode? Colors.white: Colors.black
+                              ? Get.isDarkMode
+                                  ? Colors.white
+                                  : Colors.black
                               : Colors.grey),
                 ),
                 // ignore: unrelated_type_equality_checks
@@ -245,7 +239,7 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
                             });
                       },
                       child: MySong(
-                        url: value?.data?[index].album?.coverSmall,
+                        urlImage: value?.data?[index].album?.coverSmall,
                         subTitle: value?.data?[index].artist?.name,
                         title: value?.data?[index].title,
                       ));

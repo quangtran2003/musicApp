@@ -14,7 +14,7 @@ import '../../const.dart';
 import '../play_music/play_music_controller.dart';
 
 class ChartScreen extends GetView<ChartController> {
-  final _controllerPlayM = Get.find<PlayMusicController>();
+  final _controllerPlayM = Get.put(PlayMusicController());
 
   ChartScreen({super.key});
 
@@ -43,19 +43,17 @@ class ChartScreen extends GetView<ChartController> {
     return Column(
       children: [
         Container(
-            alignment: Alignment.bottomLeft,
-            margin: const EdgeInsets.only(top: 25),
-            child: MyText(
-              text: 'Best Song',
-              fontSize: 20,
-              fontStyle: FontStyle.italic,
-            )),
+          margin: EdgeInsets.only(top: 20),
+          alignment: Alignment.centerLeft,
+          child: MyText(text: 'Best Songs', fontSize: 22, fontWeight: FontWeight.bold),
+        ),
         SizedBox(
           height: 300,
           child: Obx(() {
             final value = controller.chartData.value;
             if (value != null) {
               return ListView.builder(
+                  padding: EdgeInsets.symmetric(vertical: 0),
                   itemCount: value.tracks?.data?.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(
@@ -69,7 +67,7 @@ class ChartScreen extends GetView<ChartController> {
                         });
                       },
                       child: MySong(
-                        url: value.tracks?.data?[index].album?.coverSmall,
+                        urlImage: value.tracks?.data?[index].album?.coverSmall,
                         title: value.tracks?.data?[index].title,
                         subTitle: value.tracks?.data?[index].artist?.name,
                       ),
@@ -98,13 +96,10 @@ class ChartScreen extends GetView<ChartController> {
     return Column(
       children: [
         Container(
-            alignment: Alignment.bottomLeft,
-            margin: const EdgeInsets.only(top: 20, bottom: 20),
-            child: MyText(
-              text: 'Best Playlist',
-              fontSize: 20,
-              fontStyle: FontStyle.italic,
-            )),
+          margin: EdgeInsets.only(top: 20),
+          alignment: Alignment.centerLeft,
+          child: MyText(text: 'Best Playlist', fontSize: 22, fontWeight: FontWeight.bold),
+        ),
         Obx(() {
           final value = controller.chartData.value;
           if (value == null) {
@@ -121,10 +116,10 @@ class ChartScreen extends GetView<ChartController> {
             );
           } else {
             return Container(
+              margin: EdgeInsets.only(top: 7),
               height: 150,
               padding: const EdgeInsets.only(left: 17),
               child: ListView.builder(
-                  // itemExtent: 250, // Độ rộng của mỗi mục
                   scrollDirection: Axis.horizontal,
                   itemCount: 10,
                   itemBuilder: (context, index) {
@@ -134,7 +129,7 @@ class ChartScreen extends GetView<ChartController> {
                           Get.toNamed(PLAYLIST_SCREEN, arguments: value.playlists?.data?[index].id);
                         },
                         child: MyContainerAlbum(
-                            width: 180,
+                            width: 160,
                             urlImage: value.playlists?.data?[index].pictureMedium ?? '',
                             boderRadius: 16,
                             mytext: MyText(
@@ -156,13 +151,10 @@ class ChartScreen extends GetView<ChartController> {
     return Column(
       children: [
         Container(
-            alignment: Alignment.bottomLeft,
-            margin: const EdgeInsets.only(top: 30, bottom: 10),
-            child: MyText(
-              text: 'Best Artist',
-              fontSize: 20,
-              fontStyle: FontStyle.italic,
-            )),
+          margin: EdgeInsets.only(top: 20),
+          alignment: Alignment.centerLeft,
+          child: MyText(text: 'Best Artist', fontSize: 22, fontWeight: FontWeight.bold),
+        ),
         Obx(() {
           final value = controller.chartData.value;
           if (value != null) {
@@ -230,7 +222,9 @@ class ChartScreen extends GetView<ChartController> {
     return Column(
       children: [
         MyAppBarHomePage(
-          title: Container(
+          width: 200,
+          leading: Container(
+              alignment: Alignment.centerLeft,
               margin: const EdgeInsets.only(top: 20),
               child: MyText(
                 text: 'CHART',

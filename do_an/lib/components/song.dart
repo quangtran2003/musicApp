@@ -7,12 +7,12 @@ class MySong extends StatelessWidget {
   final IconData? iconLeading;
   final String? subTitle;
   final String? title;
-  final String? url;
+  final String? urlImage;
    const MySong(
       {Key? key, this.subTitle, this.title,this.widget=const Icon(
           Icons.navigate_next_outlined,
           size: 30,
-        ), this.url, this.iconLeading})
+        ), this.urlImage, this.iconLeading})
       : super(key: key);
 
   @override
@@ -27,7 +27,7 @@ class MySong extends StatelessWidget {
                     shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.circular(8),
                     image: DecorationImage(
-                        image: NetworkImage(url ??
+                        image: NetworkImage(urlImage ??
                             'https://www.idevice.ro/wp-content/uploads/2015/06/Apple-Music-wallpaper-iPad-150x150.png'),
                         fit: BoxFit.cover)),
               )

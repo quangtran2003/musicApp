@@ -2,7 +2,6 @@ import 'package:do_an/components/text.dart';
 import 'package:do_an/components/text_field.dart';
 import 'package:do_an/const.dart';
 import 'package:do_an/module/login_resiger/login/login_controller.dart';
-import 'package:do_an/module/main/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
@@ -19,7 +18,9 @@ class Login extends GetView<LoginController> {
       body: SingleChildScrollView(
         child: Container(
           height: x,
-          color: Get.isDarkMode ? Theme.of(context).scaffoldBackgroundColor : const Color.fromARGB(255, 245, 229, 246),
+          color: Get.isDarkMode
+              ? Theme.of(context).scaffoldBackgroundColor
+              : const Color.fromARGB(255, 245, 229, 246),
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Column(
             children: [
@@ -72,7 +73,7 @@ class Login extends GetView<LoginController> {
               _buildRichText(),
               SizedBox(
                 height: x > 500 ? 80 : 40,
-              )
+              ),
             ],
           ),
         ),
@@ -85,7 +86,8 @@ class Login extends GetView<LoginController> {
       onTap: () {
         Get.toNamed(RESEGER_SCREEN);
       },
-      child: const Center(
+      child: Container(
+        alignment: Alignment.centerRight,
         child: Text.rich(TextSpan(
             text: 'Do not have account ? ',
             style: TextStyle(fontSize: 17, color: Color.fromARGB(255, 104, 104, 104)),
@@ -130,7 +132,6 @@ class Login extends GetView<LoginController> {
         if (controller.checkLogin.value) {
           controller.signInAcc(controller.userName.value ?? '', controller.passWord.value ?? '');
           if (controller.checkAccount.value == CHECK_ACCOUNT.Success) {
-            Get.off(MainScreen());
             Navigator.pushReplacementNamed(context, MAIN_SCREEN);
           }
         }

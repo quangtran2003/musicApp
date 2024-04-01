@@ -4,6 +4,6 @@ import 'package:get/get.dart';
 class PlayMusicBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => PlayMusicController());
+    Get.lazyPut(() => PlayMusicController(),);
   }
 }

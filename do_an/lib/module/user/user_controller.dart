@@ -1,6 +1,7 @@
 import 'package:do_an/net_working/models/track.dart';
 import 'package:do_an/responstory/all_responstory.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,16 +15,18 @@ class UserController extends GetxController {
   final RxList<TrackModel> playlistTracks = RxList.empty();
   final userName = RxnString();
   var isDarkMode = false.obs;
+  var loadingHistory = true.obs;
 
   Future<void> getDarkMode() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    isDarkMode.value = prefs.getBool('isDarkMode')??false;
+    isDarkMode.value = prefs.getBool('isDarkMode') ?? false;
   }
 
-  Future changeDarkMode() async{
+  Future changeDarkMode() async {
     isDarkMode.value = !isDarkMode.value;
-        SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('isDarkMode', isDarkMode.value);
+    Get.changeTheme(isDarkMode.value == false ? ThemeData.light() : ThemeData.dark());
   }
 
   void getNameUser() {
@@ -66,6 +69,7 @@ class UserController extends GetxController {
         results.where((item) => item != null).cast<TrackModel>().toList();
 
     historyTracks.value = filteredResults;
+    loadingHistory.value =false;
   }
 
   Future<void> getSongFavourite() async {

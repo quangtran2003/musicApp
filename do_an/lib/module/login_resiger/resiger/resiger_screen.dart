@@ -17,7 +17,9 @@ class Resiger extends GetView<ResigerController> {
         child: Container(
           height: x,
           width: y,
-          color: Get.isDarkMode ? Theme.of(context).scaffoldBackgroundColor : const Color.fromARGB(255, 245, 229, 246),
+          color: Get.isDarkMode
+              ? Theme.of(context).scaffoldBackgroundColor
+              : const Color.fromARGB(255, 245, 229, 246),
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Column(
             children: [
@@ -65,6 +67,10 @@ class Resiger extends GetView<ResigerController> {
                 ),
               ),
               _buildBottomResiger(x, context),
+              _buildRichText(context),
+              SizedBox(
+                height: x > 500 ? 50 : 20,
+              )
             ],
           ),
         ),
@@ -85,7 +91,9 @@ class Resiger extends GetView<ResigerController> {
           }
         },
         child: Container(
-          margin: EdgeInsets.only(top: 30, bottom: x > 500 ? 50 : 20),
+          margin: EdgeInsets.only(
+            top: 30,
+          ),
           height: 55,
           width: double.infinity,
           decoration: BoxDecoration(
@@ -101,6 +109,37 @@ class Resiger extends GetView<ResigerController> {
           ),
         ),
         // ),
+      ),
+    );
+  }
+
+  GestureDetector _buildRichText(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        final data = await controller.signInWithGoogle();
+        final user = data.user;
+        print(user);
+        if (user != null) {
+          Navigator.pushReplacementNamed(context, MAIN_SCREEN);
+        } else {
+          Get.snackbar('Notification', 'Sign fail! Try again');
+        }
+      },
+      child: Container(
+        margin: EdgeInsets.only(top: 10),
+        alignment: Alignment.centerRight,
+        child: Text.rich(TextSpan(
+            text: 'Sign with ',
+            style: TextStyle(fontSize: 17, color: Color.fromARGB(255, 104, 104, 104)),
+            children: [
+              TextSpan(
+                  text: 'Google',
+                  style: TextStyle(
+                      fontSize: 17,
+                      decoration: TextDecoration.underline,
+                      decorationColor: Colors.purple,
+                      color: Colors.purple))
+            ])),
       ),
     );
   }

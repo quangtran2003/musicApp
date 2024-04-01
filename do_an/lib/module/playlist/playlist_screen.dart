@@ -12,7 +12,7 @@ import '../../components/text.dart';
 import '../../const.dart';
 
 class PlaylistScreen extends GetView<PlayListController> {
-  final _controllerPlayM = Get.find<PlayMusicController>();
+  final _controllerPlayM = Get.put(PlayMusicController());
   PlaylistScreen({super.key});
 
   @override
@@ -70,7 +70,8 @@ class PlaylistScreen extends GetView<PlayListController> {
                     child: MySong(
                         title: controller.playlistData.value?.tracks?.data?[index].title,
                         subTitle: controller.playlistData.value?.tracks?.data?[index].artist?.name,
-                        url: controller.playlistData.value?.tracks?.data?[index].album?.coverSmall),
+                        urlImage:
+                            controller.playlistData.value?.tracks?.data?[index].album?.coverSmall),
                   );
                 })),
           ),
@@ -98,6 +99,7 @@ class PlaylistScreen extends GetView<PlayListController> {
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.purple),
         child: MyText(
           text: 'Play music now',
+          color: Colors.white,
         ),
       ),
     );

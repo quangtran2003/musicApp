@@ -12,10 +12,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class PlayMusicController extends GetxController {
   final _controllerUser = Get.put(UserController());
-
+  
   PlayerState playerState = PlayerState.stopped;
   AudioPlayer audioPlayer = AudioPlayer();
-  RxList<TrackModel> trackList = RxList.empty();
+  RxList<TrackModel> trackList =  RxList.empty();
   var indexPage = 0.obs;
   var isPlaying = false.obs;
   final _respon = Responstory();

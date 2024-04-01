@@ -13,7 +13,7 @@ import '../../components/text.dart';
 import '../play_music/play_music_controller.dart';
 
 class ArtistScreen extends GetView<ArtistController> {
-  final _controllerPlayM = Get.find<PlayMusicController>();
+  final _controllerPlayM = Get.put(PlayMusicController());
   ArtistScreen({super.key});
 
   @override
@@ -56,19 +56,15 @@ class ArtistScreen extends GetView<ArtistController> {
                     onTap: () {
                       _controllerPlayM.stopMusic();
                       Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
-                        'songId':
-                            controller.trackListArtist.value?.data?[index].id,
+                        'songId': controller.trackListArtist.value?.data?[index].id,
                         'listTrack': controller.tracks.value,
                         'listIdSong': controller.listIdSong
                       });
                     },
                     child: MySong(
-                        title: controller
-                            .trackListArtist.value?.data?[index].title,
-                        subTitle: controller
-                            .trackListArtist.value?.data?[index].artist?.name,
-                        url: controller.trackListArtist.value?.data?[index]
-                            .album?.coverSmall),
+                        title: controller.trackListArtist.value?.data?[index].title,
+                        subTitle: controller.trackListArtist.value?.data?[index].artist?.name,
+                        urlImage: controller.trackListArtist.value?.data?[index].album?.coverSmall),
                   );
                 })),
           );
@@ -92,8 +88,7 @@ class ArtistScreen extends GetView<ArtistController> {
         width: y,
         margin: const EdgeInsets.fromLTRB(38, 0, 38, 20),
         alignment: Alignment.center,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20), color: Colors.purple),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.purple),
         child: MyText(
           text: 'Play music now',
           color: Colors.white,
@@ -111,8 +106,7 @@ class ArtistScreen extends GetView<ArtistController> {
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(20)),
               image: DecorationImage(
-                  image: NetworkImage(
-                      controller.artistData.value?.pictureMedium ?? ''),
+                  image: NetworkImage(controller.artistData.value?.pictureMedium ?? ''),
                   fit: BoxFit.cover),
               shape: BoxShape.rectangle,
             ),
@@ -129,6 +123,7 @@ class ArtistScreen extends GetView<ArtistController> {
   AppBar _buildAppBar() {
     return AppBar(
         elevation: 0,
+        centerTitle: true,
         leading: GestureDetector(
           onTap: () {
             Get.back();

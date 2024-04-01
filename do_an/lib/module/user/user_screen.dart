@@ -13,8 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class UserScreen extends GetView<UserController> {
-  final _controllerPlayM = Get.find<PlayMusicController>();
-  final controllerSearch = Get.find<ControllerSearch>();
+  final _controllerPlayM = Get.put(PlayMusicController());
+  final controllerSearch = Get.put(ControllerSearch());
   UserScreen({super.key});
 
   @override
@@ -27,7 +27,7 @@ class UserScreen extends GetView<UserController> {
     final x = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 80,
+        toolbarHeight: 60,
         title: MyText(
           text: 'Me',
           fontSize: 32,
@@ -95,7 +95,6 @@ class UserScreen extends GetView<UserController> {
                 title: Text('Dark mode'),
                 onTap: () {
                   controller.changeDarkMode();
-                  Get.changeTheme(Get.isDarkMode ? ThemeData.light() : ThemeData.dark());
                 },
                 trailing: Stack(
                   alignment: controller.isDarkMode.value == false
@@ -169,12 +168,17 @@ class UserScreen extends GetView<UserController> {
             child: MyText(
               text: 'Listening history',
               textAlign: TextAlign.start,
-              fontSize: 18,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
             ),
           ),
           Expanded(
             child: Obx(() {
-              if (controller.historyTracks.length == 0) {
+              if (controller.loadingHistory.value) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (controller.historyTracks.length == 0) {
                 return Center(child: MyText(text: 'No result!'));
               } else {
                 return ListView.builder(
@@ -193,7 +197,7 @@ class UserScreen extends GetView<UserController> {
                           });
                         },
                         child: MySong(
-                          url: controller.historyTracks[index].album?.coverSmall,
+                          urlImage: controller.historyTracks[index].album?.coverSmall,
                           title: controller.historyTracks[index].title,
                           subTitle: controller.historyTracks[index].artist?.name,
                         ),
@@ -348,7 +352,7 @@ class UserScreen extends GetView<UserController> {
                             },
                             child: const Icon(Icons.delete),
                           ),
-                          url: tracks[index].album?.coverSmall,
+                          urlImage: tracks[index].album?.coverSmall,
                           title: tracks[index].title,
                           subTitle: tracks[index].artist?.name,
                         ),

@@ -62,7 +62,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FlutterNativeSplash.remove();
-
     return GetMaterialApp(
       initialRoute: LOGIN_SCREEN,
       getPages: [

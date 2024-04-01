@@ -18,8 +18,8 @@ class SongBottom extends GetView<PlayMusicController> {
           Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {'isSongBottom': true});
         }
       },
-      child: Obx(
-        () => Container(
+      child:   Obx(
+        () =>controller.trackData.value?.title==null? SizedBox():  Container(
           height: 70,
           child: ListTile(
             leading: Container(

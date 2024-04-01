@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class ResigerController extends GetxController {
   final passWordError = RxnString();
@@ -26,6 +28,34 @@ class ResigerController extends GetxController {
       // ignore: empty_catches
     } catch (e) {}
   }
+
+GlobalKey<FormState> fromKey = GlobalKey<FormState>();
+
+  final scopes = [
+    'email',
+    'https://www.googleapis.com/auth/contacts.readonly',
+  ];
+  final _googleSignIn = GoogleSignIn(
+    scopes: [
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ],
+  );
+
+  Future<UserCredential> signInWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
 
   void comfrimPass() {
     if (passWord.value != comfrimPassWValue.value) {

@@ -13,7 +13,7 @@ import 'package:skeletons/skeletons.dart';
 import 'first_page.dart';
 import 'second_page.dart';
 
-class PlayMusicScreen extends GetWidget<PlayMusicController> {
+class PlayMusicScreen extends GetView<PlayMusicController> {
   final _controllerUser = Get.put(UserController());
   PlayMusicScreen({super.key});
   @override
