@@ -5,6 +5,7 @@ import 'package:do_an/components/icon.dart';
 import 'package:do_an/components/song.dart';
 import 'package:do_an/components/text.dart';
 import 'package:do_an/const.dart';
+import 'package:do_an/module/login_resiger/resiger/resiger_controller.dart';
 import 'package:do_an/module/play_music/play_music_controller.dart';
 import 'package:do_an/module/search/search_controller.dart';
 import 'package:do_an/module/user/user_controller.dart';
@@ -15,6 +16,7 @@ import 'package:get/get.dart';
 class UserScreen extends GetView<UserController> {
   final _controllerPlayM = Get.put(PlayMusicController());
   final controllerSearch = Get.put(ControllerSearch());
+  final controllerResiger = Get.put(ResigerController());
   UserScreen({super.key});
 
   @override
@@ -427,9 +429,10 @@ class UserScreen extends GetView<UserController> {
                           ),
                           child: Center(
                             child: GestureDetector(
-                              onTap: () {
+                              onTap: () async {
                                 if (isLogOut == true) {
-                                  Navigator.pushReplacementNamed(context, LOGIN_SCREEN);
+                                  controllerResiger.handleSignOut();
+                                  Get.offAllNamed(LOGIN_SCREEN);
                                 } else {
                                   text == "Favourite"
                                       ? controller.deletefavourite(index)

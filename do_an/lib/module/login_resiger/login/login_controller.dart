@@ -1,9 +1,7 @@
 // ignore_for_file: constant_identifier_names, camel_case_types
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginController extends GetxController {
   final userName = RxnString();
@@ -37,7 +35,6 @@ class LoginController extends GetxController {
       }
     });
   }
-
 
   // GlobalKey<FormState> fromKey = GlobalKey<FormState>();
   // TextEditingController email = TextEditingController();

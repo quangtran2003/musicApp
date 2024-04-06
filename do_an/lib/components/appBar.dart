@@ -1,15 +1,16 @@
-
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
 import 'package:do_an/components/icon.dart';
 import 'package:do_an/components/text.dart';
 import 'package:do_an/module/search/search_controller.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../const.dart';
 
 class MyAppBarHomePage extends StatelessWidget {
-  final controllerSearch = Get.put(ControllerSearch());
+  final controllerS = Get.put(ControllerSearch());
+
+  final controllerSearch = Get.find<ControllerSearch>();
+
   MyAppBarHomePage({
     Key? key,
     this.title,

@@ -55,6 +55,7 @@ GlobalKey<FormState> fromKey = GlobalKey<FormState>();
 
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
+  Future<void> handleSignOut() => _googleSignIn.disconnect();
 
 
   void comfrimPass() {

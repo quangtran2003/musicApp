@@ -41,9 +41,9 @@ Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final isDarkMode = prefs.getBool('isDarkMode') ?? false;
-    Get.changeTheme(!isDarkMode ? ThemeData.light() : ThemeData.dark());
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final isDarkMode = prefs.getBool('isDarkMode') ?? false;
+  Get.changeTheme(!isDarkMode ? ThemeData.light() : ThemeData.dark());
   runApp(const MyApp());
 }
 
@@ -51,68 +51,35 @@ class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends GetView {
   const MyApp({super.key});
- 
+  void onInit() async {
+    FlutterNativeSplash.remove();
+  }
   @override
   Widget build(BuildContext context) {
-    FlutterNativeSplash.remove();
+    onInit();
     return GetMaterialApp(
       initialRoute: LOGIN_SCREEN,
       getPages: [
+        GetPage(name: HOME_SCREEN, page: () => HomeScreen(), binding: HomeBinding()),
         GetPage(
-            name: HOME_SCREEN,
-            page: () => HomeScreen(),
-            binding: HomeBinding()),
+            name: PLAY_MUSIC_SCREEN, page: () => PlayMusicScreen(), binding: PlayMusicBinding()),
+        GetPage(name: LOGIN_SCREEN, page: () => const Login(), binding: LoginBinding()),
+        GetPage(name: RESEGER_SCREEN, page: () => const Resiger(), binding: ResigerBinding()),
+        GetPage(name: SEARCH_SCREEN, page: () => SearchScreen(), binding: SearchBinding()),
         GetPage(
-            name: PLAY_MUSIC_SCREEN,
-            page: () => PlayMusicScreen(),
-            binding: PlayMusicBinding()),
-        GetPage(
-            name: LOGIN_SCREEN,
-            page: () => const Login(),
-            binding: LoginBinding()),
-        GetPage(
-            name: RESEGER_SCREEN,
-            page: () => const Resiger(),
-            binding: ResigerBinding()),
-        GetPage(
-            name: SEARCH_SCREEN,
-            page: () => SearchScreen(),
-            binding: SearchBinding()),
-        GetPage(
-            name: ENTER_SEARCH_SCREEN,
-            page: () => EnterSearchScreen(),
-            binding: SearchBinding()),
-        GetPage(
-            name: ALBUM_SCREEN,
-            page: () => AlbumScreen(),
-            binding: AlbumBinding()),
-        GetPage(
-            name: CHART_SCREEN,
-            page: () => ChartScreen(),
-            binding: ChartBinding()),
-        GetPage(
-            name: ARTIST_SCREEN,
-            page: () => ArtistScreen(),
-            binding: ArtistBinding()),
-        GetPage(
-            name: PLAYLIST_SCREEN,
-            page: () => PlaylistScreen(),
-            binding: PlaylistBinDing()),
-        GetPage(
-            name: MAIN_SCREEN,
-            page: () => MainScreen(),
-            binding: MainBinding()),
-        GetPage(
-            name: USER_SCREEN,
-            page: () => UserScreen(),
-            binding: UserBinding()),
+            name: ENTER_SEARCH_SCREEN, page: () => EnterSearchScreen(), binding: SearchBinding()),
+        GetPage(name: ALBUM_SCREEN, page: () => AlbumScreen(), binding: AlbumBinding()),
+        GetPage(name: CHART_SCREEN, page: () => ChartScreen(), binding: ChartBinding()),
+        GetPage(name: ARTIST_SCREEN, page: () => ArtistScreen(), binding: ArtistBinding()),
+        GetPage(name: PLAYLIST_SCREEN, page: () => PlaylistScreen(), binding: PlaylistBinDing()),
+        GetPage(name: MAIN_SCREEN, page: () => MainScreen(), binding: MainBinding()),
+        GetPage(name: USER_SCREEN, page: () => UserScreen(), binding: UserBinding()),
       ],
       debugShowCheckedModeBanner: false,
     );

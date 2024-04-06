@@ -1,6 +1,6 @@
 import 'package:do_an/net_working/models/chart.dart';
 import 'package:do_an/net_working/models/track.dart';
-import 'package:do_an/responstory/all_responstory.dart';
+import 'package:do_an/net_working/responstory/all_responstory.dart';
 import 'package:get/get.dart';
 
 class ChartController extends GetxController {
@@ -8,6 +8,8 @@ class ChartController extends GetxController {
   final chartData = Rxn<ChartModel>();
   List<int?> listIdSong = [];
   final RxList<TrackModel> tracks = RxList.empty();
+
+
 
   Future getChartData() async {
     final value = await _respon.getChart();

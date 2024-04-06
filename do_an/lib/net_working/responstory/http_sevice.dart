@@ -1,7 +1,7 @@
 // ignore_for_file: empty_catches
 
 import 'package:dio/dio.dart';
-import 'package:do_an/responstory/url.dart';
+import 'package:do_an/net_working/responstory/url.dart';
 
 class HttpService {
   final Dio _dio = Dio();

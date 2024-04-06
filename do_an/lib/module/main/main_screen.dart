@@ -13,9 +13,9 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 
 class MainScreen extends GetView<MainController> {
-  final _controller = Get.put(HomeController());
-  final _controller1 = Get.put(ChartController());
-  final _controller2 = Get.put(UserController());
+  final _controllerHome = Get.put(HomeController());
+  final _controller1Chart = Get.put(ChartController());
+  final _controllerUser = Get.put(UserController());
 
 
   MainScreen({super.key});

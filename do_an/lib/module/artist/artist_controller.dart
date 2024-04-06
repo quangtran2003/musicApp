@@ -1,6 +1,6 @@
 import 'package:do_an/net_working/models/artist.dart';
 import 'package:do_an/net_working/models/tracklist_artist.dart';
-import 'package:do_an/responstory/all_responstory.dart';
+import 'package:do_an/net_working/responstory/all_responstory.dart';
 import 'package:get/get.dart';
 
 import '../../net_working/models/track.dart';

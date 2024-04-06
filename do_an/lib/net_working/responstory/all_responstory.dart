@@ -6,11 +6,11 @@ import 'package:do_an/net_working/models/artist.dart';
 import 'package:do_an/net_working/models/playlist.dart';
 import 'package:do_an/net_working/models/search.dart';
 import 'package:do_an/net_working/models/track.dart';
-import 'package:do_an/responstory/http_sevice.dart';
-import 'package:do_an/responstory/url.dart';
+import 'package:do_an/net_working/responstory/http_sevice.dart';
+import 'package:do_an/net_working/responstory/url.dart';
 
-import '../net_working/models/chart.dart';
-import '../net_working/models/tracklist_artist.dart';
+import '../models/chart.dart';
+import '../models/tracklist_artist.dart';
 
 class Responstory {
   final HttpService _service = HttpService();

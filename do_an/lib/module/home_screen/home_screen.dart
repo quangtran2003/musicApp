@@ -13,7 +13,7 @@ import 'package:get/get.dart';
 import '../play_music/play_music_controller.dart';
 
 class HomeScreen extends GetView<HomeController> {
-  final _controllerPlayM = Get.put(PlayMusicController());
+  final _controllerPlayM = Get.put(PlayMusicController(),tag: "120");
   HomeScreen({super.key});
   @override
   void onInit() {
