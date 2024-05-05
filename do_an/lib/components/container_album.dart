@@ -1,3 +1,4 @@
+import 'package:do_an/components/image.dart';
 import 'package:do_an/components/text.dart';
 import 'package:do_an/const.dart';
 import 'package:flutter/material.dart';
@@ -41,13 +42,20 @@ class MyContainerAlbum extends StatelessWidget {
       child: Column(children: [
         Expanded(
           flex: 3,
-          child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(boderRadius ?? 16),
-                    topRight: Radius.circular(boderRadius ?? 16)),
-                image: DecorationImage(image: NetworkImage(urlImage), fit: BoxFit.cover)),
-          ),
+          child: imageNetwork(urlImage,
+              height: double.infinity,
+              width: double.infinity,
+              radiusBL: 0,
+              radiusBR: 0,
+              radiusTL: 16,
+              radiusTR: 16),
+          // Container(
+          //   decoration: BoxDecoration(
+          //       borderRadius: BorderRadius.only(
+          //           topLeft: Radius.circular(boderRadius ?? 16),
+          //           topRight: Radius.circular(boderRadius ?? 16)),
+          //       image: DecorationImage(image: NetworkImage(urlImage), fit: BoxFit.cover)),
+          // ),
         ),
         Expanded(
           flex: 1,

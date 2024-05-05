@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skeletons/skeletons.dart';
 
+import '../../language/language_constant.dart';
 import '../play_music/play_music_controller.dart';
 
 class AlbumScreen extends GetView<AlbumController> {
@@ -88,7 +89,7 @@ class AlbumScreen extends GetView<AlbumController> {
         alignment: Alignment.center,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.purple),
         child: MyText(
-          text: 'Play music now',
+          text: translation().playMusicNow,
           color: Colors.white,
         ),
       ),

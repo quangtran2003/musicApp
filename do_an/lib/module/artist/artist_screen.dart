@@ -10,6 +10,7 @@ import 'package:skeletons/skeletons.dart';
 import '../../const.dart';
 import '../../components/icon.dart';
 import '../../components/text.dart';
+import '../../language/language_constant.dart';
 import '../play_music/play_music_controller.dart';
 
 class ArtistScreen extends GetView<ArtistController> {
@@ -90,7 +91,7 @@ class ArtistScreen extends GetView<ArtistController> {
         alignment: Alignment.center,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.purple),
         child: MyText(
-          text: 'Play music now',
+          text: translation().playMusicNow,
           color: Colors.white,
         ),
       ),

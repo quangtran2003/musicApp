@@ -5,6 +5,8 @@ import 'package:do_an/components/icon.dart';
 import 'package:do_an/components/song.dart';
 import 'package:do_an/components/text.dart';
 import 'package:do_an/const.dart';
+import 'package:do_an/language/language.dart';
+import 'package:do_an/language/language_constant.dart';
 import 'package:do_an/module/login_resiger/resiger/resiger_controller.dart';
 import 'package:do_an/module/play_music/play_music_controller.dart';
 import 'package:do_an/module/search/search_controller.dart';
@@ -12,6 +14,8 @@ import 'package:do_an/module/user/user_controller.dart';
 import 'package:do_an/net_working/models/track.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../main.dart';
 
 class UserScreen extends GetView<UserController> {
   final _controllerPlayM = Get.put(PlayMusicController());
@@ -31,7 +35,7 @@ class UserScreen extends GetView<UserController> {
       appBar: AppBar(
         toolbarHeight: 60,
         title: MyText(
-          text: 'Me',
+          text: translation().me,
           fontSize: 32,
           fontWeight: FontWeight.bold,
         ),
@@ -48,7 +52,7 @@ class UserScreen extends GetView<UserController> {
                   children: [
                     const MyIcon(icon: Icons.search),
                     MyText(
-                      text: 'Search...',
+                      text: translation().search,
                       fontSize: 18,
                     ),
                   ],
@@ -94,7 +98,7 @@ class UserScreen extends GetView<UserController> {
                 ),
               ),
               ListTile(
-                title: Text('Dark mode'),
+                title: Text(translation().darkMode),
                 onTap: () {
                   controller.changeDarkMode();
                 },
@@ -107,7 +111,9 @@ class UserScreen extends GetView<UserController> {
                       height: 25,
                       width: 50,
                       decoration: BoxDecoration(
-                          color: controller.isDarkMode.value == true ? Colors.purple : Colors.grey,
+                          color: controller.isDarkMode.value == true
+                              ? Colors.purple
+                              : Colors.grey,
                           borderRadius: BorderRadius.circular(20)),
                     ),
                     Container(
@@ -126,7 +132,7 @@ class UserScreen extends GetView<UserController> {
                 bottom: 0,
               ),
               ListTile(
-                title: Text('Log out'),
+                title: Text(translation().logOut),
                 trailing: Icon(
                   Icons.output,
                   size: 27,
@@ -135,11 +141,49 @@ class UserScreen extends GetView<UserController> {
                   showModalBottomSheet(
                       backgroundColor: Colors.transparent,
                       context: context,
+                      elevation: 0,
                       builder: (builderContext) {
                         return _buildNotification('text', 0, true, context);
                       });
                   // Get.toNamed(LOGIN_SCREEN); // Đóng drawer
                 },
+              ),
+              MyDivider(
+                top: 0,
+                bottom: 0,
+              ),
+              ListTile(
+                title: Text(
+                  translation().changeLanguage,
+                  maxLines: 1,
+                ),
+                trailing: DropdownButton<Language>(
+                  iconSize: 30,
+                  hint: Text(translation().language),
+                  onChanged: (Language? language) async {
+                    if (language != null) {
+                      Locale _locale = await setLocale(language.languageCode);
+                      MyApp.setLocale(context, _locale);
+                    }
+                  },
+                  items: Language.languageList()
+                      .map<DropdownMenuItem<Language>>(
+                        (e) => DropdownMenuItem<Language>(
+                          value: e,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              Text(
+                                e.flag,
+                                style: const TextStyle(fontSize: 30),
+                              ),
+                              Text(e.name)
+                            ],
+                          ),
+                        ),
+                      )
+                      .toList(),
+                ),
               ),
             ],
           ),
@@ -151,12 +195,13 @@ class UserScreen extends GetView<UserController> {
   Widget _buidGridView(BuildContext context, double x) {
     return GridView(
       shrinkWrap: true,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+      gridDelegate:
+          const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
       children: [
-        Obx(() => _buildMyContainer(
-            'PlayList', context, x, controller.playlistTracks, controller.playlist.value)),
-        Obx(() => _buildMyContainer(
-            'Favourite', context, x, controller.favouriteTracks, controller.favourite.value))
+        Obx(() => _buildMyContainer(translation().playlist, context, x,
+            controller.playlistTracks, controller.playlist.value)),
+        Obx(() => _buildMyContainer(translation().favourite, context, x,
+            controller.favouriteTracks, controller.favourite.value))
       ],
     );
   }
@@ -168,7 +213,7 @@ class UserScreen extends GetView<UserController> {
           Container(
             alignment: Alignment.centerLeft,
             child: MyText(
-              text: 'Listening history',
+              text: translation().listeningHistory,
               textAlign: TextAlign.start,
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -181,7 +226,7 @@ class UserScreen extends GetView<UserController> {
                   child: CircularProgressIndicator(),
                 );
               } else if (controller.historyTracks.length == 0) {
-                return Center(child: MyText(text: 'No result!'));
+                return Center(child: MyText(text: translation().noResult));
               } else {
                 return ListView.builder(
                     itemCount: controller.historyTracks.length,
@@ -189,9 +234,10 @@ class UserScreen extends GetView<UserController> {
                       return GestureDetector(
                         onTap: () {
                           _controllerPlayM.stopMusic();
-                          List<int> intList =
-                              controller.historyPlay.value?.map((str) => int.parse(str)).toList() ??
-                                  [];
+                          List<int> intList = controller.historyPlay.value
+                                  ?.map((str) => int.parse(str))
+                                  .toList() ??
+                              [];
                           Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
                             'songId': controller.historyTracks[index].id,
                             'listTrack': controller.historyTracks,
@@ -199,9 +245,11 @@ class UserScreen extends GetView<UserController> {
                           });
                         },
                         child: MySong(
-                          urlImage: controller.historyTracks[index].album?.coverSmall,
+                          urlImage:
+                              controller.historyTracks[index].album?.coverSmall,
                           title: controller.historyTracks[index].title,
-                          subTitle: controller.historyTracks[index].artist?.name,
+                          subTitle:
+                              controller.historyTracks[index].artist?.name,
                         ),
                       );
                     });
@@ -213,12 +261,13 @@ class UserScreen extends GetView<UserController> {
     );
   }
 
-  Widget _buildMyContainer(String text, BuildContext context, double x, RxList<TrackModel> tracks,
-      List<String>? listId) {
+  Widget _buildMyContainer(String text, BuildContext context, double x,
+      RxList<TrackModel> tracks, List<String>? listId) {
     return GestureDetector(
       onTap: () {
         showModalBottomSheet(
             isScrollControlled: true,
+            elevation: 0,
             backgroundColor: Colors.transparent,
             context: context,
             builder: (builderContext) {
@@ -233,7 +282,8 @@ class UserScreen extends GetView<UserController> {
             boxShadow: const [
               BoxShadow(
                 color: Colors.grey,
-                offset: Offset(0, 2), // Điều chỉnh offset để bóng xuất hiện dưới phần tử
+                offset: Offset(
+                    0, 2), // Điều chỉnh offset để bóng xuất hiện dưới phần tử
                 blurRadius: 3,
                 spreadRadius: -1, // Đặt giá trị âm để đổ bóng chỉ phía dưới
               ),
@@ -245,7 +295,9 @@ class UserScreen extends GetView<UserController> {
               alignment: Alignment.centerRight,
               margin: const EdgeInsets.all(8.0),
               child: MyIcon(
-                icon: text == 'Favourite' ? Icons.favorite : Icons.playlist_play_sharp,
+                icon: text == 'Favourite'
+                    ? Icons.favorite
+                    : Icons.playlist_play_sharp,
                 color: Colors.purple,
                 size: 40,
               ),
@@ -276,8 +328,8 @@ class UserScreen extends GetView<UserController> {
     );
   }
 
-  SafeArea _buildBottomSheet(double x, String text, RxList<TrackModel> tracks, List<String>? listId,
-      BuildContext context) {
+  SafeArea _buildBottomSheet(double x, String text, RxList<TrackModel> tracks,
+      List<String>? listId, BuildContext context) {
     return SafeArea(
         child: Container(
       height: x * 3 / 4,
@@ -314,14 +366,15 @@ class UserScreen extends GetView<UserController> {
               child: GestureDetector(
                   onTap: () {
                     _controllerPlayM.stopMusic();
-                    List<int> intList = listId?.map((str) => int.parse(str)).toList() ?? [];
+                    List<int> intList =
+                        listId?.map((str) => int.parse(str)).toList() ?? [];
                     Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
                       'songId': tracks[0].id,
                       'listTrack': tracks,
                       'listIdSong': intList
                     });
                   },
-                  child: MyText(text: 'Play music now!')),
+                  child: MyText(text: translation().playMusicNow)),
             ),
           ),
           Expanded(
@@ -329,12 +382,14 @@ class UserScreen extends GetView<UserController> {
                   itemCount: tracks.length,
                   itemBuilder: (context, index) {
                     if (tracks.length == 0) {
-                      return MyText(text: 'No result!');
+                      return MyText(text: translation().noResult);
                     } else {
                       return GestureDetector(
                         onTap: () {
                           _controllerPlayM.stopMusic();
-                          List<int> intList = listId?.map((str) => int.parse(str)).toList() ?? [];
+                          List<int> intList =
+                              listId?.map((str) => int.parse(str)).toList() ??
+                                  [];
                           Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
                             'songId': tracks[index].id,
                             'listTrack': tracks,
@@ -346,10 +401,12 @@ class UserScreen extends GetView<UserController> {
                             onTap: () {
                               Get.back();
                               showModalBottomSheet(
+                                  elevation: 0,
                                   backgroundColor: Colors.transparent,
                                   context: context,
                                   builder: (builderContext) {
-                                    return _buildNotification(text, index, false, context);
+                                    return _buildNotification(
+                                        text, index, false, context);
                                   });
                             },
                             child: const Icon(Icons.delete),
@@ -366,7 +423,8 @@ class UserScreen extends GetView<UserController> {
     ));
   }
 
-  Widget _buildNotification(String? text, int index, bool? isLogOut, BuildContext context) {
+  Widget _buildNotification(
+      String? text, int index, bool? isLogOut, BuildContext context) {
     return Container(
       color: Colors.transparent,
       padding: const EdgeInsets.fromLTRB(20, 40, 20, 40),
@@ -376,24 +434,29 @@ class UserScreen extends GetView<UserController> {
             padding: EdgeInsets.symmetric(vertical: 10),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                color: Get.isDarkMode ? Colors.black : Theme.of(context).scaffoldBackgroundColor),
+                color: Get.isDarkMode
+                    ? Colors.black
+                    : Theme.of(context).scaffoldBackgroundColor),
             child: Column(
               children: [
                 Padding(
                   padding: EdgeInsets.all(10.0),
                   child: Text(
-                    isLogOut == true ? 'Confirm Log Out?' : 'Notification',
+                    isLogOut == true
+                        ? translation().comfirm
+                        : translation().noti,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                 ),
                 isLogOut == true
                     ? SizedBox()
                     : MyText(
-                        text: 'Confirm deletion?',
+                        text: translation().comfirmDelete,
                         fontWeight: FontWeight.bold,
                       ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -409,9 +472,10 @@ class UserScreen extends GetView<UserController> {
                               onTap: () {
                                 Get.back();
                               },
-                              child: const Text(
-                                'Cancel',
-                                style: TextStyle(fontSize: 20, color: Colors.white),
+                              child: Text(
+                                translation().cancel,
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.white),
                               ),
                             ),
                           ),
@@ -441,9 +505,10 @@ class UserScreen extends GetView<UserController> {
                                   Get.back();
                                 }
                               },
-                              child: const Text(
-                                'Contiune',
-                                style: TextStyle(fontSize: 20, color: Colors.white),
+                              child: Text(
+                                translation().contiune,
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.white),
                               ),
                             ),
                           ),

@@ -1,3 +1,4 @@
+import 'package:do_an/components/image.dart';
 import 'package:do_an/module/play_music/play_music_controller.dart';
 import 'package:do_an/module/user/user_controller.dart';
 import 'package:flutter/material.dart';
@@ -27,23 +28,32 @@ class FirstPage extends GetView<PlayMusicController> {
     return Column(
       children: [
         Obx(() => controller.trackData.value != null
-            ? Container(
-                margin: const EdgeInsets.only(top: 10, bottom: 20),
-                height: height / 2.5,
-                width: width * 4 / 5,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  image: DecorationImage(
-                      image: NetworkImage(controller.trackData.value?.album?.coverMedium ?? ''),
-                      fit: BoxFit.cover),
-                  shape: BoxShape.rectangle,
+            ? Hero(
+                tag: 'avatarSong',
+                child: Container(
+                  margin: const EdgeInsets.only(top: 10, bottom: 20),
+                  height: height / 2.5,
+                  width: width * 4 / 5,
+                  child: imageNetwork(
+                    controller.trackData.value?.album?.coverMedium ?? '',
+                    radiusBL: 20,
+                    radiusBR: 20,
+                    radiusTL: 20,
+                    radiusTR: 20,
+                    height: height / 2.5,
+                    width: width * 4 / 5,
+                  ),
                 ),
               )
-            : SkeletonAvatar(
-                style: SkeletonAvatarStyle(
-                    height: height * 2 / 5,
-                    width: width * 3.5 / 5,
-                    borderRadius: const BorderRadius.all(Radius.circular(20))),
+            : Hero(
+                tag: 'avatarSong',
+                child: SkeletonAvatar(
+                  style: SkeletonAvatarStyle(
+                      height: height * 2 / 5,
+                      width: width * 3.5 / 5,
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(20))),
+                ),
               )),
         Obx(
           () => Container(
@@ -61,8 +71,8 @@ class FirstPage extends GetView<PlayMusicController> {
             children: [
               GestureDetector(
                 onTap: () {
-                  controller.getLinkSong(
-                      context, controller.trackData.value?.preview ?? '', height);
+                  controller.getLinkSong(context,
+                      controller.trackData.value?.preview ?? '', height);
                 },
                 child: const MyIcon(
                   icon: Icons.share,
@@ -72,10 +82,12 @@ class FirstPage extends GetView<PlayMusicController> {
                 if (controller.trackData.value != null) {
                   return GestureDetector(
                     onTap: () {
-                      Get.toNamed(ARTIST_SCREEN, arguments: controller.trackData.value?.artist?.id);
+                      Get.toNamed(ARTIST_SCREEN,
+                          arguments: controller.trackData.value?.artist?.id);
                     },
-                    child:
-                        MyText(fontSize: 17, text: controller.trackData.value?.artist?.name ?? ''),
+                    child: MyText(
+                        fontSize: 17,
+                        text: controller.trackData.value?.artist?.name ?? ''),
                   );
                 } else {
                   return const SkeletonLine(
@@ -91,8 +103,11 @@ class FirstPage extends GetView<PlayMusicController> {
                 },
                 child: Obx(
                   () => MyIcon(
-                      icon: controller.isFavorite.value ? Icons.favorite : Icons.favorite_border,
-                      color: controller.isFavorite.value ? Colors.purple : null),
+                      icon: controller.isFavorite.value
+                          ? Icons.favorite
+                          : Icons.favorite_border,
+                      color:
+                          controller.isFavorite.value ? Colors.purple : null),
                 ),
               )
             ],
@@ -111,7 +126,8 @@ class FirstPage extends GetView<PlayMusicController> {
                   max: controller.durationInt.value.toDouble(),
                   value: controller.positionInt.value.toDouble(),
                   onChanged: (value) {
-                    controller.audioPlayer.seek(Duration(seconds: value.toInt()));
+                    controller.audioPlayer
+                        .seek(Duration(seconds: value.toInt()));
                   },
                 ),
               ),
@@ -143,7 +159,8 @@ class FirstPage extends GetView<PlayMusicController> {
                 child: Obx(
                   () => MyIcon(
                     icon: Icons.shuffle,
-                    color: controller.loopListTrack.value ? Colors.purple : null,
+                    color:
+                        controller.loopListTrack.value ? Colors.purple : null,
                   ),
                 ),
               ),
@@ -168,7 +185,9 @@ class FirstPage extends GetView<PlayMusicController> {
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         image: AssetImage(
-                          controller.isPlaying.value ? "assets/pause.png" : "assets/play.jpg",
+                          controller.isPlaying.value
+                              ? "assets/pause.png"
+                              : "assets/play.jpg",
                         ),
                         fit: BoxFit.cover,
                       ),

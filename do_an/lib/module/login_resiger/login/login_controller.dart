@@ -28,7 +28,7 @@ class LoginController extends GetxController {
     }).catchError((error) {
       if (error.code == 'invalid-email') {
         checkAccount.value = CHECK_ACCOUNT.NotFound;
-        showErrorSignIn.value = 'Account does not exist !';
+        showErrorSignIn.value = 'Account does not exist!';
       } else {
         checkAccount.value = CHECK_ACCOUNT.AthorError;
         showErrorSignIn.value = 'Login failed!';

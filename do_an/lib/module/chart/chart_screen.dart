@@ -2,6 +2,7 @@
 
 import 'package:do_an/components/appBar.dart';
 import 'package:do_an/components/divider.dart';
+import 'package:do_an/components/image.dart';
 import 'package:do_an/components/song.dart';
 import 'package:do_an/components/text.dart';
 import 'package:do_an/module/chart/chart_controller.dart';
@@ -11,6 +12,7 @@ import 'package:skeletons/skeletons.dart';
 
 import '../../components/container_album.dart';
 import '../../const.dart';
+import '../../language/language_constant.dart';
 import '../play_music/play_music_controller.dart';
 
 class ChartScreen extends GetView<ChartController> {
@@ -45,7 +47,10 @@ class ChartScreen extends GetView<ChartController> {
         Container(
           margin: EdgeInsets.only(top: 20),
           alignment: Alignment.centerLeft,
-          child: MyText(text: 'Best Songs', fontSize: 22, fontWeight: FontWeight.bold),
+          child: MyText(
+              text: translation().bestSongs,
+              fontSize: 22,
+              fontWeight: FontWeight.bold),
         ),
         SizedBox(
           height: 300,
@@ -98,7 +103,10 @@ class ChartScreen extends GetView<ChartController> {
         Container(
           margin: EdgeInsets.only(top: 20),
           alignment: Alignment.centerLeft,
-          child: MyText(text: 'Best Playlist', fontSize: 22, fontWeight: FontWeight.bold),
+          child: MyText(
+              text: translation().bestPlaylist,
+              fontSize: 22,
+              fontWeight: FontWeight.bold),
         ),
         Obx(() {
           final value = controller.chartData.value;
@@ -109,7 +117,8 @@ class ChartScreen extends GetView<ChartController> {
                 itemCount: 10,
                 itemBuilder: (context, index) {
                   return Container(
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(16)),
                   );
                 },
               ),
@@ -126,11 +135,14 @@ class ChartScreen extends GetView<ChartController> {
                     {
                       return GestureDetector(
                         onTap: () {
-                          Get.toNamed(PLAYLIST_SCREEN, arguments: value.playlists?.data?[index].id);
+                          Get.toNamed(PLAYLIST_SCREEN,
+                              arguments: value.playlists?.data?[index].id);
                         },
                         child: MyContainerAlbum(
                             width: 160,
-                            urlImage: value.playlists?.data?[index].pictureMedium ?? '',
+                            urlImage:
+                                value.playlists?.data?[index].pictureMedium ??
+                                    '',
                             boderRadius: 16,
                             mytext: MyText(
                               text: value.playlists?.data?[index].title ?? '',
@@ -153,7 +165,10 @@ class ChartScreen extends GetView<ChartController> {
         Container(
           margin: EdgeInsets.only(top: 20),
           alignment: Alignment.centerLeft,
-          child: MyText(text: 'Best Artist', fontSize: 22, fontWeight: FontWeight.bold),
+          child: MyText(
+              text: translation().bestArtist,
+              fontSize: 22,
+              fontWeight: FontWeight.bold),
         ),
         Obx(() {
           final value = controller.chartData.value;
@@ -167,7 +182,8 @@ class ChartScreen extends GetView<ChartController> {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
-                        Get.toNamed(ARTIST_SCREEN, arguments: value.artists?.data?[index].id);
+                        Get.toNamed(ARTIST_SCREEN,
+                            arguments: value.artists?.data?[index].id);
                       },
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -176,13 +192,9 @@ class ChartScreen extends GetView<ChartController> {
                           Container(
                             height: 75,
                             width: 75,
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                    image: NetworkImage(
-                                      '${value.artists?.data?[index].pictureSmall}',
-                                    ),
-                                    fit: BoxFit.cover)),
+                            child: imageNetwork(
+                                '${value.artists?.data?[index].pictureSmall}',
+                                isArtist: true),
                           ),
                           Container(
                               width: 100,
@@ -192,7 +204,8 @@ class ChartScreen extends GetView<ChartController> {
                                   maxLine: 1,
                                   fontSize: 16,
                                   text: controller.shortenText(
-                                      value.artists?.data?[index].name ?? '', 10))),
+                                      value.artists?.data?[index].name ?? '',
+                                      10))),
                         ],
                       ),
                     );
@@ -227,7 +240,7 @@ class ChartScreen extends GetView<ChartController> {
               alignment: Alignment.centerLeft,
               margin: const EdgeInsets.only(top: 20),
               child: MyText(
-                text: 'CHART',
+                text: translation().chart.toUpperCase(),
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
               )),

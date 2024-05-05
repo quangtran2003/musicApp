@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:do_an/components/icon.dart';
 import 'package:do_an/components/text.dart';
+import 'package:do_an/language/language_constant.dart';
 import 'package:do_an/module/play_music/play_music_controller.dart';
 import 'package:do_an/module/user/user_controller.dart';
 import 'package:do_an/net_working/models/track.dart';
@@ -29,7 +30,8 @@ class PlayMusicScreen extends GetView<PlayMusicController> {
     controller.initData(songId, listTrack, listIdSong, isSongBottom);
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20))),
+        decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(20))),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -48,7 +50,8 @@ class PlayMusicScreen extends GetView<PlayMusicController> {
                         listTrack: listTrack,
                         onSongSelected: () {
                           pageController.animateToPage(0,
-                              duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeInOut);
                         })
                   ]),
             )
@@ -84,6 +87,7 @@ class PlayMusicScreen extends GetView<PlayMusicController> {
             onTap: () {
               showModalBottomSheet(
                   isScrollControlled: true,
+                  elevation: 0,
                   backgroundColor: Colors.transparent,
                   context: context,
                   builder: (builderContext) {
@@ -101,7 +105,9 @@ class PlayMusicScreen extends GetView<PlayMusicController> {
         : Padding(
             padding: const EdgeInsets.only(right: 20),
             child: MyIcon(
-                icon: Icons.more_horiz, size: 35, color: Theme.of(context).scaffoldBackgroundColor),
+                icon: Icons.more_horiz,
+                size: 35,
+                color: Theme.of(context).scaffoldBackgroundColor),
           ));
   }
 
@@ -122,8 +128,8 @@ class PlayMusicScreen extends GetView<PlayMusicController> {
                   onTap: () {
                     _showTimePicker(context);
                   },
-                  child: _buildButtonIconNavigartorBar(
-                      Icons.timer, "Timer to turn off music", controller.isCountingDown.value),
+                  child: _buildButtonIconNavigartorBar(Icons.timer,
+                      translation().timer, controller.isCountingDown.value),
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
@@ -135,8 +141,8 @@ class PlayMusicScreen extends GetView<PlayMusicController> {
                     controller.savePlaylist();
                     _controllerUser.loadPlaylist();
                   },
-                  child: _buildButtonIconNavigartorBar(
-                      Icons.playlist_add, "Add to playlist", controller.isPlaylist.value),
+                  child: _buildButtonIconNavigartorBar(Icons.playlist_add,
+                      translation().addPlayplist, controller.isPlaylist.value),
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
@@ -148,8 +154,8 @@ class PlayMusicScreen extends GetView<PlayMusicController> {
                     controller.saveFavourite();
                     _controllerUser.loadfavourite();
                   },
-                  child: _buildButtonIconNavigartorBar(
-                      Icons.favorite_border, "Add to favourite", controller.isFavorite.value),
+                  child: _buildButtonIconNavigartorBar(Icons.favorite_border,
+                      translation().addFavourite, controller.isFavorite.value),
                 ),
               ],
             ),
@@ -165,7 +171,8 @@ class PlayMusicScreen extends GetView<PlayMusicController> {
           if (controller.indexPage.value == 0) {
             return controller.trackData.value != null
                 ? Center(
-                    child: MyText(text: controller.trackData.value?.title ?? ''),
+                    child:
+                        MyText(text: controller.trackData.value?.title ?? ''),
                   )
                 : const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 60),
@@ -179,7 +186,7 @@ class PlayMusicScreen extends GetView<PlayMusicController> {
           return Container(
             alignment: Alignment.center,
             child: MyText(
-              text: 'Music playlist',
+              text: translation().playlist,
               fontWeight: FontWeight.bold,
             ),
           );
@@ -214,7 +221,8 @@ class PlayMusicScreen extends GetView<PlayMusicController> {
     );
   }
 
-  Widget _buildButtonIconNavigartorBar(IconData icons, String text, bool check) {
+  Widget _buildButtonIconNavigartorBar(
+      IconData icons, String text, bool check) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -244,7 +252,8 @@ class PlayMusicScreen extends GetView<PlayMusicController> {
             primaryColor: Colors.purple,
             hintColor: Colors.purple,
             colorScheme: const ColorScheme.light(primary: Colors.purple),
-            buttonTheme: const ButtonThemeData(textTheme: ButtonTextTheme.primary),
+            buttonTheme:
+                const ButtonThemeData(textTheme: ButtonTextTheme.primary),
           ),
           child: child!,
         );
@@ -253,7 +262,8 @@ class PlayMusicScreen extends GetView<PlayMusicController> {
     );
 
     if (pickedTime != null) {
-      controller.countdownSeconds.value = pickedTime.hour * 3600 + pickedTime.minute * 60;
+      controller.countdownSeconds.value =
+          pickedTime.hour * 3600 + pickedTime.minute * 60;
       controller.isCountingDown.value = true;
       Timer.periodic(const Duration(seconds: 1), (timer) {
         if (controller.countdownSeconds.value > 0) {

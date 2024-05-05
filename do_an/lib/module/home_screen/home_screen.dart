@@ -10,10 +10,11 @@ import 'package:do_an/module/home_screen/homecontroller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../language/language_constant.dart';
 import '../play_music/play_music_controller.dart';
 
 class HomeScreen extends GetView<HomeController> {
-  final _controllerPlayM = Get.put(PlayMusicController(),tag: "120");
+  final _controllerPlayM = Get.put(PlayMusicController());
   HomeScreen({super.key});
   @override
   void onInit() {
@@ -28,7 +29,11 @@ class HomeScreen extends GetView<HomeController> {
     return Scaffold(
         body: Container(
       child: Column(
-        children: [_buildAppBar(), _buildListArtist(x), _buildListSong()],
+        children: [
+          _buildAppBar(context),
+          _buildListArtist(x),
+          _buildListSong()
+        ],
       ),
     ));
   }
@@ -40,7 +45,8 @@ class HomeScreen extends GetView<HomeController> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             alignment: Alignment.centerLeft,
-            child: MyText(text: 'New Songs', fontSize: 22, fontWeight: FontWeight.bold),
+            child: MyText(
+                text: translation().newSong, fontSize: 22, fontWeight: FontWeight.bold),
           ),
           Expanded(
             child: Obx(
@@ -66,7 +72,8 @@ class HomeScreen extends GetView<HomeController> {
                                 });
                               },
                               child: MySong(
-                                urlImage: controller.tracks[index].album?.coverSmall,
+                                urlImage:
+                                    controller.tracks[index].album?.coverSmall,
                                 title: controller.tracks[index].title,
                                 subTitle: controller.tracks[index].artist?.name,
                               ),
@@ -89,8 +96,8 @@ class HomeScreen extends GetView<HomeController> {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           alignment: Alignment.centerLeft,
           margin: const EdgeInsets.only(top: 20, bottom: 10),
-          child: const Text(
-            'Artist',
+          child:  Text(
+            translation().artist,
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
         ),
@@ -108,15 +115,18 @@ class HomeScreen extends GetView<HomeController> {
                   final data = controller.artists[index];
                   return GestureDetector(
                     onTap: () {
-                      Get.toNamed(ARTIST_SCREEN, arguments: data.data?[0].artist?.id);
+                      Get.toNamed(ARTIST_SCREEN,
+                          arguments: data.data?[0].artist?.id);
                     },
                     child: MyContainerAlbum(
-                        urlImage: data.data?[0].contributors?[0].pictureMedium ?? '',
-                        boderRadius: 20,
-                        mytext: MyText(
-                          text: data.data?[0].contributors?[0].name ?? '',
-                          fontSize: 20,
-                        )),
+                      urlImage:
+                          data.data?[0].contributors?[0].pictureMedium ?? '',
+                      boderRadius: 20,
+                      mytext: MyText(
+                        text: data.data?[0].contributors?[0].name ?? '',
+                        fontSize: 20,
+                      ),
+                    ),
                   );
                 },
               ),
@@ -127,14 +137,14 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 
-  Column _buildAppBar() {
+  Column _buildAppBar(BuildContext context) {
     return Column(
       children: [
         MyAppBarHomePage(
           title: Container(
               margin: const EdgeInsets.only(top: 20),
               child: MyText(
-                text: 'Listen now',
+                text: translation().listenNow,
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
               )),

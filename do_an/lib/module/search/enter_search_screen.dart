@@ -1,14 +1,16 @@
 // ignore_for_file: invalid_use_of_protected_member, prefer_is_empty
 
-import 'package:do_an/const.dart';
 import 'package:do_an/components/container_album.dart';
 import 'package:do_an/components/icon.dart';
+import 'package:do_an/components/image.dart';
 import 'package:do_an/components/song.dart';
 import 'package:do_an/components/text.dart';
+import 'package:do_an/const.dart';
 import 'package:do_an/module/search/search_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../language/language_constant.dart';
 import '../play_music/play_music_controller.dart';
 
 // ignore: must_be_immutable
@@ -69,9 +71,9 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildListTitle('Song', 0),
-            _buildListTitle('Album', 1),
-            _buildListTitle('Artist', 2),
+            _buildListTitle(translation().song, 0),
+            _buildListTitle(translation().album, 1),
+            _buildListTitle(translation().artist, 2),
           ],
         ),
       ),
@@ -82,7 +84,7 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
     return Obx(() {
       if (controller.checkData.value == null) {
         return Center(
-          child: MyText(text: 'No result'),
+          child: MyText(text: translation().noResult),
         );
       }
       if (controller.searchData.value?.data == null) {
@@ -100,22 +102,23 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
               itemBuilder: (context, index) {
                 return GestureDetector(
                   onTap: () {
-                    Get.toNamed(ARTIST_SCREEN, arguments: controller.uniqueArtists[index]?.id);
+                    Get.toNamed(ARTIST_SCREEN,
+                        arguments: controller.uniqueArtists[index]?.id);
                   },
                   child: Row(
                     children: [
                       Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 10),
                         height: 70,
                         width: 70,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                                image: NetworkImage(
-                                    '${controller.uniqueArtists[index]?.pictureSmall}'),
-                                fit: BoxFit.cover)),
+                        child: imageNetwork(
+                            '${controller.uniqueArtists[index]?.pictureSmall}',
+                            isArtist: true),
                       ),
-                      Expanded(child: Text('${controller.uniqueArtists[index]?.name}')),
+                      Expanded(
+                          child:
+                              Text('${controller.uniqueArtists[index]?.name}')),
                       const MyIcon(
                         icon: Icons.navigate_next_outlined,
                         size: 25,
@@ -131,7 +134,7 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
     return Obx(() {
       if (controller.checkData.value == null) {
         return Center(
-          child: MyText(text: 'No result'),
+          child: MyText(text: translation().noResult),
         );
       }
       if (controller.searchData.value?.data == null) {
@@ -144,19 +147,24 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
       return Container(
         margin: const EdgeInsets.symmetric(horizontal: 20),
         child: GridView.builder(
+            padding: const EdgeInsets.symmetric(vertical: 0),
             itemCount: controller.uniqueAlbums.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2),
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
-                  Get.toNamed(ALBUM_SCREEN, arguments: controller.uniqueAlbums[index]?.id);
+                  Get.toNamed(ALBUM_SCREEN,
+                      arguments: controller.uniqueAlbums[index]?.id);
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: MyContainerAlbum(
                       right: 0,
-                      urlImage: controller.uniqueAlbums[index]?.coverMedium ?? '',
-                      mytext: MyText(text: controller.uniqueAlbums[index]?.title ?? '')),
+                      urlImage:
+                          controller.uniqueAlbums[index]?.coverMedium ?? '',
+                      mytext: MyText(
+                          text: controller.uniqueAlbums[index]?.title ?? '')),
                 ),
               );
               //
@@ -214,16 +222,16 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
             child: const CircularProgressIndicator());
       }
       if (value?.data?.length == 0) {
-        return const SizedBox(
-          // height: 400,
+        return SizedBox(
           child: Center(
-            child: Text('No result'),
+            child: Text(translation().noResult),
           ),
         );
       } else {
         return SizedBox(
             //height: 400,
             child: ListView.builder(
+                padding: const EdgeInsets.symmetric(vertical: 0),
                 itemCount: value?.data?.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(

@@ -11,6 +11,7 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../language/language_constant.dart';
 import '../play_music/play_music_controller.dart';
 
 class SearchScreen extends GetView<ControllerSearch> {
@@ -44,16 +45,18 @@ class SearchScreen extends GetView<ControllerSearch> {
                 width: y * 4.3 / 5,
                 child: MyTextField(
                   autoFocus: true,
-                  textHint: 'Enter your song',
+                  textHint: translation().enterYourSong,
                   textColor: Get.isDarkMode ? Colors.white : Colors.black,
                   onChange: (value) async {
-                    EasyDebounce.debounce('my-debouncer', const Duration(milliseconds: 300),
+                    EasyDebounce.debounce(
+                        'my-debouncer', const Duration(milliseconds: 300),
                         () async {
                       await controller.getSearch(value);
                     });
                   },
                   onEditingComplete: () {
-                    controller.saveSearchHistory(controller.resultSearch.value ?? '');
+                    controller
+                        .saveSearchHistory(controller.resultSearch.value ?? '');
                     Get.toNamed(ENTER_SEARCH_SCREEN);
                   },
                 )),
@@ -70,7 +73,8 @@ class SearchScreen extends GetView<ControllerSearch> {
               children: [
                 Obx(() {
                   final value = controller.searchData.value;
-                  if (controller.checkData.value == null || value?.data?.length == 0) {
+                  if (controller.checkData.value == null ||
+                      value?.data?.length == 0) {
                     return _buildHistory();
                   }
                   if (value == null) {
@@ -127,13 +131,17 @@ class SearchScreen extends GetView<ControllerSearch> {
             padding: const EdgeInsets.only(left: 30),
             alignment: Alignment.bottomLeft,
             child: MyText(
-              text: 'History',
+              text: translation().history,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
           if (controller.dataHistory.value?.length == 0)
-            Expanded(child: Center(child: MyText(text: 'No result')))
+            Expanded(
+              child: Center(
+                child: MyText(text: translation().noResult),
+              ),
+            )
           else if (controller.dataHistory.value != null)
             Expanded(
               child: ListView.builder(
@@ -143,7 +151,8 @@ class SearchScreen extends GetView<ControllerSearch> {
                       onTap: () async {
                         controller.uniqueAlbums.clear();
                         controller.uniqueArtists.clear();
-                        controller.getSearch(controller.dataHistory.value?[index] ?? '');
+                        controller.getSearch(
+                            controller.dataHistory.value?[index] ?? '');
 
                         Get.toNamed(ENTER_SEARCH_SCREEN);
                       },
@@ -155,7 +164,8 @@ class SearchScreen extends GetView<ControllerSearch> {
                           ),
                           title: Container(
                             alignment: Alignment.centerLeft,
-                            child: MyText(text: controller.dataHistory.value![index]),
+                            child: MyText(
+                                text: controller.dataHistory.value![index]),
                           )),
                     );
                   }),

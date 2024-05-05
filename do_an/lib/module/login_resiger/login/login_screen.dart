@@ -1,6 +1,7 @@
 import 'package:do_an/components/text.dart';
 import 'package:do_an/components/text_field.dart';
 import 'package:do_an/const.dart';
+import 'package:do_an/language/language_constant.dart';
 import 'package:do_an/module/login_resiger/login/login_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -28,7 +29,7 @@ class Login extends GetView<LoginController> {
               Container(
                   alignment: Alignment.bottomLeft,
                   child: MyText(
-                    text: 'Login',
+                    text: translation().login,
                     color: Colors.purple,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
@@ -36,7 +37,7 @@ class Login extends GetView<LoginController> {
               Obx(
                 () => MyTextField(
                   errorText: controller.userNameError.value,
-                  textHint: 'Enter your email',
+                  textHint:translation().enterEmail,
                   textColor: Colors.purple,
                   onChange: (value) {
                     controller.validateUserName(value);
@@ -51,7 +52,7 @@ class Login extends GetView<LoginController> {
                     controller.validatePassWord(value);
                     controller.login();
                   },
-                  textHint: 'PassWord',
+                  textHint: translation().password,
                   hasPass: true,
                   textColor: Colors.purple,
                 ),
@@ -89,11 +90,11 @@ class Login extends GetView<LoginController> {
       child: Container(
         alignment: Alignment.centerRight,
         child: Text.rich(TextSpan(
-            text: 'Do not have account ? ',
+            text: translation().doNotHaveAccount,
             style: TextStyle(fontSize: 17, color: Color.fromARGB(255, 104, 104, 104)),
             children: [
               TextSpan(
-                  text: 'Resiger',
+                  text: translation().resiger,
                   style: TextStyle(
                       fontSize: 17,
                       decoration: TextDecoration.underline,
@@ -147,7 +148,7 @@ class Login extends GetView<LoginController> {
                 borderRadius: BorderRadius.circular(20)),
             child: Center(
               child: MyText(
-                  text: 'Login',
+                  text: translation().login,
                   color: controller.checkLogin.value ? Colors.white : Colors.grey,
                   fontSize: 20),
             )),

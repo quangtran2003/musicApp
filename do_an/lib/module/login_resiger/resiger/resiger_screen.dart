@@ -1,6 +1,7 @@
 import 'package:do_an/components/text.dart';
 import 'package:do_an/components/text_field.dart';
 import 'package:do_an/const.dart';
+import 'package:do_an/language/language_constant.dart';
 import 'package:do_an/module/login_resiger/resiger/resiger_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -26,14 +27,14 @@ class Resiger extends GetView<ResigerController> {
               _buildImageBackground(x),
               Container(
                 alignment: Alignment.bottomLeft,
-                child: const Text(
-                  'Resiger',
+                child:  Text(
+                  translation().resiger,
                   style: TextStyle(color: Colors.purple, fontSize: 25, fontWeight: FontWeight.bold),
                 ),
               ),
               Obx(
                 () => MyTextField(
-                  textHint: 'Enter your email',
+                  textHint: translation().enterEmail,
                   textColor: Colors.purple,
                   errorText: controller.emailError.value,
                   onChange: (value) {
@@ -44,7 +45,7 @@ class Resiger extends GetView<ResigerController> {
               ),
               Obx(
                 () => MyTextField(
-                  textHint: 'Pass word',
+                  textHint: translation().password,
                   textColor: Colors.purple,
                   hasPass: true,
                   errorText: controller.passWordError.value,
@@ -56,7 +57,7 @@ class Resiger extends GetView<ResigerController> {
               ),
               Obx(
                 () => MyTextField(
-                  textHint: 'Confrim pass word',
+                  textHint: translation().comfirmPass,
                   hasPass: true,
                   textColor: Colors.purple,
                   errorText: controller.confrimPassWordError.value,
@@ -122,14 +123,14 @@ class Resiger extends GetView<ResigerController> {
         if (user != null) {
           Navigator.pushReplacementNamed(context, MAIN_SCREEN);
         } else {
-          Get.snackbar('Notification', 'Sign fail! Try again');
+          Get.snackbar(translation().noti, 'Sign fail! Try again');
         }
       },
       child: Container(
         margin: EdgeInsets.only(top: 10),
         alignment: Alignment.centerRight,
         child: Text.rich(TextSpan(
-            text: 'Sign with ',
+            text: translation().signWith,
             style: TextStyle(fontSize: 17, color: Color.fromARGB(255, 104, 104, 104)),
             children: [
               TextSpan(

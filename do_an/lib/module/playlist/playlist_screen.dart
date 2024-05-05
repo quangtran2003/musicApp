@@ -10,6 +10,7 @@ import '../../components/icon.dart';
 import '../../components/song.dart';
 import '../../components/text.dart';
 import '../../const.dart';
+import '../../language/language_constant.dart';
 
 class PlaylistScreen extends GetView<PlayListController> {
   final _controllerPlayM = Get.put(PlayMusicController());
@@ -98,7 +99,7 @@ class PlaylistScreen extends GetView<PlayListController> {
         alignment: Alignment.center,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.purple),
         child: MyText(
-          text: 'Play music now',
+          text: translation().playMusicNow,
           color: Colors.white,
         ),
       ),

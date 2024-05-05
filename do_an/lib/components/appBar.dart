@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../const.dart';
+import '../language/language_constant.dart';
 
 class MyAppBarHomePage extends StatelessWidget {
   final controllerS = Get.put(ControllerSearch());
@@ -42,7 +43,7 @@ class MyAppBarHomePage extends StatelessWidget {
                 children: [
                   const MyIcon(icon: Icons.search),
                   MyText(
-                    text: 'Search...',
+                    text: '${translation().search}...',
                     fontSize: 18,
                   ),
                 ],

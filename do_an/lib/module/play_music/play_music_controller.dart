@@ -3,6 +3,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:do_an/components/text.dart';
+import 'package:do_an/language/language_constant.dart';
 import 'package:do_an/module/user/user_controller.dart';
 import 'package:do_an/net_working/models/track.dart';
 import 'package:do_an/net_working/responstory/all_responstory.dart';
@@ -260,7 +261,7 @@ class PlayMusicController extends GetxController {
                     borderRadius: BorderRadius.circular(16)),
                 child: Center(
                   child: MyText(
-                    text: "The song link has been copied!",
+                    text: translation().coppied,
                   ),
                 ),
               ),

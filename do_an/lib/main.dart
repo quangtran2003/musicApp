@@ -28,9 +28,11 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'language/language_constant.dart';
 import 'module/album/album_screen.dart';
 import 'module/chart/chart_binding.dart';
 import 'module/play_music/playmusic_screen/playmusic_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,16 +57,38 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-class MyApp extends GetView {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
-  void onInit() async {
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+    static void setLocale(BuildContext context, Locale newLocale) {
+    _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
+    state?.setLocale(newLocale);
+  }
+}
+
+class _MyAppState extends State<MyApp> {
+    Locale? _locale;
+
+  @override
+  void initState() {
     FlutterNativeSplash.remove();
+    super.initState();
+  }
+    setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
+  void didChangeDependencies() {
+    getLocale().then((locale) => {setLocale(locale)});
+    super.didChangeDependencies();
   }
   @override
   Widget build(BuildContext context) {
-    onInit();
     return GetMaterialApp(
-      initialRoute: LOGIN_SCREEN,
+      initialRoute: MAIN_SCREEN,
       getPages: [
         GetPage(name: HOME_SCREEN, page: () => HomeScreen(), binding: HomeBinding()),
         GetPage(
@@ -82,6 +106,9 @@ class MyApp extends GetView {
         GetPage(name: USER_SCREEN, page: () => UserScreen(), binding: UserBinding()),
       ],
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: _locale,
     );
   }
 }
