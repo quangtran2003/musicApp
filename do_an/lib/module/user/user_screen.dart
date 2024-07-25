@@ -16,20 +16,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../main.dart';
+import '../play_music/model_song_transfer.dart';
 
 class UserScreen extends GetView<UserController> {
-  final _controllerPlayM = Get.put(PlayMusicController());
   final controllerSearch = Get.put(ControllerSearch());
   final controllerResiger = Get.put(ResigerController());
   UserScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    controller.loadHistoryPlay();
-    controller.loadPlaylist();
-    controller.loadfavourite();
-    controller.getNameUser();
-    controller.getDarkMode();
     final x = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
@@ -233,16 +228,22 @@ class UserScreen extends GetView<UserController> {
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () {
-                          _controllerPlayM.stopMusic();
-                          List<int> intList = controller.historyPlay.value
+                          if (Get.isRegistered<PlayMusicController>()) {
+                            Get.find<PlayMusicController>().stopMusic();
+                          }
+                          List<int> listIdSongHis = controller.historyPlay.value
                                   ?.map((str) => int.parse(str))
                                   .toList() ??
                               [];
-                          Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
-                            'songId': controller.historyTracks[index].id,
-                            'listTrack': controller.historyTracks,
-                            'listIdSong': intList
-                          });
+
+                          Get.toNamed(
+                            PLAY_MUSIC_SCREEN,
+                            arguments: ModelSongTransfer(
+                              listIdSong: listIdSongHis,
+                              listTrack: controller.historyTracks,
+                              songId: controller.historyTracks[index].id,
+                            ),
+                          );
                         },
                         child: MySong(
                           urlImage:
@@ -365,14 +366,19 @@ class UserScreen extends GetView<UserController> {
               ),
               child: GestureDetector(
                   onTap: () {
-                    _controllerPlayM.stopMusic();
+                    if (Get.isRegistered<PlayMusicController>()) {
+                      Get.find<PlayMusicController>().stopMusic();
+                    }
                     List<int> intList =
                         listId?.map((str) => int.parse(str)).toList() ?? [];
-                    Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
-                      'songId': tracks[0].id,
-                      'listTrack': tracks,
-                      'listIdSong': intList
-                    });
+                    Get.toNamed(
+                      PLAY_MUSIC_SCREEN,
+                      arguments: ModelSongTransfer(
+                        listIdSong: intList,
+                        listTrack: tracks,
+                        songId: tracks[0].id,
+                      ),
+                    );
                   },
                   child: MyText(text: translation().playMusicNow)),
             ),
@@ -386,15 +392,21 @@ class UserScreen extends GetView<UserController> {
                     } else {
                       return GestureDetector(
                         onTap: () {
-                          _controllerPlayM.stopMusic();
+                          if (Get.isRegistered<PlayMusicController>()) {
+                            Get.find<PlayMusicController>().stopMusic();
+                          }
                           List<int> intList =
                               listId?.map((str) => int.parse(str)).toList() ??
                                   [];
-                          Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
-                            'songId': tracks[index].id,
-                            'listTrack': tracks,
-                            'listIdSong': intList
-                          });
+
+                          Get.toNamed(
+                            PLAY_MUSIC_SCREEN,
+                            arguments: ModelSongTransfer(
+                              listIdSong: intList,
+                              listTrack: tracks,
+                              songId: tracks[index].id,
+                            ),
+                          );
                         },
                         child: MySong(
                           widget: GestureDetector(

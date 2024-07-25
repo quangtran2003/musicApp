@@ -12,18 +12,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../language/language_constant.dart';
+import '../play_music/model_song_transfer.dart';
 import '../play_music/play_music_controller.dart';
 
 class SearchScreen extends GetView<ControllerSearch> {
-  final _controllerPlayM = Get.put(PlayMusicController());
-
   SearchScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final x = MediaQuery.of(context).size.height;
     final y = MediaQuery.of(context).size.width;
-    controller.loadSearchHistory();
 
     return Scaffold(
       appBar: AppBar(
@@ -58,6 +56,7 @@ class SearchScreen extends GetView<ControllerSearch> {
                     controller
                         .saveSearchHistory(controller.resultSearch.value ?? '');
                     Get.toNamed(ENTER_SEARCH_SCREEN);
+                    controller.loadSearchHistory();
                   },
                 )),
           ),
@@ -105,13 +104,18 @@ class SearchScreen extends GetView<ControllerSearch> {
               return GestureDetector(
                 onTap: () {
                   controller.saveSearchHistory(value.data?[index].title ?? '');
-                  _controllerPlayM.stopMusic();
-                  Get.close(0);
-                  Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
-                    'songId': value.data?[index].id,
-                    'listTrack': controller.tracks.value,
-                    'listIdSong': controller.listIdSong
-                  });
+
+                  if (Get.isRegistered<PlayMusicController>()) {
+                    Get.find<PlayMusicController>().stopMusic();
+                  }
+                  Get.toNamed(
+                    PLAY_MUSIC_SCREEN,
+                    arguments: ModelSongTransfer(
+                      listIdSong: controller.listIdSong,
+                      listTrack: controller.tracks.value,
+                      songId: value.data?[index].id,
+                    ),
+                  );
                 },
                 child: MySong(
                   iconLeading: Icons.search,
@@ -153,20 +157,21 @@ class SearchScreen extends GetView<ControllerSearch> {
                         controller.uniqueArtists.clear();
                         controller.getSearch(
                             controller.dataHistory.value?[index] ?? '');
-
                         Get.toNamed(ENTER_SEARCH_SCREEN);
+                        controller.loadSearchHistory();
                       },
                       child: ListTile(
-                          leading: const Icon(Icons.search),
-                          trailing: const Icon(
-                            Icons.navigate_next_outlined,
-                            size: 30,
-                          ),
-                          title: Container(
-                            alignment: Alignment.centerLeft,
-                            child: MyText(
-                                text: controller.dataHistory.value![index]),
-                          )),
+                        leading: const Icon(Icons.search),
+                        trailing: const Icon(
+                          Icons.navigate_next_outlined,
+                          size: 30,
+                        ),
+                        title: Container(
+                          alignment: Alignment.centerLeft,
+                          child: MyText(
+                              text: controller.dataHistory.value![index]),
+                        ),
+                      ),
                     );
                   }),
             ),

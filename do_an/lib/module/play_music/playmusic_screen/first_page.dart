@@ -29,7 +29,8 @@ class FirstPage extends GetView<PlayMusicController> {
       children: [
         Obx(() => controller.trackData.value != null
             ? Hero(
-                tag: 'avatarSong',
+                tag:
+                    'avatarSong${controller.trackData.value?.album?.coverMedium}',
                 child: Container(
                   margin: const EdgeInsets.only(top: 10, bottom: 20),
                   height: height / 2.5,
@@ -46,7 +47,8 @@ class FirstPage extends GetView<PlayMusicController> {
                 ),
               )
             : Hero(
-                tag: 'avatarSong',
+                tag:
+                    'avatarSong${controller.trackData.value?.album?.coverMedium}',
                 child: SkeletonAvatar(
                   style: SkeletonAvatarStyle(
                       height: height * 2 / 5,

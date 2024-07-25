@@ -5,29 +5,26 @@ import 'package:do_an/components/text.dart';
 import 'package:do_an/language/language_constant.dart';
 import 'package:do_an/module/play_music/play_music_controller.dart';
 import 'package:do_an/module/user/user_controller.dart';
-import 'package:do_an/net_working/models/track.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skeletons/skeletons.dart';
 
+import '../model_song_transfer.dart';
 import 'first_page.dart';
 import 'second_page.dart';
 
 class PlayMusicScreen extends GetView<PlayMusicController> {
   final _controllerUser = Get.put(UserController());
+  final ModelSongTransfer? dataTransfer = Get.arguments;
+
   PlayMusicScreen({super.key});
   @override
   Widget build(BuildContext context) {
     PageController pageController = PageController(initialPage: 0);
-    final Map<String, dynamic>? data = Get.arguments;
-    final int? songId = data?['songId'] ?? null;
-    final List<TrackModel> listTrack = data?['listTrack'] ?? [];
-    final List<int?> listIdSong = data?['listIdSong'] ?? [];
-    final bool? isSongBottom = data?['isSongBottom'];
     final x = MediaQuery.of(context).size.height;
     final y = MediaQuery.of(context).size.width;
-    controller.initData(songId, listTrack, listIdSong, isSongBottom);
+    controller.initData(dataTransfer);
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -46,8 +43,8 @@ class PlayMusicScreen extends GetView<PlayMusicController> {
                   children: [
                     FirstPage(height: x, width: y),
                     SecondPage(
-                        listIdSong: listIdSong,
-                        listTrack: listTrack,
+                        listIdSong: dataTransfer?.listIdSong ?? [],
+                        listTrack: dataTransfer?.listTrack ?? [],
                         onSongSelected: () {
                           pageController.animateToPage(0,
                               duration: const Duration(milliseconds: 300),

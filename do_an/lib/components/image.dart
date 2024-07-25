@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../const.dart';
+
 Widget imageNetwork(
   String url, {
   bool isArtist = false,
@@ -68,8 +70,8 @@ Widget imageNetwork(
               : null,
         ),
         child: Shimmer.fromColors(
-          baseColor: const Color.fromARGB(255, 162, 83, 176).withOpacity(0.1),
-          highlightColor: Colors.purpleAccent.withOpacity(0.5),
+          baseColor: pinkColor,
+          highlightColor: Color.fromARGB(255, 251, 225, 255),
           child: Container(
               decoration: BoxDecoration(
                 color: Colors.grey.shade200,

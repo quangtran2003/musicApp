@@ -20,6 +20,12 @@ class ControllerSearch extends GetxController {
   List<int?> listIdSong = [];
   final RxList<TrackModel> tracks = RxList.empty();
 
+  @override
+  void onInit() {
+    initIndex();
+    super.onInit();
+  }
+
   void restartData() {
     checkData.value = null;
   }

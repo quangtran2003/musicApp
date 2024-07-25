@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:do_an/const.dart';
+import 'package:do_an/module/play_music/model_song_transfer.dart';
 import 'package:do_an/module/play_music/play_music_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,7 +16,7 @@ class SongBottom extends GetView<PlayMusicController> {
     return GestureDetector(
       onTap: () {
         if(controller.trackData.value?.title !=null) {
-          Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {'isSongBottom': true});
+          Get.toNamed(PLAY_MUSIC_SCREEN, arguments: ModelSongTransfer(isSongBottom: true));
         }
       },
       child:   Obx(

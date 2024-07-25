@@ -28,7 +28,7 @@ class MySong extends StatelessWidget {
             child: ListTile(
               leading: iconLeading == null
                   ? Hero(
-                      tag: 'avatarSong',
+                      tag: 'avatarSong$urlImage',
                       child: Container(
                         height: 55,
                         width: 55,

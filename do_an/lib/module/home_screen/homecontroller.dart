@@ -39,31 +39,14 @@ class HomeController extends GetxController {
     384236,
   ];
 
-  // void randomArtist() {
-  //   listIdArtist.clear();
-  //   var random = Random();
-  //   List<int> listRandom = [];
-  //   while (listRandom.length < 5) {
-  //     int index = random.nextInt(listIdArtist.length);
-  //     int url = listIdArtist[index];
-  //     if (!listRandom.contains(url)) {
-  //       listRandom.add(url);
-  //       listIdArtist.add(url);
-  //     }
-  //   }
-  // }
+  @override
+  void onInit() {
+    randomId();
+    getArtist();
+    getSong();
+    super.onInit();
+  }
 
-  // Future<void> getArtist() async {
-  //   List<TracklistArtistModel> result = [];
-  //   for (int i = 0; i < 5; i++) {
-  //     final trackItem =
-  //         await _listTrackRespon.getTracklistArtist(listIdArtist[i]);
-  //     if (trackItem != null) {
-  //       result.add(trackItem);
-  //     }
-  //   }
-  //   artists.value = result;
-  // }
   void randomId() {
     listIdArtist.shuffle();
     listIdSong.shuffle();

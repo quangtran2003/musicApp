@@ -10,6 +10,13 @@ class AlbumController extends GetxController {
   List<int?> listIdSong = [];
   final RxList<TrackModel> tracks = RxList.empty();
   final indexSong = Rxn<int>();
+  int id = Get.arguments;
+
+  @override
+  void onInit() {
+    super.onInit();
+    getAlbum(id);
+  }
 
   Future<void> getAlbum(int id) async {
     final value = await _respon.getAlbum(id.toString());

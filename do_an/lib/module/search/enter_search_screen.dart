@@ -11,17 +11,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../language/language_constant.dart';
+import '../play_music/model_song_transfer.dart';
 import '../play_music/play_music_controller.dart';
 
-// ignore: must_be_immutable
 class EnterSearchScreen extends GetView<ControllerSearch> {
-  final _controllerPlayM = Get.put(PlayMusicController());
   final PageController _pageController = PageController(initialPage: 0);
   EnterSearchScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    controller.initIndex();
     return Scaffold(
       body: Container(
         child: Column(
@@ -187,14 +185,12 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
                   text,
                   style: TextStyle(
                       color:
-                          // ignore: unrelated_type_equality_checks
                           index == controller.indexTitle.value
                               ? Get.isDarkMode
                                   ? Colors.white
                                   : Colors.black
                               : Colors.grey),
                 ),
-                // ignore: unrelated_type_equality_checks
                 index == controller.indexTitle.value
                     ? Container(
                         height: 4,
@@ -236,15 +232,17 @@ class EnterSearchScreen extends GetView<ControllerSearch> {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                       onTap: () {
-                        _controllerPlayM.stopMusic();
-
-                        Get.toNamed(PLAY_MUSIC_SCREEN,
-                            //arguments: value?.data?[index].id);
-                            arguments: {
-                              'songId': value?.data?[index].id,
-                              'listTrack': controller.tracks.value,
-                              'listIdSong': controller.listIdSong
-                            });
+                        if (Get.isRegistered<PlayMusicController>()) {
+                          Get.find<PlayMusicController>().stopMusic();
+                        }
+                        Get.toNamed(
+                          PLAY_MUSIC_SCREEN,
+                          arguments: ModelSongTransfer(
+                            listIdSong: controller.listIdSong,
+                            listTrack: controller.tracks.value,
+                            songId: value?.data?[index].id,
+                          ),
+                        );
                       },
                       child: MySong(
                         urlImage: value?.data?[index].album?.coverSmall,
