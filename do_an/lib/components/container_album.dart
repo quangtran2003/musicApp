@@ -38,7 +38,6 @@ class MyContainerAlbum extends StatelessWidget {
 
       height: height,
       width: width,
-      // ignore: sort_child_properties_last
       child: Column(children: [
         Expanded(
           flex: 3,
@@ -49,19 +48,11 @@ class MyContainerAlbum extends StatelessWidget {
               radiusBR: 0,
               radiusTL: 16,
               radiusTR: 16),
-          // Container(
-          //   decoration: BoxDecoration(
-          //       borderRadius: BorderRadius.only(
-          //           topLeft: Radius.circular(boderRadius ?? 16),
-          //           topRight: Radius.circular(boderRadius ?? 16)),
-          //       image: DecorationImage(image: NetworkImage(urlImage), fit: BoxFit.cover)),
-          // ),
         ),
         Expanded(
           flex: 1,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            // ignore: sort_child_properties_last
             child: Center(
               child: mytext,
             ),

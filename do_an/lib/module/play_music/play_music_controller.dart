@@ -1,9 +1,8 @@
-// ignore_for_file: invalid_use_of_protected_member
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:do_an/components/text.dart';
 import 'package:do_an/language/language_constant.dart';
+import 'package:do_an/module/play_music/model_song_transfer.dart';
 import 'package:do_an/module/user/user_controller.dart';
 import 'package:do_an/net_working/models/track.dart';
 import 'package:do_an/net_working/responstory/all_responstory.dart';
@@ -45,15 +44,15 @@ class PlayMusicController extends GetxController {
   }
 
   Future initData(
-      int? songId, List<TrackModel> listTrack, List<int?> listIdSong, bool? isSongBottom) async {
-    if (isSongBottom == null) {
-      getTrack(songId ?? 0);
+      ModelSongTransfer? dataTransfer) async {
+    if (dataTransfer?.isSongBottom == false) {
+      getTrack(dataTransfer?.songId ?? 0);
       checkStatusMusic();
-      getListTrack(listTrack);
+      getListTrack(dataTransfer?.listTrack??[]);
       onDurationChanged();
       onPositionChanged();
       checkConpletion();
-      getIndexSong(songId, listIdSong);
+      getIndexSong(dataTransfer?.songId, dataTransfer?.listIdSong??[]);
     }
   }
 
@@ -174,7 +173,7 @@ class PlayMusicController extends GetxController {
         if (state == PlayerState.completed) {
           if (indexSong.value != null) {
             indexSong.value = indexSong.value! + 1;
-            if (indexSong.value! >= trackList.value.length) {
+            if (indexSong.value! >= trackList.length) {
               indexSong.value = 0;
             }
             updateData(trackList[indexSong.value!]);
@@ -213,11 +212,11 @@ class PlayMusicController extends GetxController {
     }
     isPlaying.value = true;
     if (indexSong.value != null) {
-      if (trackList.value.length == 1) {
+      if (trackList.length == 1) {
         updateData(trackList[indexSong.value ?? 0]);
         return;
       }
-      if (indexSong.value == trackList.value.length - 1) {
+      if (indexSong.value == trackList.length - 1) {
         indexSong.value = 0;
       }
       indexSong.value = indexSong.value! + 1;
@@ -232,12 +231,12 @@ class PlayMusicController extends GetxController {
     }
     isPlaying.value = true;
     if (indexSong.value != null) {
-      if (trackList.value.length == 1) {
+      if (trackList.length == 1) {
         updateData(trackList[indexSong.value ?? 0]);
         return;
       }
       if (indexSong.value == 0) {
-        indexSong.value = trackList.value.length - 1;
+        indexSong.value = trackList.length - 1;
       }
       indexSong.value = indexSong.value! - 1;
       updateData(trackList[indexSong.value!]);

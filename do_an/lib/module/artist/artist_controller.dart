@@ -13,6 +13,14 @@ class ArtistController extends GetxController {
   final RxList<TrackModel> tracks = RxList.empty();
   final indexSong = Rxn<int>();
 
+  @override
+  void onInit() {
+    super.onInit();
+    int id = Get.arguments;
+    getArtist(id);
+    getTrackListArtist(id);
+  }
+
   Future<void> getArtist(int id) async {
     final value = await _respon.getArtist(id.toString());
     artistData.value = value;

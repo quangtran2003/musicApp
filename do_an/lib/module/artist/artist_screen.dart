@@ -1,29 +1,26 @@
 // ignore_for_file: invalid_use_of_protected_member
 
-import 'package:do_an/module/artist/artist_controller.dart';
 import 'package:do_an/components/skeleton_list_song.dart';
 import 'package:do_an/components/song.dart';
+import 'package:do_an/module/artist/artist_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skeletons/skeletons.dart';
 
-import '../../const.dart';
 import '../../components/icon.dart';
 import '../../components/text.dart';
+import '../../const.dart';
 import '../../language/language_constant.dart';
+import '../play_music/model_song_transfer.dart';
 import '../play_music/play_music_controller.dart';
 
 class ArtistScreen extends GetView<ArtistController> {
-  final _controllerPlayM = Get.put(PlayMusicController());
   ArtistScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final x = MediaQuery.of(context).size.height;
     final y = MediaQuery.of(context).size.width;
-    int? id = ModalRoute.of(context)?.settings.arguments as int;
-    controller.getArtist(id);
-    controller.getTrackListArtist(id);
 
     return Scaffold(
       body: Container(
@@ -55,17 +52,26 @@ class ArtistScreen extends GetView<ArtistController> {
                 itemBuilder: ((context, index) {
                   return GestureDetector(
                     onTap: () {
-                      _controllerPlayM.stopMusic();
-                      Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
-                        'songId': controller.trackListArtist.value?.data?[index].id,
-                        'listTrack': controller.tracks.value,
-                        'listIdSong': controller.listIdSong
-                      });
+                      if (Get.isRegistered<PlayMusicController>()) {
+                        Get.find<PlayMusicController>().stopMusic();
+                      }
+                      Get.toNamed(
+                        PLAY_MUSIC_SCREEN,
+                        arguments: ModelSongTransfer(
+                          listIdSong: controller.listIdSong,
+                          listTrack: controller.tracks.value,
+                          songId:
+                              controller.trackListArtist.value?.data?[index].id,
+                        ),
+                      );
                     },
                     child: MySong(
-                        title: controller.trackListArtist.value?.data?[index].title,
-                        subTitle: controller.trackListArtist.value?.data?[index].artist?.name,
-                        urlImage: controller.trackListArtist.value?.data?[index].album?.coverSmall),
+                        title: controller
+                            .trackListArtist.value?.data?[index].title,
+                        subTitle: controller
+                            .trackListArtist.value?.data?[index].artist?.name,
+                        urlImage: controller.trackListArtist.value?.data?[index]
+                            .album?.coverSmall),
                   );
                 })),
           );
@@ -77,19 +83,25 @@ class ArtistScreen extends GetView<ArtistController> {
   GestureDetector _buildBottomPlayMusic(double y) {
     return GestureDetector(
       onTap: () {
-        _controllerPlayM.stopMusic();
-        Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
-          'songId': controller.trackListArtist.value?.data?[0].id,
-          'listTrack': controller.tracks.value,
-          'listIdSong': controller.listIdSong
-        });
+        if (Get.isRegistered<PlayMusicController>()) {
+          Get.find<PlayMusicController>().stopMusic();
+        }
+        Get.toNamed(
+          PLAY_MUSIC_SCREEN,
+          arguments: ModelSongTransfer(
+            listIdSong: controller.listIdSong,
+            listTrack: controller.tracks.value,
+            songId: controller.trackListArtist.value?.data?[0].id,
+          ),
+        );
       },
       child: Container(
         height: 40,
         width: y,
         margin: const EdgeInsets.fromLTRB(38, 0, 38, 20),
         alignment: Alignment.center,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.purple),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20), color: Colors.purple),
         child: MyText(
           text: translation().playMusicNow,
           color: Colors.white,
@@ -107,7 +119,8 @@ class ArtistScreen extends GetView<ArtistController> {
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(20)),
               image: DecorationImage(
-                  image: NetworkImage(controller.artistData.value?.pictureMedium ?? ''),
+                  image: NetworkImage(
+                      controller.artistData.value?.pictureMedium ?? ''),
                   fit: BoxFit.cover),
               shape: BoxShape.rectangle,
             ),

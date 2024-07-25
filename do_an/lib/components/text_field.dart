@@ -2,6 +2,7 @@
 
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 class MyTextField extends StatefulWidget {
@@ -48,11 +49,12 @@ class _MyTextFieldState extends State<MyTextField> {
 
   /// This has to happen only once per app
   void _initSpeech() async {
-    _speechEnabled = await _speechToText.initialize();
-    setState(() {});
+    try {
+      _speechEnabled = await _speechToText.initialize();
+    } catch (e) {
+      Get.snackbar('Thông báo', 'Có lỗi xảy ra, không thể nhận dạng giọng nói');
+    }
   }
-
-  /// Each time to start a speech recognition session
 
   @override
   void dispose() {

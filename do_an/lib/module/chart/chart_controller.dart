@@ -9,7 +9,11 @@ class ChartController extends GetxController {
   List<int?> listIdSong = [];
   final RxList<TrackModel> tracks = RxList.empty();
 
-
+  @override
+  void onInit() {
+    super.onInit();
+    getChartData();
+  }
 
   Future getChartData() async {
     final value = await _respon.getChart();

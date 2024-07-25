@@ -7,6 +7,7 @@ import 'package:do_an/components/song.dart';
 import 'package:do_an/components/text.dart';
 import 'package:do_an/const.dart';
 import 'package:do_an/module/home_screen/homecontroller.dart';
+import 'package:do_an/module/play_music/model_song_transfer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -14,28 +15,22 @@ import '../../language/language_constant.dart';
 import '../play_music/play_music_controller.dart';
 
 class HomeScreen extends GetView<HomeController> {
-  final _controllerPlayM = Get.put(PlayMusicController());
   HomeScreen({super.key});
-  @override
-  void onInit() {
-    controller.randomId();
-  }
 
   @override
   Widget build(BuildContext context) {
-    controller.getArtist();
-    controller.getSong();
     final x = MediaQuery.of(context).size.height;
     return Scaffold(
-        body: Container(
-      child: Column(
-        children: [
-          _buildAppBar(context),
-          _buildListArtist(x),
-          _buildListSong()
-        ],
+      body: Container(
+        child: Column(
+          children: [
+            _buildAppBar(context),
+            _buildListArtist(x),
+            _buildListSong()
+          ],
+        ),
       ),
-    ));
+    );
   }
 
   Expanded _buildListSong() {
@@ -46,7 +41,9 @@ class HomeScreen extends GetView<HomeController> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             alignment: Alignment.centerLeft,
             child: MyText(
-                text: translation().newSong, fontSize: 22, fontWeight: FontWeight.bold),
+                text: translation().newSong,
+                fontSize: 22,
+                fontWeight: FontWeight.bold),
           ),
           Expanded(
             child: Obx(
@@ -64,12 +61,17 @@ class HomeScreen extends GetView<HomeController> {
                           itemBuilder: (context, index) {
                             return GestureDetector(
                               onTap: () {
-                                _controllerPlayM.stopMusic();
-                                Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
-                                  'songId': controller.tracks[index].id,
-                                  'listTrack': controller.tracks.value,
-                                  'listIdSong': controller.listIdSong
-                                });
+                                if (Get.isRegistered<PlayMusicController>()) {
+                                  Get.find<PlayMusicController>().stopMusic();
+                                }
+                                Get.toNamed(
+                                  PLAY_MUSIC_SCREEN,
+                                  arguments: ModelSongTransfer(
+                                    listIdSong: controller.listIdSong,
+                                    listTrack: controller.tracks.value,
+                                    songId: controller.tracks[index].id,
+                                  ),
+                                );
                               },
                               child: MySong(
                                 urlImage:
@@ -96,7 +98,7 @@ class HomeScreen extends GetView<HomeController> {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           alignment: Alignment.centerLeft,
           margin: const EdgeInsets.only(top: 20, bottom: 10),
-          child:  Text(
+          child: Text(
             translation().artist,
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),

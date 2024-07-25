@@ -13,16 +13,14 @@ import 'package:skeletons/skeletons.dart';
 import '../../components/container_album.dart';
 import '../../const.dart';
 import '../../language/language_constant.dart';
+import '../play_music/model_song_transfer.dart';
 import '../play_music/play_music_controller.dart';
 
 class ChartScreen extends GetView<ChartController> {
-  final _controllerPlayM = Get.put(PlayMusicController());
-
   ChartScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    controller.getChartData();
     final y = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SingleChildScrollView(
@@ -63,13 +61,17 @@ class ChartScreen extends GetView<ChartController> {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
-                        _controllerPlayM.stopMusic();
-
-                        Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
-                          'songId': value.tracks?.data?[index].id,
-                          'listTrack': controller.tracks.value,
-                          'listIdSong': controller.listIdSong
-                        });
+                        if (Get.isRegistered<PlayMusicController>()) {
+                          Get.find<PlayMusicController>().stopMusic();
+                        }
+                        Get.toNamed(
+                          PLAY_MUSIC_SCREEN,
+                          arguments: ModelSongTransfer(
+                            listIdSong: controller.listIdSong,
+                            listTrack: controller.tracks.value,
+                            songId: value.tracks?.data?[index].id,
+                          ),
+                        );
                       },
                       child: MySong(
                         urlImage: value.tracks?.data?[index].album?.coverSmall,

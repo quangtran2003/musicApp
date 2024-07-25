@@ -11,16 +11,14 @@ import 'package:get/get.dart';
 import 'package:skeletons/skeletons.dart';
 
 import '../../language/language_constant.dart';
+import '../play_music/model_song_transfer.dart';
 import '../play_music/play_music_controller.dart';
 
 class AlbumScreen extends GetView<AlbumController> {
-  final _controllerPlayM = Get.put(PlayMusicController());
   AlbumScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    int id = ModalRoute.of(context)?.settings.arguments as int;
-    controller.getAlbum(id);
     final x = MediaQuery.of(context).size.height;
     final y = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -50,19 +48,27 @@ class AlbumScreen extends GetView<AlbumController> {
                 itemBuilder: ((context, index) {
                   return GestureDetector(
                     onTap: () {
-                      _controllerPlayM.stopMusic();
+                      if (Get.isRegistered<PlayMusicController>()) {
+                        Get.find<PlayMusicController>().stopMusic();
+                      }
 
-                      Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
-                        'songId': controller.albumData.value?.tracks?.data?[index].id,
-                        'listTrack': controller.tracks.value,
-                        'listIdSong': controller.listIdSong
-                      });
+                      Get.toNamed(
+                        PLAY_MUSIC_SCREEN,
+                        arguments: ModelSongTransfer(
+                          listIdSong: controller.listIdSong,
+                          listTrack: controller.tracks.value,
+                          songId: controller
+                              .albumData.value?.tracks?.data?[index].id,
+                        ),
+                      );
                     },
                     child: MySong(
-                        title: controller.albumData.value?.tracks?.data?[index].title,
-                        subTitle: controller.albumData.value?.tracks?.data?[index].artist?.name,
-                        urlImage:
-                            controller.albumData.value?.tracks?.data?[index].album?.coverSmall),
+                        title: controller
+                            .albumData.value?.tracks?.data?[index].title,
+                        subTitle: controller
+                            .albumData.value?.tracks?.data?[index].artist?.name,
+                        urlImage: controller.albumData.value?.tracks
+                            ?.data?[index].album?.coverSmall),
                   );
                 })),
           );
@@ -74,20 +80,26 @@ class AlbumScreen extends GetView<AlbumController> {
   GestureDetector _buildBottomPlayMusic(double y) {
     return GestureDetector(
       onTap: () {
-        _controllerPlayM.stopMusic();
+        if (Get.isRegistered<PlayMusicController>()) {
+          Get.find<PlayMusicController>().stopMusic();
+        }
 
-        Get.toNamed(PLAY_MUSIC_SCREEN, arguments: {
-          'songId': controller.albumData.value?.tracks?.data?[0].id,
-          'listTrack': controller.tracks.value,
-          'listIdSong': controller.listIdSong
-        });
+        Get.toNamed(
+          PLAY_MUSIC_SCREEN,
+          arguments: ModelSongTransfer(
+            listIdSong: controller.listIdSong,
+            listTrack: controller.tracks.value,
+            songId: controller.albumData.value?.tracks?.data?[0].id,
+          ),
+        );
       },
       child: Container(
         height: 40,
         width: y,
         margin: const EdgeInsets.fromLTRB(38, 0, 38, 20),
         alignment: Alignment.center,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.purple),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20), color: Colors.purple),
         child: MyText(
           text: translation().playMusicNow,
           color: Colors.white,
@@ -105,7 +117,8 @@ class AlbumScreen extends GetView<AlbumController> {
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(20)),
               image: DecorationImage(
-                  image: NetworkImage(controller.albumData.value?.coverMedium ?? ''),
+                  image: NetworkImage(
+                      controller.albumData.value?.coverMedium ?? ''),
                   fit: BoxFit.cover),
               shape: BoxShape.rectangle,
             ),

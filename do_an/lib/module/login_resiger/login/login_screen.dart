@@ -11,9 +11,7 @@ class Login extends GetView<LoginController> {
   const Login({super.key});
   @override
   Widget build(BuildContext context) {
-    //  controller.createAcc();
     FlutterNativeSplash.remove();
-
     final x = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SingleChildScrollView(

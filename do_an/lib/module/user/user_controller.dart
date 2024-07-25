@@ -17,6 +17,15 @@ class UserController extends GetxController {
   var isDarkMode = false.obs;
   var loadingHistory = true.obs;
 
+  onInit() {
+    super.onInit();
+    loadHistoryPlay();
+    loadPlaylist();
+    loadfavourite();
+    getNameUser();
+    getDarkMode();
+  }
+
   Future<void> getDarkMode() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     isDarkMode.value = prefs.getBool('isDarkMode') ?? false;
@@ -26,7 +35,8 @@ class UserController extends GetxController {
     isDarkMode.value = !isDarkMode.value;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('isDarkMode', isDarkMode.value);
-    Get.changeTheme(isDarkMode.value == false ? ThemeData.light() : ThemeData.dark());
+    Get.changeTheme(
+        isDarkMode.value == false ? ThemeData.light() : ThemeData.dark());
   }
 
   void getNameUser() {
@@ -62,8 +72,10 @@ class UserController extends GetxController {
 
   Future<void> getSongHistory() async {
     List<TrackModel?> results = await Future.wait(
-      List.generate(historyPlay.value?.length ?? 0,
-          (index) => _listTrackRespon.getTrack(historyPlay.value?[index].toString() ?? '')),
+      List.generate(
+          historyPlay.value?.length ?? 0,
+          (index) => _listTrackRespon
+              .getTrack(historyPlay.value?[index].toString() ?? '')),
     );
     List<TrackModel> filteredResults =
         results.where((item) => item != null).cast<TrackModel>().toList();
@@ -74,8 +86,10 @@ class UserController extends GetxController {
 
   Future<void> getSongFavourite() async {
     List<TrackModel?> results = await Future.wait(
-      List.generate(favourite.value?.length ?? 0,
-          (index) => _listTrackRespon.getTrack(favourite.value?[index].toString() ?? '')),
+      List.generate(
+          favourite.value?.length ?? 0,
+          (index) => _listTrackRespon
+              .getTrack(favourite.value?[index].toString() ?? '')),
     );
     List<TrackModel> filteredResults =
         results.where((item) => item != null).cast<TrackModel>().toList();
@@ -85,8 +99,10 @@ class UserController extends GetxController {
 
   Future<void> getSongPlaylist() async {
     List<TrackModel?> results = await Future.wait(
-      List.generate(playlist.value?.length ?? 0,
-          (index) => _listTrackRespon.getTrack(playlist.value?[index].toString() ?? '')),
+      List.generate(
+          playlist.value?.length ?? 0,
+          (index) => _listTrackRespon
+              .getTrack(playlist.value?[index].toString() ?? '')),
     );
     List<TrackModel> filteredResults =
         results.where((item) => item != null).cast<TrackModel>().toList();
