@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'language/language_constant.dart';
@@ -32,6 +33,13 @@ import 'module/chart/chart_binding.dart';
 import 'module/play_music/playmusic_screen/playmusic_screen.dart';
 
 Future<void> main() async {
+
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
+    androidNotificationChannelName: 'Audio playback',
+    androidNotificationOngoing: true,
+  );
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -43,8 +51,12 @@ Future<void> main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final isDarkMode = prefs.getBool('isDarkMode') ?? false;
   Get.changeTheme(!isDarkMode ? ThemeData.light() : ThemeData.dark());
+
   runApp(const MyApp());
+ //await mainApp();
 }
+
+
 
 class MyHttpOverrides extends HttpOverrides {
   @override

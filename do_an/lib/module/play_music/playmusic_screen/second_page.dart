@@ -31,7 +31,7 @@ class SecondPage extends GetView<PlayMusicController> {
               return GestureDetector(
                 onTap: () {
                   onSongSelected();
-                  controller.updateData(controller.trackList[index]);
+                  //controller.updateData(controller.trackList[index]);
                   controller.indexSong.value = index;
                 },
                 child: Container(

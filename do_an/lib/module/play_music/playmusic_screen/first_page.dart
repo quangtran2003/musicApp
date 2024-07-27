@@ -1,3 +1,4 @@
+import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:do_an/components/image.dart';
 import 'package:do_an/module/play_music/play_music_controller.dart';
 import 'package:do_an/module/user/user_controller.dart';
@@ -27,7 +28,7 @@ class FirstPage extends GetView<PlayMusicController> {
     // Get.changeTheme(theme)
     return Column(
       children: [
-        Obx(() => controller.trackData.value != null
+        Obx(() => !controller.isLoading.value
             ? Hero(
                 tag:
                     'avatarSong${controller.trackData.value?.album?.coverMedium}',
@@ -120,19 +121,30 @@ class FirstPage extends GetView<PlayMusicController> {
           padding: EdgeInsets.symmetric(horizontal: width * 0.1),
           child: Column(
             children: [
-              Obx(
-                () => Slider(
-                  inactiveColor: const Color.fromARGB(255, 185, 113, 197),
-                  activeColor: const Color.fromARGB(255, 44, 12, 50),
-                  min: 0.0,
-                  max: controller.durationInt.value.toDouble(),
-                  value: controller.positionInt.value.toDouble(),
-                  onChanged: (value) {
-                    controller.audioPlayer
-                        .seek(Duration(seconds: value.toInt()));
-                  },
-                ),
-              ),
+              StreamBuilder<PositionData>(
+                  stream: controller.positionDataStream,
+                  builder: (context, snapshot) {
+                    final positionData = snapshot.data;
+                    return ProgressBar(
+                      total: positionData?.duration ?? Duration.zero,
+                      progress: positionData?.position ?? Duration.zero,
+                      buffered: positionData?.bufferedPosition ?? Duration.zero,
+                      onSeek: controller.audioPlayer.seek,
+                    );
+                  }),
+              // Obx(
+              //   () => Slider(
+              //     inactiveColor: const Color.fromARGB(255, 185, 113, 197),
+              //     activeColor: const Color.fromARGB(255, 44, 12, 50),
+              //     min: 0.0,
+              //     max: controller.durationInt.value.toDouble(),
+              //     value: controller.positionInt.value.toDouble(),
+              //     onChanged: (value) {
+              //       controller.audioPlayer
+              //           .seek(Duration(seconds: value.toInt()));
+              //     },
+              //   ),
+              // ),
               Obx(
                 () => Row(
                   children: [
@@ -156,13 +168,12 @@ class FirstPage extends GetView<PlayMusicController> {
             children: [
               GestureDetector(
                 onTap: () {
-                  controller.onLoopListTrack();
+                  controller.onRandomSong();
                 },
                 child: Obx(
                   () => MyIcon(
                     icon: Icons.shuffle,
-                    color:
-                        controller.loopListTrack.value ? Colors.purple : null,
+                    color: controller.isRandomSong.value ? Colors.purple : null,
                   ),
                 ),
               ),
@@ -206,14 +217,16 @@ class FirstPage extends GetView<PlayMusicController> {
                 onTap: () {
                   controller.onLoopSong();
                 },
-                child: Obx(() => controller.loopSong.value
-                    ? const MyIcon(
-                        icon: Icons.repeat_one,
-                        color: Colors.purple,
-                      )
-                    : const MyIcon(
-                        icon: Icons.repeat_one,
-                      )),
+                child: Obx(
+                  () => controller.isLoopSong.value
+                      ? const MyIcon(
+                          icon: Icons.repeat_one,
+                          color: Colors.purple,
+                        )
+                      : const MyIcon(
+                          icon: Icons.repeat_one,
+                        ),
+                ),
               ),
             ],
           ),

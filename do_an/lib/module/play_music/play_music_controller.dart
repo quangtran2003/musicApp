@@ -1,4 +1,6 @@
-import 'package:audioplayers/audioplayers.dart';
+import 'dart:async';
+
+import 'package:audio_session/audio_session.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:do_an/components/text.dart';
 import 'package:do_an/language/language_constant.dart';
@@ -8,14 +10,19 @@ import 'package:do_an/net_working/models/track.dart';
 import 'package:do_an/net_working/responstory/all_responstory.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
+import 'package:rxdart/rxdart.dart' as rx;
 import 'package:shared_preferences/shared_preferences.dart';
+
+enum statusMusic { Playing, Pause, Completed, Loading, Idle, Buffering, Ready }
 
 class PlayMusicController extends GetxController {
   final _controllerUser = Get.put(UserController());
 
-  PlayerState playerState = PlayerState.stopped;
-  AudioPlayer audioPlayer = AudioPlayer();
+  late AudioPlayer audioPlayer;
   RxList<TrackModel> trackList = RxList.empty();
+  final isLoading = true.obs;
   var indexPage = 0.obs;
   var isPlaying = false.obs;
   final _respon = Responstory();
@@ -26,8 +33,8 @@ class PlayMusicController extends GetxController {
   var positionInt = 0.obs;
   var indexSong = Rxn<int>();
   RxInt selectedIndex = 0.obs;
-  var loopSong = false.obs;
-  var loopListTrack = false.obs;
+  var isLoopSong = false.obs;
+  var isRandomSong = false.obs;
   var countdownSeconds = 0.obs;
   var isCountingDown = false.obs;
   var isFavorite = false.obs;
@@ -35,7 +42,34 @@ class PlayMusicController extends GetxController {
   var favourite = Rxn<List<String?>>();
   var playlist = Rxn<List<String?>>();
   var historyPlay = Rxn<List<String?>>();
+  var status = statusMusic.Pause.obs;
   var isPlayAnimation = false.obs;
+  ModelSongTransfer? dataTransfer = Get.arguments;
+  ConcatenatingAudioSource? playlistMusic;
+  PlayerState playerState = PlayerState(false, ProcessingState.loading);
+  @override
+  void onInit() {
+    audioPlayer = AudioPlayer();
+    audioPlayer.playerStateStream.listen((state) {
+      if (state.playing) {
+        isPlaying.value = true;
+        print('\n\n\n fsdfsdfsdfosdfsdfsdfsdbject');
+      } else
+        switch (state.processingState) {
+          case ProcessingState.idle:
+            status.value = statusMusic.Idle;
+          case ProcessingState.loading:
+            status.value = statusMusic.Loading;
+          case ProcessingState.buffering:
+            status.value = statusMusic.Buffering;
+          case ProcessingState.ready:
+            status.value = statusMusic.Ready;
+          case ProcessingState.completed:
+            status.value = statusMusic.Completed;
+        }
+    });
+    super.onInit();
+  }
 
   void getListTrack(List<TrackModel> value) {
     final List<TrackModel> tracks = [];
@@ -43,45 +77,161 @@ class PlayMusicController extends GetxController {
     trackList.value = tracks;
   }
 
-  Future initData(
-      ModelSongTransfer? dataTransfer) async {
+  // listenStatus() {
+  //   audioPlayer.playerStateStream.listen((state) {
+  //     if (state.playing)
+  //       isPlaying.value = true;
+  //     else
+  //       switch (state.processingState) {
+  //         case ProcessingState.idle:
+  //           status.value = statusMusic.Idle;
+  //         case ProcessingState.loading:
+  //           status.value = statusMusic.Loading;
+  //         case ProcessingState.buffering:
+  //           status.value = statusMusic.Loading;
+  //         case ProcessingState.ready:
+  //           status.value = statusMusic.Ready;
+  //         case ProcessingState.completed:
+  //           status.value = statusMusic.Completed;
+  //       }
+  //   });
+  // }
+
+  Future initData(ModelSongTransfer? dataTransfer) async {
     if (dataTransfer?.isSongBottom == false) {
-      getTrack(dataTransfer?.songId ?? 0);
-      checkStatusMusic();
-      getListTrack(dataTransfer?.listTrack??[]);
-      onDurationChanged();
-      onPositionChanged();
-      checkConpletion();
-      getIndexSong(dataTransfer?.songId, dataTransfer?.listIdSong??[]);
+      //getPlaylistSuggets();
+      await getTrack(dataTransfer?.songId ?? 0);
+      //listenStatus();
+     // getListTrack(dataTransfer?.listTrack ?? []);
+     // getIndexSong(dataTransfer?.songId, dataTransfer?.listIdSong ?? []);
     }
   }
 
-  Future<void> updateData(TrackModel data) async {
-    trackData.value = data;
-    await audioPlayer.stop();
-    isPlaying.value = true;
-    await audioPlayer.play(UrlSource(trackData.value?.preview ?? ''));
-    savePlayHistory();
-    loadPlaylist();
-    loadfavourite();
-    checkStatusMusic();
-    _controllerUser.loadHistoryPlay();
+  void getPlaylistSuggets() {
+    final dataTransfer = Get.arguments as ModelSongTransfer?;
+    playlistMusic = ConcatenatingAudioSource(
+        useLazyPreparation: true,
+        shuffleOrder: DefaultShuffleOrder(),
+        children: dataTransfer?.listTrack != null
+            ? dataTransfer!.listTrack!.map((item) {
+                return AudioSource.uri(
+                  Uri.parse(item.preview ?? ''),
+                  tag: MediaItem(
+                    // Specify a unique ID for each media item:
+                    id: dataTransfer.listTrack!.indexOf(item).toString(),
+                    // Metadata to display in the notification:
+                    album: item.album?.title,
+                    title: item.title ?? 'Not name',
+                    artUri: Uri.parse(item.album?.coverSmall ?? ''),
+                  ),
+                );
+              }).toList()
+            : []);
   }
 
-  void checkStatusMusic() {
-    audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
-      if (state == PlayerState.playing) {
-        isPlayAnimation.value = true;
-      } else
-        isPlayAnimation.value = false;
+  // Future<void> updateData(TrackModel data) async {
+  //   trackData.value = data;
+  //   await playMusic();
+  //   savePlayHistory();
+  //   loadPlaylist();
+  //   loadfavourite();
+  //   //checkStatusMusic();
+  //   _controllerUser.loadHistoryPlay();
+  // }
+
+  Future<void> playMusic() async {
+    int _nextMediaId = 0;
+    final _playlist = ConcatenatingAudioSource(children: [
+      ClippingAudioSource(
+        start: const Duration(seconds: 60),
+        end: const Duration(seconds: 90),
+        child: AudioSource.uri(Uri.parse(
+            "https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3")),
+        tag: MediaItem(
+          id: '${_nextMediaId++}',
+          album: "Science Friday",
+          title: "A Salute To Head-Scratching Science (30 seconds)",
+          artUri: Uri.parse(
+              "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
+        ),
+      ),
+      AudioSource.uri(
+        Uri.parse(
+            "https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3"),
+        tag: MediaItem(
+          id: '${_nextMediaId++}',
+          album: "Science Friday",
+          title: "A Salute To Head-Scratching Science",
+          artUri: Uri.parse(
+              "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
+        ),
+      ),
+      AudioSource.uri(
+        Uri.parse(
+            "https://s3.amazonaws.com/scifri-segments/scifri201711241.mp3"),
+        tag: MediaItem(
+          id: '${_nextMediaId++}',
+          album: "Science Friday",
+          title: "From Cat Rheology To Operatic Incompetence",
+          artUri: Uri.parse(
+              "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
+        ),
+      ),
+      AudioSource.uri(
+        Uri.parse("asset:///audio/nature.mp3"),
+        tag: MediaItem(
+          id: '${_nextMediaId++}',
+          album: "Public Domain",
+          title: "Nature Sounds",
+          artUri: Uri.parse(
+              "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
+        ),
+      ),
+    ]);
+    final session = await AudioSession.instance;
+    await session.configure(const AudioSessionConfiguration.speech());
+    // Listen to errors during playback.
+    audioPlayer.playbackEventStream.listen((event) {},
+        onError: (Object e, StackTrace stackTrace) {
+      print('A stream error occurred: $e');
     });
+    try {
+      await audioPlayer.setAudioSource(_playlist);
+    } catch (e, stackTrace) {
+      // Catch load errors: 404, invalid url ...
+      print("Error loading playlist: $e");
+      print(stackTrace);
+    }
+
+// final duration = await audioPlayer.setUrl(// Load a URL
+//         'https://file-examples.com/storage/fe3f15b9da66a36baa1b51a/2017/11/file_example_MP3_2MG.mp3'); // Schemes: (https: | file: | asset: )
+//     audioPlayer.play(); // Play without waiting for completion
+    //await audioPlayer.play();
+
+    // if (playlistMusic != null && playlistMusic?.children != []) {
+    //   await audioPlayer.setAudioSource(playlistMusic!,
+    //       initialIndex: 0, initialPosition: Duration.zero);
+    //   isPlaying.value = true;
+    // } else {
+    //   Get.snackbar('Thông báo', 'Dữ liệu lỗi!');
+    //   isLoading.value = false;
+    // }
   }
+
+  // void checkStatusMusic() {
+  //   audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
+  //     if (state == PlayerState.playing) {
+  //       isPlayAnimation.value = true;
+  //     } else
+  //       isPlayAnimation.value = false;
+  //   });
+  // }
 
   Future<void> getTrack(int id) async {
     final value = await _respon.getTrack(id.toString());
     trackData.value = value;
     isPlaying.value = true;
-    await audioPlayer.play(UrlSource(trackData.value?.preview ?? ''));
+    await playMusic();
     savePlayHistory();
     loadPlaylist();
     loadfavourite();
@@ -99,6 +249,7 @@ class PlayMusicController extends GetxController {
   Future<void> pauserMusic() async {
     isPlaying.value = false;
     await audioPlayer.pause();
+    status.value = statusMusic.Pause;
   }
 
   void getIndexSong(int? idSong, List<int?> listIdSong) {
@@ -111,19 +262,13 @@ class PlayMusicController extends GetxController {
     return '$seconds:${minutes.toString().padLeft(2, '0')}';
   }
 
-  void onDurationChanged() {
-    audioPlayer.onDurationChanged.listen((Duration d) {
-      durationInt.value = d.inSeconds.toInt();
-      durationString.value = format(durationInt.value);
-    });
-  }
-
-  void onPositionChanged() {
-    audioPlayer.onPositionChanged.listen((Duration p) {
-      positionInt.value = p.inSeconds.toInt();
-      positionString.value = format(positionInt.value);
-    });
-  }
+  Stream<PositionData> get positionDataStream =>
+      rx.Rx.combineLatest3<Duration, Duration, Duration?, PositionData>(
+          audioPlayer.positionStream,
+          audioPlayer.bufferedPositionStream,
+          audioPlayer.durationStream,
+          (position, bufferedPosition, duration) => PositionData(
+              position, bufferedPosition, duration ?? Duration.zero));
 
   void checkFavorite() {
     isFavorite.value = !isFavorite.value;
@@ -137,10 +282,6 @@ class PlayMusicController extends GetxController {
     audioPlayer.seek(Duration(milliseconds: value.toInt()));
   }
 
-  Future<void> loadMusic(String musicUrl) async {
-    await audioPlayer.play(UrlSource(musicUrl));
-  }
-
   void checkPlaying() {
     if (trackData.value == null) {
       return;
@@ -148,7 +289,7 @@ class PlayMusicController extends GetxController {
     if (isPlaying.value) {
       audioPlayer.pause();
     } else {
-      audioPlayer.resume();
+      audioPlayer.play();
     }
     isPlaying.value = !isPlaying.value;
   }
@@ -157,90 +298,99 @@ class PlayMusicController extends GetxController {
     indexPage.value = index;
   }
 
-  Future<void> checkConpletion() async {
-    audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
-      if (state == PlayerState.completed) {
-        stopMusic();
-        isPlaying.value = false;
-      }
-    });
-  }
+  // Future<void> checkConpletion() async {
+  //   audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
+  //     if (state == PlayerState.completed) {
+  //       stopMusic();
+  //       isPlaying.value = false;
+  //     }
+  //   });
+  // }
 
-  Future<void> onLoopListTrack() async {
-    loopListTrack.value = !loopListTrack.value;
-    audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
-      if (loopListTrack.value) {
-        if (state == PlayerState.completed) {
-          if (indexSong.value != null) {
-            indexSong.value = indexSong.value! + 1;
-            if (indexSong.value! >= trackList.length) {
-              indexSong.value = 0;
-            }
-            updateData(trackList[indexSong.value!]);
-          }
-        }
-      } else {
-        if (state == PlayerState.completed) {
-          isPlaying.value = false;
-          audioPlayer.pause();
-        }
-      }
-    });
-  }
+  // Future<void> onLoopListTrack() async {
+  //   loopListTrack.value = !loopListTrack.value;
+  //   audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
+  //     if (loopListTrack.value) {
+  //       if (state == PlayerState.completed) {
+  //         if (indexSong.value != null) {
+  //           indexSong.value = indexSong.value! + 1;
+  //           if (indexSong.value! >= trackList.length) {
+  //             indexSong.value = 0;
+  //           }
+  //           updateData(trackList[indexSong.value!]);
+  //         }
+  //       }
+  //     } else {
+  //       if (state == PlayerState.completed) {
+  //         isPlaying.value = false;
+  //         audioPlayer.pause();
+  //       }
+  //     }
+  //   });
+  // }
 
   Future<void> onLoopSong() async {
-    loopSong.value = !loopSong.value;
-    // isPlaying.value = true;
-    audioPlayer.setReleaseMode(ReleaseMode.stop);
-
-    if (loopSong.value == true) {
-      audioPlayer.setReleaseMode(ReleaseMode.loop);
+    isLoopSong.value = !isLoopSong.value;
+    if (isLoopSong.value) {
+      await audioPlayer.setLoopMode(LoopMode.one);
+      audioPlayer.play();
     } else {
-      audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
-        if (state == PlayerState.completed) {
-          isPlaying.value = false;
-          audioPlayer.pause();
-          //  }
-        }
-      });
+      await audioPlayer.setLoopMode(LoopMode.off);
+      audioPlayer.play();
     }
   }
 
-  void nextSong() {
-    if (trackData.value == null) {
-      return;
-    }
-    isPlaying.value = true;
-    if (indexSong.value != null) {
-      if (trackList.length == 1) {
-        updateData(trackList[indexSong.value ?? 0]);
-        return;
-      }
-      if (indexSong.value == trackList.length - 1) {
-        indexSong.value = 0;
-      }
-      indexSong.value = indexSong.value! + 1;
-      updateData(trackList[indexSong.value!]);
-      //Get.changeTheme(theme)
+  Future<void> onRandomSong() async {
+    isRandomSong.value = !isRandomSong.value;
+    if (isRandomSong.value) {
+      await audioPlayer.setShuffleModeEnabled(true);
+      audioPlayer.play();
+    } else {
+      await audioPlayer.setShuffleModeEnabled(false);
+      audioPlayer.play();
+      if (status.value == statusMusic.Completed) audioPlayer.pause();
     }
   }
 
-  void backSong() {
-    if (trackData.value == null) {
-      return;
-    }
-    isPlaying.value = true;
-    if (indexSong.value != null) {
-      if (trackList.length == 1) {
-        updateData(trackList[indexSong.value ?? 0]);
-        return;
-      }
-      if (indexSong.value == 0) {
-        indexSong.value = trackList.length - 1;
-      }
-      indexSong.value = indexSong.value! - 1;
-      updateData(trackList[indexSong.value!]);
-    }
+  void nextSong() async {
+    await audioPlayer.seekToNext();
+
+    // if (trackData.value == null) {
+    //   return;
+    // }
+    // isPlaying.value = true;
+    // if (indexSong.value != null) {
+    //   if (trackList.length == 1) {
+    //     updateData(trackList[indexSong.value ?? 0]);
+    //     return;
+    //   }
+    //   if (indexSong.value == trackList.length - 1) {
+    //     indexSong.value = 0;
+    //   }
+    //   indexSong.value = indexSong.value! + 1;
+    //   updateData(trackList[indexSong.value!]);
+    //   //Get.changeTheme(theme)
+    // }
+  }
+
+  void backSong() async {
+    await audioPlayer.seekToPrevious();
+
+    // if (trackData.value == null) {
+    //   return;
+    // }
+    // isPlaying.value = true;
+    // if (indexSong.value != null) {
+    //   if (trackList.length == 1) {
+    //     updateData(trackList[indexSong.value ?? 0]);
+    //     return;
+    //   }
+    //   if (indexSong.value == 0) {
+    //     indexSong.value = trackList.length - 1;
+    //   }
+    //   indexSong.value = indexSong.value! - 1;
+    //   updateData(trackList[indexSong.value!]);
+    // }
   }
 
   void getLinkSong(BuildContext context, String link, double x) async {
@@ -369,4 +519,12 @@ class PlayMusicController extends GetxController {
 
     historyPlay(history);
   }
+}
+
+class PositionData {
+  final Duration position;
+  final Duration bufferedPosition;
+  final Duration duration;
+
+  PositionData(this.position, this.bufferedPosition, this.duration);
 }

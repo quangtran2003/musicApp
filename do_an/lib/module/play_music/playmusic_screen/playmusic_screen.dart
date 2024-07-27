@@ -10,21 +10,22 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skeletons/skeletons.dart';
 
-import '../model_song_transfer.dart';
 import 'first_page.dart';
 import 'second_page.dart';
 
 class PlayMusicScreen extends GetView<PlayMusicController> {
   final _controllerUser = Get.put(UserController());
-  final ModelSongTransfer? dataTransfer = Get.arguments;
 
-  PlayMusicScreen({super.key});
+  PlayMusicScreen({
+    super.key,
+  });
   @override
   Widget build(BuildContext context) {
     PageController pageController = PageController(initialPage: 0);
     final x = MediaQuery.of(context).size.height;
     final y = MediaQuery.of(context).size.width;
-    controller.initData(dataTransfer);
+    // controller.initData(Get.arguments as ModelSongTransfer);
+    controller.playMusic();
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -43,8 +44,8 @@ class PlayMusicScreen extends GetView<PlayMusicController> {
                   children: [
                     FirstPage(height: x, width: y),
                     SecondPage(
-                        listIdSong: dataTransfer?.listIdSong ?? [],
-                        listTrack: dataTransfer?.listTrack ?? [],
+                        listIdSong: controller.dataTransfer?.listIdSong ?? [],
+                        listTrack: controller.dataTransfer?.listTrack ?? [],
                         onSongSelected: () {
                           pageController.animateToPage(0,
                               duration: const Duration(milliseconds: 300),
