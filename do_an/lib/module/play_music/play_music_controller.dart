@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:logger/logger.dart';
 import 'package:rxdart/rxdart.dart' as rx;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,7 +21,7 @@ enum statusMusic { Playing, Pause, Completed, Loading, Idle, Buffering, Ready }
 class PlayMusicController extends GetxController {
   final _controllerUser = Get.put(UserController());
 
-  late AudioPlayer audioPlayer;
+  final AudioPlayer audioPlayer = AudioPlayer();
   RxList<TrackModel> trackList = RxList.empty();
   final isLoading = true.obs;
   var indexPage = 0.obs;
@@ -49,25 +50,25 @@ class PlayMusicController extends GetxController {
   PlayerState playerState = PlayerState(false, ProcessingState.loading);
   @override
   void onInit() {
-    audioPlayer = AudioPlayer();
-    audioPlayer.playerStateStream.listen((state) {
-      if (state.playing) {
-        isPlaying.value = true;
-        print('\n\n\n fsdfsdfsdfosdfsdfsdfsdbject');
-      } else
-        switch (state.processingState) {
-          case ProcessingState.idle:
-            status.value = statusMusic.Idle;
-          case ProcessingState.loading:
-            status.value = statusMusic.Loading;
-          case ProcessingState.buffering:
-            status.value = statusMusic.Buffering;
-          case ProcessingState.ready:
-            status.value = statusMusic.Ready;
-          case ProcessingState.completed:
-            status.value = statusMusic.Completed;
-        }
-    });
+    // audioPlayer = AudioPlayer();
+    // audioPlayer.playerStateStream.listen((state) {
+    //   if (state.playing) {
+    //     isPlaying.value = true;
+    //     print('\n\n\n fsdfsdfsdfosdfsdfsdfsdbject');
+    //   } else
+    //     switch (state.processingState) {
+    //       case ProcessingState.idle:
+    //         status.value = statusMusic.Idle;
+    //       case ProcessingState.loading:
+    //         status.value = statusMusic.Loading;
+    //       case ProcessingState.buffering:
+    //         status.value = statusMusic.Buffering;
+    //       case ProcessingState.ready:
+    //         status.value = statusMusic.Ready;
+    //       case ProcessingState.completed:
+    //         status.value = statusMusic.Completed;
+    //     }
+    // });
     super.onInit();
   }
 
@@ -77,33 +78,33 @@ class PlayMusicController extends GetxController {
     trackList.value = tracks;
   }
 
-  // listenStatus() {
-  //   audioPlayer.playerStateStream.listen((state) {
-  //     if (state.playing)
-  //       isPlaying.value = true;
-  //     else
-  //       switch (state.processingState) {
-  //         case ProcessingState.idle:
-  //           status.value = statusMusic.Idle;
-  //         case ProcessingState.loading:
-  //           status.value = statusMusic.Loading;
-  //         case ProcessingState.buffering:
-  //           status.value = statusMusic.Loading;
-  //         case ProcessingState.ready:
-  //           status.value = statusMusic.Ready;
-  //         case ProcessingState.completed:
-  //           status.value = statusMusic.Completed;
-  //       }
-  //   });
-  // }
+  listenStatus() {
+    audioPlayer.playerStateStream.listen((state) {
+      if (state.playing)
+        isPlaying.value = true;
+      else
+        switch (state.processingState) {
+          case ProcessingState.idle:
+            status.value = statusMusic.Idle;
+          case ProcessingState.loading:
+            status.value = statusMusic.Loading;
+          case ProcessingState.buffering:
+            status.value = statusMusic.Loading;
+          case ProcessingState.ready:
+            status.value = statusMusic.Ready;
+          case ProcessingState.completed:
+            status.value = statusMusic.Completed;
+        }
+    });
+  }
 
   Future initData(ModelSongTransfer? dataTransfer) async {
     if (dataTransfer?.isSongBottom == false) {
       //getPlaylistSuggets();
       await getTrack(dataTransfer?.songId ?? 0);
       //listenStatus();
-     // getListTrack(dataTransfer?.listTrack ?? []);
-     // getIndexSong(dataTransfer?.songId, dataTransfer?.listIdSong ?? []);
+      // getListTrack(dataTransfer?.listTrack ?? []);
+      // getIndexSong(dataTransfer?.songId, dataTransfer?.listIdSong ?? []);
     }
   }
 
@@ -143,7 +144,7 @@ class PlayMusicController extends GetxController {
     int _nextMediaId = 0;
     final _playlist = ConcatenatingAudioSource(children: [
       ClippingAudioSource(
-        start: const Duration(seconds: 60),
+        start: const Duration(seconds: 10),
         end: const Duration(seconds: 90),
         child: AudioSource.uri(Uri.parse(
             "https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3")),
@@ -177,16 +178,6 @@ class PlayMusicController extends GetxController {
               "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
         ),
       ),
-      AudioSource.uri(
-        Uri.parse("asset:///audio/nature.mp3"),
-        tag: MediaItem(
-          id: '${_nextMediaId++}',
-          album: "Public Domain",
-          title: "Nature Sounds",
-          artUri: Uri.parse(
-              "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
-        ),
-      ),
     ]);
     final session = await AudioSession.instance;
     await session.configure(const AudioSessionConfiguration.speech());
@@ -196,8 +187,26 @@ class PlayMusicController extends GetxController {
       print('A stream error occurred: $e');
     });
     try {
-      await audioPlayer.setAudioSource(_playlist);
+      Logger().d('123123123');
+
+      await audioPlayer.setAudioSource(
+        AudioSource.uri(
+          Uri.parse(
+              "https://s3.amazonaws.com/scifri-episodes/scifri20181123-episode.mp3"),
+          tag: MediaItem(
+            // Specify a unique ID for each media item:
+            id: '1',
+            // Metadata to display in the notification:
+            album: "Album name",
+            title: "Song name",
+            artUri: Uri.parse(
+                "https://media.wnyc.org/i/1400/1400/l/80/1/ScienceFriday_WNYCStudios_1400.jpg"),
+          ),
+        ),
+      );
+      Logger().d('ásdasdasdasdasdas');
     } catch (e, stackTrace) {
+      Logger().d(e);
       // Catch load errors: 404, invalid url ...
       print("Error loading playlist: $e");
       print(stackTrace);

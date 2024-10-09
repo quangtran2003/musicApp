@@ -11,6 +11,7 @@ import 'package:skeletons/skeletons.dart';
 import '../../../components/icon.dart';
 import '../../../components/text.dart';
 import '../../../const.dart';
+import '../seek.dart';
 
 class FirstPage extends GetView<PlayMusicController> {
   final _controllerUser = Get.put(UserController());
@@ -122,16 +123,32 @@ class FirstPage extends GetView<PlayMusicController> {
           child: Column(
             children: [
               StreamBuilder<PositionData>(
-                  stream: controller.positionDataStream,
-                  builder: (context, snapshot) {
-                    final positionData = snapshot.data;
-                    return ProgressBar(
-                      total: positionData?.duration ?? Duration.zero,
-                      progress: positionData?.position ?? Duration.zero,
-                      buffered: positionData?.bufferedPosition ?? Duration.zero,
-                      onSeek: controller.audioPlayer.seek,
-                    );
-                  }),
+                stream: controller.positionDataStream,
+                builder: (context, snapshot) {
+                  final positionData = snapshot.data;
+                  return SeekBar(
+                    duration: positionData?.duration ?? Duration.zero,
+                    position: positionData?.position ?? Duration.zero,
+                    bufferedPosition:
+                        positionData?.bufferedPosition ?? Duration.zero,
+                    onChangeEnd: (newPosition) {
+                      controller.audioPlayer.seek(newPosition);
+                    },
+                  );
+                },
+              ),
+
+              // StreamBuilder<PositionData>(
+              //     stream: controller.positionDataStream,
+              //     builder: (context, snapshot) {
+              //       final positionData = snapshot.data;
+              //       return ProgressBar(
+              //         total: positionData?.duration ?? Duration.zero,
+              //         progress: positionData?.position ?? Duration.zero,
+              //         buffered: positionData?.bufferedPosition ?? Duration.zero,
+              //         onSeek: controller.audioPlayer.seek,
+              //       );
+              //     }),
               // Obx(
               //   () => Slider(
               //     inactiveColor: const Color.fromARGB(255, 185, 113, 197),

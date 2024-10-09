@@ -22,7 +22,7 @@ class SongBottom extends StatelessWidget {
         }
       },
       child: Obx(
-        () => controller.trackData.value?.title == null
+        () => controller.trackData.value == null
             ? SizedBox()
             : Container(
                 height: 70,
